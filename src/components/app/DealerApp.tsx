@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type {
   ProductType,
@@ -144,6 +144,20 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   
   // Print/Export state
   const [showPrintView, setShowPrintView] = useState(false);
+
+  // Mobile state
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+  const [mobileViewMode, setMobileViewMode] = useState<"canvas" | "panel">("panel");
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const toggleAccessory = useCallback((id: AccessoryType) => {
     setAccessories((prev) =>
@@ -633,12 +647,16 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         onSearchChange={handleSearch}
         onToggleFilter={() => setShowFilters(true)}
       >
-        <div className="flex h-full">
-        {/* Left Panel - Configuration */}
-        <div className="w-80 border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white">
+        <div className="flex flex-col md:flex-row h-full">
+        {/* Left Panel - Configuration - Full width on mobile, 80 on desktop */}
+        <div className={cn(
+          "border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white",
+          "w-full md:w-80",
+          mobilePanelOpen ? "absolute inset-0 z-50" : "hidden md:block"
+        )}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              {selectedComponent && (
+              {selectedComponent ? (
                 <button
                   onClick={() => setSelectedComponent(null)}
                   className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
@@ -646,7 +664,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 >
                   <ChevronRight className="w-4 h-4 text-slate-600 rotate-180" />
                 </button>
-              )}
+              ) : isMobile ? (
+                <button
+                  onClick={() => setMobilePanelOpen(false)}
+                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+                >
+                  <X className="w-4 h-4 text-slate-600" />
+                </button>
+              ) : null}
               <div className="flex items-center gap-2">
                 {getComponentIcon()}
                 <h2 className="text-base font-semibold text-slate-800">
@@ -654,18 +679,33 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 </h2>
               </div>
             </div>
-            <button
-              onClick={() => setShowPreview(!showPreview)}
-              className={cn(
-                "p-2 rounded-lg transition-colors",
-                showPreview
-                  ? "bg-primary-100 text-primary-600"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            <div className="flex items-center gap-1">
+              {isMobile && (
+                <button
+                  onClick={() => setMobileViewMode(mobileViewMode === "panel" ? "canvas" : "panel")}
+                  className={cn(
+                    "p-2 rounded-lg transition-colors",
+                    mobileViewMode === "canvas"
+                      ? "bg-primary-100 text-primary-600"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  )}
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
               )}
-              title={showPreview ? "Ascunde preview" : "Arată preview"}
-            >
-              <Eye className="w-4 h-4" />
-            </button>
+              <button
+                onClick={() => setShowPreview(!showPreview)}
+                className={cn(
+                  "p-2 rounded-lg transition-colors hidden md:flex",
+                  showPreview
+                    ? "bg-primary-100 text-primary-600"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                )}
+                title={showPreview ? "Ascunde preview" : "Arată preview"}
+              >
+                <Eye className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Products Sub-menu */}
@@ -781,15 +821,30 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         </div>
 
         {/* Center - Preview & Info */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className={cn(
+          "flex-1 flex flex-col overflow-hidden",
+          isMobile && mobileViewMode === "panel" && mobilePanelOpen ? "hidden" : "block"
+        )}>
           {/* 2D Preview */}
           {showPreview && (
-            <div className="flex-1 p-4 overflow-auto">
-              <div className="max-w-2xl mx-auto">
-                {/* Window 2D with Side Controls */}
-                <div className="flex items-stretch gap-2">
-                  {/* Left Side Controls */}
-                  <div className="w-20 flex flex-col gap-1 text-[10px]">
+            <div className={cn(
+              "flex-1 overflow-auto",
+              isMobile ? "p-2" : "p-4"
+            )}>
+              <div className={cn(
+                "mx-auto",
+                isMobile ? "max-w-full" : "max-w-2xl"
+              )}>
+                {/* Window 2D with Side Controls - Stack on mobile */}
+                <div className={cn(
+                  "flex items-stretch gap-2",
+                  isMobile ? "flex-col" : ""
+                )}>
+                  {/* Left Side Controls - Hidden on mobile, use toggle */}
+                  <div className={cn(
+                    "flex flex-col gap-1 text-[10px]",
+                    isMobile ? "flex-row flex-wrap justify-center" : "w-20"
+                  )}>
                     <div className="text-center font-semibold text-slate-600 py-1">Deschidere</div>
                     <button onClick={() => setOpeningSide("left")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
                     <button onClick={() => setOpeningSide("right")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
@@ -1009,6 +1064,16 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             </div>
           )}
         </div>
+
+        {/* Mobile Floating Action Button */}
+        {isMobile && !mobilePanelOpen && (
+          <button
+            onClick={() => setMobilePanelOpen(true)}
+            className="fixed bottom-20 right-4 w-14 h-14 bg-primary-600 rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-primary-700 transition-colors"
+          >
+            <Settings className="w-6 h-6 text-white" />
+          </button>
+        )}
       </div>
     </AppLayout>
     </>

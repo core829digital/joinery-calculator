@@ -56,10 +56,10 @@ export default function AppLayout({
 
   return (
     <div className="h-screen flex flex-col bg-slate-100 overflow-hidden">
-      {/* Custom Title Bar */}
+      {/* Custom Title Bar - Hidden on mobile */}
       <div
         className={cn(
-          "h-10 bg-gradient-to-r from-slate-900 to-slate-800 flex items-center justify-between px-4 select-none",
+          "h-10 bg-gradient-to-r from-slate-900 to-slate-800 flex items-center justify-between px-4 select-none hidden md:flex",
           "border-b border-slate-700",
           windowFocused ? "bg-gradient-to-r from-slate-900 to-slate-800" : "bg-gradient-to-r from-slate-800 to-slate-700"
         )}
@@ -95,57 +95,75 @@ export default function AppLayout({
         </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="h-12 bg-white border-b border-slate-200 flex items-center justify-between px-4 shadow-sm">
+      {/* Mobile Header */}
+      <div className="h-14 bg-gradient-to-r from-primary-600 to-primary-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+            <span className="text-white font-bold text-sm">C8</span>
+          </div>
+          <span className="text-white font-semibold text-base">CORE829</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onSave} className="p-2 bg-white/20 rounded-lg">
+            <Save className="w-5 h-5 text-white" />
+          </button>
+          <button onClick={onExportPDF} className="p-2 bg-white/20 rounded-lg">
+            <FileText className="w-5 h-5 text-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* Toolbar - Responsive */}
+      <div className="bg-white border-b border-slate-200 flex items-center justify-between px-2 py-2 shadow-sm gap-2 overflow-x-auto">
+        {/* Action Buttons - Scrollable on mobile */}
+        <div className="flex items-center gap-1.5 flex-nowrap">
           <button
             onClick={onSave}
-            className="flex items-center gap-2 px-4 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
-            <Save className="w-4 h-4" />
-            Salvează
+            <Save className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Salvează</span>
           </button>
           <button
             onClick={onPrint}
-            className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
-            <Printer className="w-4 h-4" />
-            Printează
+            <Printer className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Print</span>
           </button>
           <button
             onClick={onExportPDF}
-            className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
-            <FileText className="w-4 h-4" />
-            Export PDF
+            <FileText className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PDF</span>
           </button>
           <button
             onClick={onSendEmail}
-            className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
-            <Mail className="w-4 h-4" />
-            Trimite Email
+            <Mail className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Email</span>
           </button>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Caută rapid... (ex: profil, sticlă, culori)"
-              value={searchQuery}
-              onChange={(e) => onSearchChange?.(e.target.value)}
-              className="w-72 pl-10 pr-4 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-            />
-          </div>
-          <button 
-            onClick={onToggleFilter}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            <Filter className="w-4 h-4 text-slate-600" />
-          </button>
+        {/* Search - Hidden on small mobile */}
+        <div className="relative hidden sm:block">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Caută..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange?.(e.target.value)}
+            className="w-40 lg:w-72 pl-8 pr-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
         </div>
+        <button 
+          onClick={onToggleFilter}
+          className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <Filter className="w-4 h-4 text-slate-600" />
+        </button>
       </div>
 
       {/* Main Content */}
@@ -153,25 +171,15 @@ export default function AppLayout({
         {children}
       </main>
 
-      {/* Status Bar */}
-      <div className="h-7 bg-slate-800 border-t border-slate-700 flex items-center justify-between px-4 text-xs text-slate-400">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            Conectat
-          </span>
-          <span>|</span>
-          <span>{roleDisplay.label}: Activ</span>
-          <span>|</span>
-          <span>Discount: {roleDisplay.discount}</span>
+      {/* Status Bar - Simplified on mobile */}
+      <div className="h-6 bg-slate-800 border-t border-slate-700 flex items-center justify-between px-3 text-xs text-slate-400">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+          <span className="hidden sm:inline">Conectat</span>
+          <span className="hidden md:inline">|</span>
+          <span className="hidden md:inline">{roleDisplay.label}</span>
         </div>
-        <div className="flex items-center gap-4">
-          <span>Produse: 8</span>
-          <span>|</span>
-          <span>Culori: 52+</span>
-          <span>|</span>
-          <span className="text-primary-400 font-medium">v2.0.0</span>
-        </div>
+        <div className="text-primary-400 font-medium">v2.0.0</div>
       </div>
     </div>
   );

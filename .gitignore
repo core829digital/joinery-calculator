@@ -39,3 +39,7 @@ coverage/
 # Convex
 .convex/
 convex/_generated/
+
+# Extra files
+*.wa11b
+*.wl11
