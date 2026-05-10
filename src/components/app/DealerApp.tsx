@@ -648,13 +648,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         onToggleFilter={() => setShowFilters(true)}
       >
         <div className="flex flex-col md:flex-row h-full">
-        {/* Left Panel - Configuration - Bottom drawer on mobile */}
+        {/* Left Panel - Configuration - Desktop only */}
         <div className={cn(
-          "border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white",
-          "w-full md:w-80",
-          mobilePanelOpen 
-            ? "fixed bottom-0 left-0 right-0 h-[50vh] z-50 shadow-2xl border-t-2 border-primary-600" 
-            : "hidden md:block"
+          "hidden md:block border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white md:w-80"
         )}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -825,13 +821,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         {/* Center - Preview & Info */}
         <div className={cn(
           "flex-1 flex flex-col overflow-hidden",
-          isMobile ? "flex flex-col h-[50vh]" : ""
+          isMobile ? "flex flex-col min-h-[50vh]" : ""
         )}>
-          {/* 2D Preview */}
-          {showPreview && (
+          {/* 2D Preview - Always visible on mobile */}
+          {(showPreview || isMobile) && (
             <div className={cn(
               "flex-1 overflow-auto",
-              isMobile ? "p-2" : "p-4"
+              isMobile ? "p-1" : "p-4"
             )}>
               <div className={cn(
                 "mx-auto",
