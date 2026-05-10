@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import type { ProfileSeries, GlassType, Color } from "@/types";
 import { PROFILE_SERIES, GLASS_TYPES, COLORS, HARDWARE_BRANDS, HARDWARE_LEVELS, ACCESSORIES } from "@/data/joinery";
-import { Check, ChevronRight, Thermometer } from "lucide-react";
+import { Check, ChevronRight, Thermometer, X } from "lucide-react";
 import { Panel } from "./ProductPanels";
 
 interface ProfilePanelProps {
@@ -164,6 +164,8 @@ export function ColorsPanel({
   onExteriorChange,
 }: ColorsPanelProps) {
   const [colorFilter, setColorFilter] = useState<"all" | "standard" | "folie" | "vopsit">("all");
+  const [showModal, setShowModal] = useState(false);
+  const [modalSide, setModalSide] = useState<"interior" | "exterior">("interior");
 
   const filteredColors = useMemo(() => {
     if (colorFilter === "all") return COLORS;
@@ -171,24 +173,46 @@ export function ColorsPanel({
   }, [colorFilter]);
 
   const standardColors = filteredColors.filter((c) => c.priceCategory === "standard");
-  const premiumColors = filteredColors.filter((c) => c.priceCategory === "premium");
+  const premiumColors = filteredColors.filter((c) => c.priceCategory === "premium" || c.priceCategory === "lux");
   const specialColors = filteredColors.filter((c) => c.priceCategory === "special");
 
-  const ColorSwatch = ({ color, isSelected, onClick }: { color: typeof COLORS[0]; isSelected: boolean; onClick: () => void }) => (
+  const getCurrentColor = (side: "interior" | "exterior") => {
+    const colorId = side === "interior" ? interiorColor : exteriorColor;
+    return COLORS.find((c) => c.id === colorId);
+  };
+
+  const openColorPicker = (side: "interior" | "exterior") => {
+    setModalSide(side);
+    setShowModal(true);
+  };
+
+  const handleColorSelect = (colorId: Color) => {
+    if (modalSide === "interior") {
+      onInteriorChange(colorId);
+    } else {
+      onExteriorChange(colorId);
+    }
+    setShowModal(false);
+  };
+
+  const ColorSwatch = ({ color, isSelected, onClick, showName = false }: { color: typeof COLORS[0]; isSelected: boolean; onClick: () => void; showName?: boolean }) => (
     <button
       onClick={onClick}
       className={cn(
-        "relative w-12 h-12 rounded-lg border-2 transition-all hover:scale-105",
+        "relative rounded-lg border-2 transition-all hover:scale-105 flex flex-col items-center",
         isSelected ? "border-primary-500 ring-2 ring-primary-500 ring-offset-2" : "border-slate-200 hover:border-slate-300"
       )}
       title={`${color.name} (${color.ral})`}
     >
       <div
-        className="w-full h-full rounded-md"
+        className="w-12 h-12 rounded-md"
         style={{ backgroundColor: color.hex }}
       />
       {isSelected && (
         <Check className="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 text-white rounded-full p-0.5" />
+      )}
+      {showName && (
+        <span className="text-[10px] text-slate-600 mt-1 px-1 text-center line-clamp-1">{color.name.split(" ")[0]}</span>
       )}
     </button>
   );
@@ -219,54 +243,44 @@ export function ColorsPanel({
         {/* Interior */}
         <div>
           <h4 className="text-sm font-medium text-slate-700 mb-2">Interior</h4>
-          <div className="space-y-3">
-            <div className="grid grid-cols-4 gap-2">
-              {standardColors.slice(0, 4).map((color) => (
-                <ColorSwatch
-                  key={color.id}
-                  color={color}
-                  isSelected={interiorColor === color.id}
-                  onClick={() => onInteriorChange(color.id)}
-                />
-              ))}
+          <button
+            onClick={() => openColorPicker("interior")}
+            className="w-full flex items-center gap-3 p-2 rounded-lg border border-slate-200 hover:border-primary-400 hover:bg-primary-50 transition-colors"
+          >
+            <div
+              className="w-10 h-10 rounded-md border border-slate-300"
+              style={{ backgroundColor: getCurrentColor("interior")?.hex || "#F5F5F0" }}
+            />
+            <div className="flex-1 text-left">
+              <div className="text-sm font-medium text-slate-700">{getCurrentColor("interior")?.name || "Selectează"}</div>
+              <div className="text-xs text-slate-500">{getCurrentColor("interior")?.ral || "—"}</div>
             </div>
-            <div className="text-xs text-slate-500">
-              + {premiumColors.length + specialColors.length} culori premium
-            </div>
-          </div>
+            <ChevronRight className="w-4 h-4 text-slate-400" />
+          </button>
         </div>
 
         {/* Exterior */}
         <div>
           <h4 className="text-sm font-medium text-slate-700 mb-2">Exterior</h4>
-          <div className="space-y-3">
-            <div className="grid grid-cols-4 gap-2">
-              {standardColors.slice(0, 4).map((color) => (
-                <ColorSwatch
-                  key={color.id}
-                  color={color}
-                  isSelected={exteriorColor === color.id}
-                  onClick={() => onExteriorChange(color.id)}
-                />
-              ))}
+          <button
+            onClick={() => openColorPicker("exterior")}
+            className="w-full flex items-center gap-3 p-2 rounded-lg border border-slate-200 hover:border-primary-400 hover:bg-primary-50 transition-colors"
+          >
+            <div
+              className="w-10 h-10 rounded-md border border-slate-300"
+              style={{ backgroundColor: getCurrentColor("exterior")?.hex || "#383E42" }}
+            />
+            <div className="flex-1 text-left">
+              <div className="text-sm font-medium text-slate-700">{getCurrentColor("exterior")?.name || "Selectează"}</div>
+              <div className="text-xs text-slate-500">{getCurrentColor("exterior")?.ral || "—"}</div>
             </div>
-            <div className="text-xs text-slate-500">
-              + {premiumColors.length + specialColors.length} culori premium
-            </div>
-          </div>
+            <ChevronRight className="w-4 h-4 text-slate-400" />
+          </button>
         </div>
       </div>
 
-      {/* Extended colors dropdown */}
-      <div className="mt-4 p-3 bg-slate-50 rounded-lg">
-        <button className="flex items-center justify-between w-full text-sm font-medium text-slate-700">
-          <span>Vezi toate cele {COLORS.length}+ culori disponibile</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
       {/* Color legend */}
-      <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+      <div className="mt-4 flex items-center gap-4 text-xs text-slate-500">
         <span className="flex items-center gap-1">
           <span className="w-3 h-3 rounded bg-slate-100 border border-slate-200" />
           Standard
@@ -280,6 +294,113 @@ export function ColorsPanel({
           Special
         </span>
       </div>
+
+      {/* Color Picker Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-800">
+                  Alege Culoarea {modalSide === "interior" ? "Interior" : "Exterior"}
+                </h3>
+                <p className="text-sm text-slate-500">Selectează din {COLORS.length}+ culori disponibile</p>
+              </div>
+              <button
+                onClick={() => setShowModal(false)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Filter tabs */}
+            <div className="flex items-center gap-2 p-3 border-b border-slate-100 overflow-x-auto">
+              {(["all", "standard", "folie", "vopsit"] as const).map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setColorFilter(type)}
+                  className={cn(
+                    "px-3 py-1.5 text-xs rounded-full transition-colors capitalize whitespace-nowrap",
+                    colorFilter === type
+                      ? "bg-primary-600 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  )}
+                >
+                  {type === "all" ? "Toate" : type}
+                </button>
+              ))}
+            </div>
+
+            {/* Color Grid */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {/* Standard Colors */}
+              {standardColors.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-slate-400" />
+                    Standard (gratuit)
+                  </h4>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    {standardColors.map((color) => (
+                      <ColorSwatch
+                        key={color.id}
+                        color={color}
+                        isSelected={(modalSide === "interior" ? interiorColor : exteriorColor) === color.id}
+                        onClick={() => handleColorSelect(color.id)}
+                        showName
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Premium Colors */}
+              {premiumColors.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    Premium (cost suplimentar)
+                  </h4>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    {premiumColors.map((color) => (
+                      <ColorSwatch
+                        key={color.id}
+                        color={color}
+                        isSelected={(modalSide === "interior" ? interiorColor : exteriorColor) === color.id}
+                        onClick={() => handleColorSelect(color.id)}
+                        showName
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Special Colors */}
+              {specialColors.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-purple-500" />
+                    Speciale (preț ridicat)
+                  </h4>
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                    {specialColors.map((color) => (
+                      <ColorSwatch
+                        key={color.id}
+                        color={color}
+                        isSelected={(modalSide === "interior" ? interiorColor : exteriorColor) === color.id}
+                        onClick={() => handleColorSelect(color.id)}
+                        showName
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </Panel>
   );
 }
