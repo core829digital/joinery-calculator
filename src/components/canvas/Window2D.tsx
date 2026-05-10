@@ -62,7 +62,7 @@ export default function Window2D({
   showThreshold = false,
   horizontalMuntin = false,
   showDimensions = true,
-  scale = 0.35,
+  scale = 0.5,
   className,
   onComponentClick,
 }: Window2DProps) {
@@ -75,9 +75,10 @@ export default function Window2D({
   const w = width * scale;
   const h = height * scale;
 
-  const tocThickness = 14 * scale;
-  const sashThickness = 10 * scale;
-  const glassGap = 3 * scale;
+  // GROSIME MĂRITĂ pentru toc și cercevea - conform promptului
+  const tocThickness = 24 * scale;  // mult mai gros (era 14)
+  const sashThickness = 18 * scale; // mai gros (era 10)
+  const glassGap = 4 * scale; // spațiu mai mare pentru sticlă
 
   const handleComponentHover = (component: WindowComponent | null) => {
     setHoveredComponent(component);
@@ -142,8 +143,8 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 100;
-  const svgHeight = h + 100;
+  const svgWidth = w + 140; // mai mult spațiu pentru cote mai mari
+  const svgHeight = h + 140;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -187,28 +188,28 @@ export default function Window2D({
 
     if (sashRole === "inactive") {
       return (
-        <g key={`inactive-${idx}`} opacity={0.8}>
-          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={1 * scale} strokeDasharray={`${3 * scale} ${2 * scale}`} />
-          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1 * scale} strokeDasharray={`${3 * scale} ${2 * scale}`} />
-          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} strokeDasharray={`${3 * scale} ${2 * scale}`} />
-          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={1.5 * scale} strokeDasharray={`${3 * scale} ${2 * scale}`} />
-          <circle cx={hingeX} cy={topY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
-          <circle cx={hingeX} cy={bottomY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
-          <circle cx={centerX} cy={centerY} r={2.5 * scale} fill="#F59E0B" stroke="white" strokeWidth={0.5 * scale} />
-          <text x={centerX} y={topY - 6 * scale} textAnchor="middle" fontSize={4 * scale} fill="#F59E0B" fontWeight="bold">INACTIV</text>
+        <g key={`inactive-${idx}`} opacity={0.9}>
+          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * scale} strokeDasharray={`${4 * scale} ${3 * scale}`} />
+          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * scale} strokeDasharray={`${4 * scale} ${3 * scale}`} />
+          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * scale} opacity={0.7} strokeDasharray={`${4 * scale} ${3 * scale}`} />
+          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * scale} strokeDasharray={`${4 * scale} ${3 * scale}`} />
+          <circle cx={hingeX} cy={topY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
+          <circle cx={hingeX} cy={bottomY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
+          <circle cx={centerX} cy={centerY} r={3.5 * scale} fill="#F59E0B" stroke="white" strokeWidth={0.8 * scale} />
+          <text x={centerX} y={topY - 8 * scale} textAnchor="middle" fontSize={5 * scale} fill="#F59E0B" fontWeight="bold">INACTIV</text>
         </g>
       );
     }
 
     if (openingType === "oscilobativ") {
       return (
-        <g key={`oscilo-${idx}`} opacity={0.9}>
-          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={1 * scale} />
-          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1 * scale} />
-          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} />
-          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={1.5 * scale} />
-          <line x1={leftX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={2 * scale} />
-          <line x1={rightX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={2 * scale} />
+        <g key={`oscilo-${idx}`} opacity={0.95}>
+          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * scale} />
+          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * scale} />
+          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * scale} opacity={0.7} />
+          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * scale} />
+          <line x1={leftX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * scale} />
+          <line x1={rightX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * scale} />
           <circle cx={hingeX} cy={topY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
           <circle cx={hingeX} cy={bottomY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
           <circle cx={centerX} cy={topY} r={2.5 * scale} fill="#8B5CF6" stroke="white" strokeWidth={0.5 * scale} />
@@ -218,17 +219,17 @@ export default function Window2D({
     }
     
     return (
-      <g key={`normal-${idx}`} opacity={0.9}>
-        <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={1 * scale} />
-        <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1 * scale} />
-        <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} />
-        <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={1.5 * scale} />
-        <circle cx={hingeX} cy={topY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
-        <circle cx={hingeX} cy={bottomY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
-        <circle cx={hingeX} cy={centerY} r={2 * scale} fill={lineColor} stroke="white" strokeWidth={0.5 * scale} />
-        <circle cx={handleXPos} cy={centerY} r={2 * scale} fill={secondaryColor} stroke="white" strokeWidth={0.5 * scale} />
-        <text x={centerX} y={topY - 6 * scale} textAnchor="middle" fontSize={4 * scale} fill={secondaryColor} fontWeight="bold">MANER</text>
-        <text x={hingeX} y={bottomY + 8 * scale} textAnchor={isLeft ? "start" : "end"} fontSize={3.5 * scale} fill={lineColor}>BALAMA</text>
+      <g key={`normal-${idx}`} opacity={0.95}>
+        <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * scale} />
+        <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * scale} />
+        <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * scale} opacity={0.7} />
+        <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * scale} />
+        <circle cx={hingeX} cy={topY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
+        <circle cx={hingeX} cy={bottomY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
+        <circle cx={hingeX} cy={centerY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
+        <circle cx={handleXPos} cy={centerY} r={3 * scale} fill={secondaryColor} stroke="white" strokeWidth={0.8 * scale} />
+        <text x={centerX} y={topY - 8 * scale} textAnchor="middle" fontSize={5 * scale} fill={secondaryColor} fontWeight="bold">MANER</text>
+        <text x={hingeX} y={bottomY + 10 * scale} textAnchor={isLeft ? "start" : "end"} fontSize={4 * scale} fill={lineColor} fontWeight="600">BALAMA</text>
       </g>
     );
   };
@@ -358,7 +359,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(50, 50)">
+          <g transform="translate(70, 70)">
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
@@ -581,24 +582,24 @@ export default function Window2D({
               <rect x={w - 6 * scale} y={-2 * scale} width={6 * scale} height={tocThickness - 2 * scale} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * scale} />
             </g>
 
-            {/* COTE / Dimension lines */}
+            {/* COTE / Dimension lines - MAI GROASE */}
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-12 * scale} x2={w} y2={-12 * scale} stroke="#64748B" strokeWidth={0.6} />
-                <line x1={0} y1={-14 * scale} x2={0} y2={-8 * scale} stroke="#64748B" strokeWidth={0.6} />
-                <line x1={w} y1={-14 * scale} x2={w} y2={-8 * scale} stroke="#64748B" strokeWidth={0.6} />
-                <polygon points={`${-4 * scale},${-12 * scale} ${4 * scale},${-12 * scale} ${0},${-16 * scale}`} fill="#64748B" />
-                <polygon points={`${w - 4 * scale},${-12 * scale} ${w + 4 * scale},${-12 * scale} ${w},${-16 * scale}`} fill="#64748B" />
-                <text x={w / 2} y={-20 * scale} textAnchor="middle" fontSize={7 * scale} fill="#64748B" fontWeight="500">{width} mm</text>
+                <line x1={0} y1={-18 * scale} x2={w} y2={-18 * scale} stroke="#334155" strokeWidth={1.5 * scale} />
+                <line x1={0} y1={-22 * scale} x2={0} y2={-12 * scale} stroke="#334155" strokeWidth={1.5 * scale} />
+                <line x1={w} y1={-22 * scale} x2={w} y2={-12 * scale} stroke="#334155" strokeWidth={1.5 * scale} />
+                <polygon points={`${-6 * scale},${-18 * scale} ${6 * scale},${-18 * scale} ${0},${-24 * scale}`} fill="#334155" />
+                <polygon points={`${w - 6 * scale},${-18 * scale} ${w + 6 * scale},${-18 * scale} ${w},${-24 * scale}`} fill="#334155" />
+                <text x={w / 2} y={-30 * scale} textAnchor="middle" fontSize={10 * scale} fill="#334155" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-12 * scale} y1={0} x2={-12 * scale} y2={h} stroke="#64748B" strokeWidth={0.6} />
-                <line x1={-14 * scale} y1={0} x2={-8 * scale} y2={0} stroke="#64748B" strokeWidth={0.6} />
-                <line x1={-14 * scale} y1={h} x2={-8 * scale} y2={h} stroke="#64748B" strokeWidth={0.6} />
-                <polygon points={`${-12 * scale},${-4 * scale} ${-12 * scale},${4 * scale} ${-16 * scale},${0}`} fill="#64748B" />
-                <polygon points={`${-12 * scale},${h - 4 * scale} ${-12 * scale},${h + 4 * scale} ${-16 * scale},${h}`} fill="#64748B" />
-                <text x={-20 * scale} y={h / 2} textAnchor="middle" fontSize={7 * scale} fill="#64748B" fontWeight="500" transform={`rotate(-90, ${-20 * scale}, ${h / 2})`}>{height} mm</text>
+                <line x1={-18 * scale} y1={0} x2={-18 * scale} y2={h} stroke="#334155" strokeWidth={1.5 * scale} />
+                <line x1={-22 * scale} y1={0} x2={-12 * scale} y2={0} stroke="#334155" strokeWidth={1.5 * scale} />
+                <line x1={-22 * scale} y1={h} x2={-12 * scale} y2={h} stroke="#334155" strokeWidth={1.5 * scale} />
+                <polygon points={`${-18 * scale},${-6 * scale} ${-18 * scale},${6 * scale} ${-24 * scale},${0}`} fill="#334155" />
+                <polygon points={`${-18 * scale},${h - 6 * scale} ${-18 * scale},${h + 6 * scale} ${-24 * scale},${h}`} fill="#334155" />
+                <text x={-30 * scale} y={h / 2} textAnchor="middle" fontSize={10 * scale} fill="#334155" fontWeight="700" transform={`rotate(-90, ${-30 * scale}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>
