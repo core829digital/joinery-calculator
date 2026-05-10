@@ -648,11 +648,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         onToggleFilter={() => setShowFilters(true)}
       >
         <div className="flex flex-col md:flex-row h-full">
-        {/* Left Panel - Configuration - Full width on mobile, 80 on desktop */}
+        {/* Left Panel - Configuration - Bottom drawer on mobile */}
         <div className={cn(
           "border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white",
           "w-full md:w-80",
-          mobilePanelOpen ? "absolute inset-0 z-50 pt-12 pb-20" : "hidden md:block"
+          mobilePanelOpen 
+            ? "fixed bottom-0 left-0 right-0 h-[50vh] z-50 shadow-2xl border-t-2 border-primary-600" 
+            : "hidden md:block"
         )}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -823,7 +825,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         {/* Center - Preview & Info */}
         <div className={cn(
           "flex-1 flex flex-col overflow-hidden",
-          isMobile && mobileViewMode === "panel" && mobilePanelOpen ? "hidden" : "block"
+          isMobile ? "flex flex-col h-[50vh]" : ""
         )}>
           {/* 2D Preview */}
           {showPreview && (
