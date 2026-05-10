@@ -1063,45 +1063,72 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           )}
         </div>
 
-        {/* Mobile Floating Action Button */}
-        {isMobile && !mobilePanelOpen && (
-          <button
-            onClick={() => setMobilePanelOpen(true)}
-            className="fixed bottom-24 right-4 w-14 h-14 bg-primary-600 rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-primary-700 transition-colors"
-          >
-            <Settings className="w-6 h-6 text-white" />
-          </button>
-        )}
-
-        {/* Mobile Bottom Navigation Tab Bar */}
+        {/* Mobile Configuration Drawer */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30 px-1 py-1.5 flex justify-between items-center gap-1 overflow-x-auto scrollbar-hide">
-            {MENU_CATEGORIES.slice(0, 6).map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  setActiveMenu(cat.id);
-                  setMobilePanelOpen(true);
-                  setSelectedComponent(null);
-                }}
-                className={cn(
-                  "flex flex-col items-center justify-center min-w-[50px] px-2 py-1 rounded-lg transition-colors",
-                  activeMenu === cat.id
-                    ? "text-primary-600 bg-primary-50"
-                    : "text-slate-500 hover:text-slate-700"
+          <div className={cn(
+            "fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary-600 shadow-2xl z-50 flex flex-col transition-all duration-300",
+            mobilePanelOpen ? "h-[70vh]" : "h-16"
+          )}>
+            {/* Drawer Header - Always visible */}
+            <div 
+              className="flex-shrink-0 bg-primary-600 text-white px-4 py-3 flex items-center justify-between cursor-pointer"
+              onClick={() => setMobilePanelOpen(!mobilePanelOpen)}
+            >
+              <div className="flex items-center gap-3">
+                {getComponentIcon()}
+                <span className="font-semibold">{panelTitle}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                <span className="text-sm">{mobilePanelOpen ? "▼" : "▲"}</span>
+              </div>
+            </div>
+
+            {/* Category Tabs */}
+            {mobilePanelOpen && (
+              <div className="flex-shrink-0 bg-slate-50 border-b border-slate-200 px-2 py-2 flex gap-1 overflow-x-auto">
+                {MENU_CATEGORIES.slice(0, 6).map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setActiveMenu(cat.id);
+                      setSelectedComponent(null);
+                    }}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
+                      activeMenu === cat.id
+                        ? "bg-primary-600 text-white"
+                        : "bg-white text-slate-600 border border-slate-200"
+                    )}
+                  >
+                    {MENU_ICONS[cat.id]}
+                    <span>{cat.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Configuration Content */}
+            {mobilePanelOpen && (
+              <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                {activeMenu === "produse" && (
+                  <div className="space-y-3">
+                    <ProductTypePanel selected={productType} onSelect={setProductType} />
+                    <DimensionsPanel width={width} height={height} onWidthChange={setWidth} onHeightChange={setHeight} productType={productType} />
+                    <OpeningPanel selected={openingType} onSelect={(v) => setOpeningType(v as OpeningType)} />
+                  </div>
                 )}
-              >
-                <div className={cn(
-                  "p-1 rounded-lg",
-                  activeMenu === cat.id ? "bg-primary-100" : "bg-slate-100"
-                )}>
-                  {MENU_ICONS[cat.id]}
-                </div>
-                <span className="text-[10px] mt-0.5 font-medium truncate max-w-[50px]">
-                  {cat.name}
-                </span>
-              </button>
-            ))}
+                {activeMenu === "profil" && <ProfilePanel selected={profileSeries} onSelect={setProfileSeries} />}
+                {activeMenu === "culori" && <ColorsPanel interiorColor={interiorColor} exteriorColor={exteriorColor} onInteriorChange={setInteriorColor} onExteriorChange={setExteriorColor} />}
+                {activeMenu === "sticla" && <GlassPanel selected={glassType} onSelect={setGlassType} />}
+                {activeMenu === "feronerie" && <HardwarePanel brand={hardwareBrand} level={hardwareLevel} onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)} onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)} />}
+                {activeMenu === "accesorii" && <AccessoriesPanel selected={accessories} onToggle={toggleAccessory} />}
+                {activeMenu === "servicii" && <ServicesPanel distance={distance} includeMontaj={includeMontaj} onDistanceChange={setDistance} onMontajChange={setIncludeMontaj} />}
+                {activeMenu === "ofertare" && productType && (
+                  <PricingPanel productType={productType} width={width} height={height} profileSeries={profileSeries ?? "premium_82"} interiorColor={interiorColor ?? "alb_ral9003"} exteriorColor={exteriorColor ?? "antracit_ral7016"} glassType={glassType ?? "tripan_4_16_4"} hardwareBrand={hardwareBrand ?? "siegenia"} hardwareLevel={hardwareLevel ?? "premium"} accessories={accessories} userRole={userRole} distance={distance} includeMontaj={includeMontaj} />
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
