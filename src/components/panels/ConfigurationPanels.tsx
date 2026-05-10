@@ -1,0 +1,413 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
+import type { ProfileSeries, GlassType, Color } from "@/types";
+import { PROFILE_SERIES, GLASS_TYPES, COLORS, HARDWARE_BRANDS, HARDWARE_LEVELS, ACCESSORIES } from "@/data/joinery";
+import { Check, ChevronRight, Thermometer } from "lucide-react";
+import { Panel } from "./ProductPanels";
+
+interface ProfilePanelProps {
+  selected: ProfileSeries | null;
+  onSelect: (profile: ProfileSeries) => void;
+}
+
+export function ProfilePanel({ selected, onSelect }: ProfilePanelProps) {
+  const [filterThermal, setFilterThermal] = useState(false);
+
+  const filteredProfiles = useMemo(() => {
+    if (filterThermal) return PROFILE_SERIES.filter((p) => p.thermalBreak);
+    return PROFILE_SERIES;
+  }, [filterThermal]);
+
+  return (
+    <Panel
+      title="Seria Profilului"
+      description="Selectați seria de profil PVC sau Aluminiu"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={filterThermal}
+            onChange={(e) => setFilterThermal(e.target.checked)}
+            className="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+          />
+          Doar cu rupture termică
+        </label>
+        <span className="text-xs text-slate-400 ml-auto">
+          {filteredProfiles.length} variante
+        </span>
+      </div>
+
+      <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+        {filteredProfiles.map((profile) => (
+          <button
+            key={profile.id}
+            onClick={() => onSelect(profile.id)}
+            className={cn(
+              "w-full p-3 rounded-lg border text-left transition-all",
+              selected === profile.id
+                ? "border-primary-500 bg-primary-50"
+                : "border-slate-200 hover:border-primary-300 hover:bg-slate-50"
+            )}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-medium text-slate-900">{profile.commercialName}</h4>
+                  <span className="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                    {profile.depthMm}mm
+                  </span>
+                  {profile.thermalBreak && (
+                    <span className="text-xs px-2 py-0.5 rounded bg-green-100 text-green-700 flex items-center gap-1">
+                      <Thermometer className="w-3 h-3" />
+                      Thermal
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">{profile.description}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                {selected === profile.id && (
+                  <Check className="w-5 h-5 text-primary-600" />
+                )}
+                <span className="text-xs text-slate-400">
+                  x{profile.priceMultiplier.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+interface GlassPanelProps {
+  selected: GlassType | null;
+  onSelect: (glass: GlassType) => void;
+}
+
+export function GlassPanel({ selected, onSelect }: GlassPanelProps) {
+  const [filterUw, setFilterUw] = useState<number | null>(null);
+
+  const filteredGlass = useMemo(() => {
+    if (filterUw) return GLASS_TYPES.filter((g) => g.uwValue <= filterUw);
+    return GLASS_TYPES;
+  }, [filterUw]);
+
+  return (
+    <Panel title="Tip Sticlă" description="Selectați geamul pentru izolare termică și fonică">
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
+        <span className="text-sm text-slate-600">Uw maxim:</span>
+        {[null, 1.0, 0.8, 0.6].map((val) => (
+          <button
+            key={val ?? "all"}
+            onClick={() => setFilterUw(val)}
+            className={cn(
+              "px-3 py-1 text-xs rounded-full transition-colors",
+              filterUw === val
+                ? "bg-primary-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            )}
+          >
+            {val ? `≤${val}` : "Toate"}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+        {filteredGlass.map((glass) => (
+          <button
+            key={glass.id}
+            onClick={() => onSelect(glass.id)}
+            className={cn(
+              "w-full p-3 rounded-lg border text-left transition-all",
+              selected === glass.id
+                ? "border-primary-500 bg-primary-50"
+                : "border-slate-200 hover:border-primary-300 hover:bg-slate-50"
+            )}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h4 className="font-medium text-slate-900">{glass.name}</h4>
+                <p className="text-xs text-slate-500 mt-1">{glass.description}</p>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                {selected === glass.id && (
+                  <Check className="w-5 h-5 text-primary-600" />
+                )}
+                <span className="text-xs font-medium text-primary-600">
+                  Uw={glass.uwValue}
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+interface ColorsPanelProps {
+  interiorColor: Color | null;
+  exteriorColor: Color | null;
+  onInteriorChange: (color: Color) => void;
+  onExteriorChange: (color: Color) => void;
+}
+
+export function ColorsPanel({
+  interiorColor,
+  exteriorColor,
+  onInteriorChange,
+  onExteriorChange,
+}: ColorsPanelProps) {
+  const [colorFilter, setColorFilter] = useState<"all" | "standard" | "folie" | "vopsit">("all");
+
+  const filteredColors = useMemo(() => {
+    if (colorFilter === "all") return COLORS;
+    return COLORS.filter((c) => c.type === colorFilter);
+  }, [colorFilter]);
+
+  const standardColors = filteredColors.filter((c) => c.priceCategory === "standard");
+  const premiumColors = filteredColors.filter((c) => c.priceCategory === "premium");
+  const specialColors = filteredColors.filter((c) => c.priceCategory === "special");
+
+  const ColorSwatch = ({ color, isSelected, onClick }: { color: typeof COLORS[0]; isSelected: boolean; onClick: () => void }) => (
+    <button
+      onClick={onClick}
+      className={cn(
+        "relative w-12 h-12 rounded-lg border-2 transition-all hover:scale-105",
+        isSelected ? "border-primary-500 ring-2 ring-primary-500 ring-offset-2" : "border-slate-200 hover:border-slate-300"
+      )}
+      title={`${color.name} (${color.ral})`}
+    >
+      <div
+        className="w-full h-full rounded-md"
+        style={{ backgroundColor: color.hex }}
+      />
+      {isSelected && (
+        <Check className="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 text-white rounded-full p-0.5" />
+      )}
+    </button>
+  );
+
+  return (
+    <Panel
+      title="Culori Interior / Exterior"
+      description="Combinații bicolore pentru design personalizat"
+    >
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        {(["all", "standard", "folie", "vopsit"] as const).map((type) => (
+          <button
+            key={type}
+            onClick={() => setColorFilter(type)}
+            className={cn(
+              "px-3 py-1 text-xs rounded-full transition-colors capitalize",
+              colorFilter === type
+                ? "bg-primary-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            )}
+          >
+            {type === "all" ? "Toate" : type}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {/* Interior */}
+        <div>
+          <h4 className="text-sm font-medium text-slate-700 mb-2">Interior</h4>
+          <div className="space-y-3">
+            <div className="grid grid-cols-4 gap-2">
+              {standardColors.slice(0, 4).map((color) => (
+                <ColorSwatch
+                  key={color.id}
+                  color={color}
+                  isSelected={interiorColor === color.id}
+                  onClick={() => onInteriorChange(color.id)}
+                />
+              ))}
+            </div>
+            <div className="text-xs text-slate-500">
+              + {premiumColors.length + specialColors.length} culori premium
+            </div>
+          </div>
+        </div>
+
+        {/* Exterior */}
+        <div>
+          <h4 className="text-sm font-medium text-slate-700 mb-2">Exterior</h4>
+          <div className="space-y-3">
+            <div className="grid grid-cols-4 gap-2">
+              {standardColors.slice(0, 4).map((color) => (
+                <ColorSwatch
+                  key={color.id}
+                  color={color}
+                  isSelected={exteriorColor === color.id}
+                  onClick={() => onExteriorChange(color.id)}
+                />
+              ))}
+            </div>
+            <div className="text-xs text-slate-500">
+              + {premiumColors.length + specialColors.length} culori premium
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Extended colors dropdown */}
+      <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+        <button className="flex items-center justify-between w-full text-sm font-medium text-slate-700">
+          <span>Vezi toate cele {COLORS.length}+ culori disponibile</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Color legend */}
+      <div className="mt-3 flex items-center gap-4 text-xs text-slate-500">
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded bg-slate-100 border border-slate-200" />
+          Standard
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded bg-amber-100 border border-amber-200" />
+          Premium
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-3 h-3 rounded bg-purple-100 border border-purple-200" />
+          Special
+        </span>
+      </div>
+    </Panel>
+  );
+}
+
+interface HardwarePanelProps {
+  brand: string | null;
+  level: string | null;
+  onBrandChange: (brand: string) => void;
+  onLevelChange: (level: string) => void;
+}
+
+export function HardwarePanel({
+  brand,
+  level,
+  onBrandChange,
+  onLevelChange,
+}: HardwarePanelProps) {
+  return (
+    <Panel title="Feronerie" description="Brand și nivel de echipare">
+      <div className="space-y-4">
+        {/* Brand */}
+        <div>
+          <h4 className="text-sm font-medium text-slate-700 mb-2">Brand</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {HARDWARE_BRANDS.map((hw) => (
+              <button
+                key={hw.id}
+                onClick={() => onBrandChange(hw.id)}
+                className={cn(
+                  "p-3 rounded-lg border text-left transition-all",
+                  brand === hw.id
+                    ? "border-primary-500 bg-primary-50"
+                    : "border-slate-200 hover:border-primary-300"
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-slate-900">{hw.name}</span>
+                  {brand === hw.id && <Check className="w-4 h-4 text-primary-600" />}
+                </div>
+                <p className="text-xs text-slate-500 mt-1">{hw.country} • {hw.warrantyYears} ani garanție</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Level */}
+        <div>
+          <h4 className="text-sm font-medium text-slate-700 mb-2">Nivel Echipare</h4>
+          <div className="grid grid-cols-3 gap-2">
+            {(Object.entries(HARDWARE_LEVELS) as [string, { name: string; description: string; priceMultiplier: number }][]).map(([key, val]) => (
+              <button
+                key={key}
+                onClick={() => onLevelChange(key)}
+                className={cn(
+                  "p-3 rounded-lg border text-center transition-all",
+                  level === key
+                    ? "border-primary-500 bg-primary-50"
+                    : "border-slate-200 hover:border-primary-300"
+                )}
+              >
+                <span className="font-medium text-slate-900">{val.name}</span>
+                <p className="text-xs text-slate-500 mt-1">x{val.priceMultiplier}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+import type { AccessoryType } from "@/types";
+
+interface AccessoriesPanelProps {
+  selected: AccessoryType[];
+  onToggle: (id: AccessoryType) => void;
+}
+
+export function AccessoriesPanel({ selected, onToggle }: AccessoriesPanelProps) {
+  const categories = {
+    plase: ACCESSORIES.filter((a) => a.id.includes("plasa")),
+    umbrele: ACCESSORIES.filter((a) => a.id.includes("jaleta") || a.id.includes("rulou") || a.id.includes("oblon")),
+    glafuri: ACCESSORIES.filter((a) => a.id.includes("glaf") || a.id.includes("pervaz") || a.id.includes("prag")),
+    altele: ACCESSORIES.filter((a) => !a.id.includes("plasa") && !a.id.includes("jaleta") && !a.id.includes("rulou") && !a.id.includes("oblon") && !a.id.includes("glaf") && !a.id.includes("pervaz") && !a.id.includes("prag")),
+  };
+
+  return (
+    <Panel title="Accesorii" description="Plase, jaluțele, glafuri și alte accesorii">
+      <div className="space-y-4">
+        {Object.entries(categories).filter(([, items]) => items.length > 0).map(([catName, items]) => (
+          <div key={catName}>
+            <h4 className="text-sm font-medium text-slate-700 mb-2 capitalize">{catName}</h4>
+            <div className="space-y-2">
+              {items.map((acc) => (
+                <label
+                  key={acc.id}
+                  className={cn(
+                    "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                    selected.includes(acc.id)
+                      ? "border-primary-500 bg-primary-50"
+                      : "border-slate-200 hover:bg-slate-50"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(acc.id)}
+                      onChange={() => onToggle(acc.id)}
+                      className="w-4 h-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+                    />
+                    <div>
+                      <span className="font-medium text-slate-900">{acc.name}</span>
+                      <p className="text-xs text-slate-500">{acc.description}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-medium text-slate-900">
+                      {acc.price} lei/{acc.unit}
+                    </span>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+export { Panel };
