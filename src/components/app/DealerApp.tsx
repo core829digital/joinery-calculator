@@ -652,7 +652,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         <div className={cn(
           "border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white",
           "w-full md:w-80",
-          mobilePanelOpen ? "absolute inset-0 z-50" : "hidden md:block"
+          mobilePanelOpen ? "absolute inset-0 z-50 pt-12 pb-20" : "hidden md:block"
         )}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -979,7 +979,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   setSelectedComponent(null);
                 }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left text-sm transition-colors min-h-[48px]",
                   activeMenu === cat.id
                     ? "bg-primary-600 text-white"
                     : "text-slate-600 hover:bg-slate-100"
@@ -1069,10 +1069,42 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         {isMobile && !mobilePanelOpen && (
           <button
             onClick={() => setMobilePanelOpen(true)}
-            className="fixed bottom-20 right-4 w-14 h-14 bg-primary-600 rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-primary-700 transition-colors"
+            className="fixed bottom-24 right-4 w-14 h-14 bg-primary-600 rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-primary-700 transition-colors"
           >
             <Settings className="w-6 h-6 text-white" />
           </button>
+        )}
+
+        {/* Mobile Bottom Navigation Tab Bar */}
+        {isMobile && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30 px-1 py-1.5 flex justify-between items-center gap-1 overflow-x-auto scrollbar-hide">
+            {MENU_CATEGORIES.slice(0, 6).map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setActiveMenu(cat.id);
+                  setMobilePanelOpen(true);
+                  setSelectedComponent(null);
+                }}
+                className={cn(
+                  "flex flex-col items-center justify-center min-w-[50px] px-2 py-1 rounded-lg transition-colors",
+                  activeMenu === cat.id
+                    ? "text-primary-600 bg-primary-50"
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <div className={cn(
+                  "p-1 rounded-lg",
+                  activeMenu === cat.id ? "bg-primary-100" : "bg-slate-100"
+                )}>
+                  {MENU_ICONS[cat.id]}
+                </div>
+                <span className="text-[10px] mt-0.5 font-medium truncate max-w-[50px]">
+                  {cat.name}
+                </span>
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </AppLayout>
