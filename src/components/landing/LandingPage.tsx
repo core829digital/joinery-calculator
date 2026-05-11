@@ -18,11 +18,17 @@ export default function LandingPage(_props: LandingPageProps) {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">C8</span>
+            <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 100" className="w-full h-full p-1.5">
+                <rect x="10" y="10" width="35" height="35" fill="white" rx="2"/>
+                <rect x="55" y="10" width="35" height="35" fill="white" rx="2"/>
+                <rect x="10" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
+                <rect x="55" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
+                <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
+              </svg>
             </div>
             <span className="font-semibold text-slate-900 text-lg">
-              CORE829
+              Winmeeth SRL
             </span>
           </div>
           <div className="flex items-center gap-4">

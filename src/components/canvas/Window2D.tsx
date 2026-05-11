@@ -82,7 +82,7 @@ export default function Window2D({
   const h = height * scale;
 
   // GROSIME MĂRITĂ pentru toc și cercevea - stil CAD foarte pronunțat
-  const tocThickness = 40 * scale;  // foarte gros - stil CAD
+  const tocThickness = 55 * scale;  // foarte gros - stil CAD, ușor de clic
   const sashThickness = 28 * scale; // foarte gros - stil CAD
   const glassGap = 6 * scale; // spațiu mai mare pentru sticlă
 

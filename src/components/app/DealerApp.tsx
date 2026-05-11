@@ -47,7 +47,6 @@ import {
   Truck,
   FileText,
   ChevronRight,
-  Calculator,
   Eye,
   Grid3X3,
   Paintbrush,
@@ -147,21 +146,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview, setShowPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
-  const configPopupRef = useRef<HTMLDivElement>(null);
-  
-  // Close popup when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (configPopupRef.current && !configPopupRef.current.contains(event.target as Node)) {
-        setShowConfigPopup(false);
-      }
-    };
-    
-    if (showConfigPopup) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [showConfigPopup]);
+  const configBtnRef = useRef<HTMLButtonElement>(null);
+  const [configPopupPos, setConfigPopupPos] = useState<{top: number; right: number} | null>(null);
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -443,7 +429,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         `FERONERIE: ${hardwareBrand || "siegenia"}\n` +
         (price ? `PREȚ ESTIMATIV: ${formatPrice(price.total)} (incl. TVA)\n` : "") +
         `\nDATE CLIENT:\nNume: ${orderForm.clientName || "—"}\nEmail: ${orderForm.clientEmail}\nTelefon: ${orderForm.clientPhone || "—"}\n` +
-        `\nCu stimă,\nEchipa CORE829`;
+        `\nCu stimă,\nEchipa Winmeeth SRL\nStr. Energiei 470, 605300 Dărmănești\nTel: +40 745 700 363`;
       
       window.location.href = `mailto:contact@core829.ro?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
@@ -524,47 +510,79 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Interior">Int</button>
         <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Exterior">Ext</button>
       </div>
-      <div className="relative">
-        <button 
-          onClick={() => setShowConfigPopup(!showConfigPopup)}
-          className={cn("px-2 py-1 rounded-lg text-[10px] font-medium border", showConfigPopup ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
-        >
-          Config
-        </button>
-        {showConfigPopup && (
-          <div ref={configPopupRef} className="absolute top-full right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl p-2.5 space-y-2 z-50 w-56">
-            <div className="text-[10px] font-semibold text-slate-500 mb-1">Canaturi</div>
-            <div className="flex gap-1">
-              <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
-              <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
-              <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
-            </div>
-            <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
-            <div className="flex gap-1">
-              <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
-              <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
-            </div>
-            <div>
-              <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime mâner: {activeWindow.handleHeight}mm</div>
-              <input type="range" min="30" max="200" value={activeWindow.handleHeight} onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
-            </div>
-            {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
-              <div>
-                <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
-                <div className="flex gap-1">
-                  <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}</button>
-                  <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}</button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <button 
+        ref={configBtnRef}
+        onClick={() => {
+          if (!showConfigPopup && configBtnRef.current) {
+            const rect = configBtnRef.current.getBoundingClientRect();
+            setConfigPopupPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
+          }
+          setShowConfigPopup(!showConfigPopup);
+        }}
+        className={cn("px-2 py-1 rounded-lg text-[10px] font-medium border", showConfigPopup ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
+      >
+        Config
+      </button>
     </div>
   );
 
+  // Config dropdown rendered at root level with fixed position
+  const configDropdown = showConfigPopup && configPopupPos && (
+    <div 
+      className="fixed bg-white border border-slate-200 rounded-xl shadow-2xl p-3 space-y-2 z-[100] w-60"
+      style={{ top: configPopupPos.top, right: configPopupPos.right }}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1">
+        <span className="text-[11px] font-semibold text-slate-700">Configurare fereastră</span>
+        <button onClick={() => setShowConfigPopup(false)} className="text-slate-400 hover:text-slate-600 text-xs">×</button>
+      </div>
+      <div className="text-[10px] font-semibold text-slate-500 mb-1">Canaturi</div>
+      <div className="flex gap-1">
+        <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
+        <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
+        <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
+      </div>
+      <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
+      <div className="flex gap-1">
+        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
+        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
+      </div>
+      <div>
+        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime mâner: {activeWindow.handleHeight}mm</div>
+        <input type="range" min="30" max="200" value={activeWindow.handleHeight} onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
+      </div>
+      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
+        <div>
+          <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
+          <div className="flex gap-1">
+            <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}</button>
+            <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // Close config dropdown on click outside or scroll/resize
+  useEffect(() => {
+    if (!showConfigPopup) return;
+    const handleClose = () => setShowConfigPopup(false);
+    const handleScroll = () => setShowConfigPopup(false);
+    document.addEventListener("mousedown", handleClose);
+    window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("resize", handleClose);
+    return () => {
+      document.removeEventListener("mousedown", handleClose);
+      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("resize", handleClose);
+    };
+  }, [showConfigPopup]);
+
   return (
     <>
+      {configDropdown}
+      
       {/* Print View Overlay */}
       {showPrintView && (
         <div className="fixed inset-0 bg-white z-50 overflow-auto">
@@ -982,7 +1000,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   </div>
 
                   {/* Multiple Windows */}
-                  <div className="flex-1 flex items-center justify-center gap-4 min-w-0 overflow-x-auto">
+                  <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
                     {windows.map((win, idx) => (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                         <div className="text-[10px] text-center text-slate-500 mb-1">{win.name} <span className="opacity-75">({win.width}x{win.height})</span></div>
@@ -1032,11 +1050,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             </div>
 
             <div className="flex items-center gap-2">
-              <Calculator className="w-3 h-3 text-slate-400" />
-              <span className="text-slate-500">Dealer</span>
-              <span className="px-1.5 py-0.5 bg-primary-100 text-primary-700 text-[10px] font-medium rounded">
-                -18%
-              </span>
+              <span className="text-slate-400 text-[10px]">Winmeeth SRL</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-400 text-[10px]">+40 745 700 363</span>
+              <span className="text-slate-300 hidden sm:inline">|</span>
+              <span className="text-slate-400 text-[10px] hidden sm:inline">Dărmănești</span>
             </div>
           </div>
         </div>

@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CORE829 - Calculator Tâmplărie",
+  title: "Winmeeth SRL - Calculator Tâmplărie",
   description:
-    "Calculator profesional de ferestre și uși din PVC. Oferte instant pentru clienți și parteneri.",
+    "Calculator profesional de ferestre și uși din PVC și aluminiu. Strada Energiei 470, 605300 Dărmănești. Tel: +40 745 700 363",
 };
 
 export const viewport = {

@@ -93,9 +93,9 @@ export default function PrintLayout({
       {/* Header */}
       <div className="flex justify-between items-start mb-8 border-b-2 border-primary-600 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-primary-600">CORE829</h1>
+          <h1 className="text-2xl font-bold text-primary-600">Winmeeth SRL</h1>
           <p className="text-sm text-slate-600">Calculator Tâmplărie Profesională</p>
-          <p className="text-xs text-slate-500">Tel: +40 721 234 567 | Email: contact@core829.ro</p>
+          <p className="text-xs text-slate-500">Str. Energiei 470, 605300 Dărmănești | Tel: +40 745 700 363</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold">Ofertă Preliminară</p>
@@ -256,7 +256,7 @@ export default function PrintLayout({
       <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">
         <p>Oferta este valabilă 30 de zile de la data emiterii.</p>
         <p>Prețurile sunt estimative și pot fi ajustate în funcție de complexitatea execuției.</p>
-        <p className="mt-2">CORE829 - Calculatoare Tâmplărie | www.core829.ro</p>
+        <p className="mt-2">Winmeeth SRL - Str. Energiei 470, 605300 Dărmănești | Tel: +40 745 700 363</p>
       </div>
     </div>
   );
@@ -301,9 +301,9 @@ export function getOfferteEmailBody(
   }
   body += `\nVom reveni cu o ofertă detaliată în cel mai scurt timp.\n\n`;
   body += `Cu stimă,\n`;
-  body += `Echipa CORE829\n`;
-  body += `Tel: +40 721 234 567\n`;
-  body += `Email: contact@core829.ro`;
+  body += `Echipa Winmeeth SRL\n`;
+  body += `Str. Energiei 470, 605300 Dărmănești\n`;
+  body += `Tel: +40 745 700 363`;
 
   return body;
 }

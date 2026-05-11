@@ -68,11 +68,17 @@ export default function AppLayout({
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-          <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-sm">C8</span>
+          <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center shadow-lg overflow-hidden">
+            <svg viewBox="0 0 100 100" className="w-full h-full p-1">
+              <rect x="10" y="10" width="35" height="35" fill="#60A5FA" rx="2"/>
+              <rect x="55" y="10" width="35" height="35" fill="#60A5FA" rx="2"/>
+              <rect x="10" y="55" width="35" height="35" fill="#93C5FD" rx="2"/>
+              <rect x="55" y="55" width="35" height="35" fill="#93C5FD" rx="2"/>
+              <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
+            </svg>
           </div>
           <span className="text-white font-semibold text-sm tracking-wide">
-            CORE829 - Calculator Tâmplărie Pro
+            Winmeeth SRL - Calculator Tâmplărie
           </span>
         </div>
 
@@ -100,10 +106,16 @@ export default function AppLayout({
       {/* Mobile Header */}
       <div className="h-14 bg-gradient-to-r from-primary-600 to-primary-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">C8</span>
+          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden">
+            <svg viewBox="0 0 100 100" className="w-full h-full p-1">
+              <rect x="10" y="10" width="35" height="35" fill="white" rx="2"/>
+              <rect x="55" y="10" width="35" height="35" fill="white" rx="2"/>
+              <rect x="10" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
+              <rect x="55" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
+              <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
+            </svg>
           </div>
-          <span className="text-white font-semibold text-base">CORE829</span>
+          <span className="text-white font-semibold text-base">Winmeeth</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={onSave} className="p-2 bg-white/20 rounded-lg">
@@ -187,8 +199,12 @@ export default function AppLayout({
           <span className="hidden sm:inline">Conectat</span>
           <span className="hidden md:inline">|</span>
           <span className="hidden md:inline">{roleDisplay.label}</span>
+          <span className="hidden md:inline">|</span>
+          <span className="hidden md:inline">Str. Energiei 470, Dărmănești</span>
+          <span className="hidden md:inline">|</span>
+          <span className="hidden md:inline">+40 745 700 363</span>
         </div>
-        <div className="text-primary-400 font-medium">v2.0.0</div>
+        <div className="text-primary-400 font-medium">Winmeeth SRL</div>
       </div>
     </div>
   );
