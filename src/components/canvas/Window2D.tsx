@@ -149,8 +149,8 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 50; // minimal pentru cote
-  const svgHeight = h + 50;
+  const svgWidth = w + 80;
+  const svgHeight = h + 80;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -314,9 +314,9 @@ export default function Window2D({
   };
 
   return (
-    <div className={cn("bg-white rounded-lg border border-slate-200", className)}>
-      <div className="px-3 py-2 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-1">
-        <div className="flex items-center gap-1.5 flex-wrap">
+    <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
+      <div className="px-4 py-3 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vizualizare 2D</span>
           <span className="text-xs px-2 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">{config.type}</span>
           <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">{openingSide === "left" ? "← Stânga" : "Dreapta →"}</span>
@@ -382,11 +382,10 @@ export default function Window2D({
         )}
       </div>
 
-      <div className="p-1 md:p-2 flex items-center justify-center bg-slate-50 w-full h-full">
+      <div className="p-2 md:p-4 flex items-center justify-center bg-slate-50 w-full h-full">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="max-w-full max-h-full w-auto h-auto object-contain"
-          style={{ maxWidth: '100%', maxHeight: '100%' }}
+          className="max-w-full max-h-full w-auto h-auto"
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -405,7 +404,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(25, 25)">
+          <g transform="translate(40, 40)">
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
@@ -653,24 +652,24 @@ export default function Window2D({
               <rect x={w - 6 * scale} y={-2 * scale} width={6 * scale} height={tocThickness - 2 * scale} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * scale} />
             </g>
 
-            {/* COTE / Dimension lines - MINIMAL */}
+            {/* COTE / Dimension lines */}
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-12 * scale} x2={w} y2={-12 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <line x1={0} y1={-16 * scale} x2={0} y2={-8 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <line x1={w} y1={-16 * scale} x2={w} y2={-8 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <polygon points={`${-5 * scale},${-12 * scale} ${5 * scale},${-12 * scale} ${0},${-17 * scale}`} fill="#1e293b" />
-                <polygon points={`${w - 5 * scale},${-12 * scale} ${w + 5 * scale},${-12 * scale} ${w},${-17 * scale}`} fill="#1e293b" />
-                <text x={w / 2} y={-20 * scale} textAnchor="middle" fontSize={9 * scale} fill="#1e293b" fontWeight="600">{width}</text>
+                <line x1={0} y1={-18 * scale} x2={w} y2={-18 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={0} y1={-24 * scale} x2={0} y2={-12 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={w} y1={-24 * scale} x2={w} y2={-12 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-7 * scale},${-18 * scale} ${7 * scale},${-18 * scale} ${0},${-26 * scale}`} fill="#1e293b" />
+                <polygon points={`${w - 7 * scale},${-18 * scale} ${w + 7 * scale},${-18 * scale} ${w},${-26 * scale}`} fill="#1e293b" />
+                <text x={w / 2} y={-30 * scale} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-12 * scale} y1={0} x2={-12 * scale} y2={h} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <line x1={-16 * scale} y1={0} x2={-8 * scale} y2={0} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <line x1={-16 * scale} y1={h} x2={-8 * scale} y2={h} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
-                <polygon points={`${-12 * scale},${-5 * scale} ${-12 * scale},${5 * scale} ${-17 * scale},${0}`} fill="#1e293b" />
-                <polygon points={`${-12 * scale},${h - 5 * scale} ${-12 * scale},${h + 5 * scale} ${-17 * scale},${h}`} fill="#1e293b" />
-                <text x={-22 * scale} y={h / 2} textAnchor="middle" fontSize={9 * scale} fill="#1e293b" fontWeight="600" transform={`rotate(-90, ${-22 * scale}, ${h / 2})`}>{height}</text>
+                <line x1={-18 * scale} y1={0} x2={-18 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-24 * scale} y1={0} x2={-12 * scale} y2={0} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-24 * scale} y1={h} x2={-12 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-18 * scale},${-7 * scale} ${-18 * scale},${7 * scale} ${-26 * scale},${0}`} fill="#1e293b" />
+                <polygon points={`${-18 * scale},${h - 7 * scale} ${-18 * scale},${h + 7 * scale} ${-26 * scale},${h}`} fill="#1e293b" />
+                <text x={-32 * scale} y={h / 2} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-32 * scale}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>

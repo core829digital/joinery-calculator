@@ -831,7 +831,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             )}>
               <div className={cn(
               "flex-1 flex flex-col",
-              isMobile ? "max-w-full" : "max-w-2xl"
+              isMobile ? "max-w-full" : "max-w-4xl"
             )}>
                 {/* Window 2D with Side Controls - centered */}
                 <div className={cn(
@@ -843,10 +843,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     "flex flex-row flex-wrap gap-1 text-[10px] justify-center",
                     isMobile ? "order-2" : "w-20"
                   )}>
-                    <button onClick={() => setOpeningSide("left")} className={cn("px-3 py-2 rounded text-xs font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← St</button>
-                    <button onClick={() => setOpeningSide("right")} className={cn("px-3 py-2 rounded text-xs font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dr →</button>
-                    <button onClick={() => setOpeningDirection("inward")} className={cn("px-3 py-2 rounded text-xs font-medium transition-all", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Int</button>
-                    <button onClick={() => setOpeningDirection("outward")} className={cn("px-3 py-2 rounded text-xs font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Ext</button>
+                    <button onClick={() => setOpeningSide("left")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
+                    <button onClick={() => setOpeningSide("right")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
+                    <button onClick={() => setOpeningDirection("inward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Interior</button>
+                    <button onClick={() => setOpeningDirection("outward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
                   </div>
 
                   {/* Window 2D Canvas */}
@@ -866,7 +866,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       showThreshold={showThreshold}
                       horizontalMuntin={horizontalMuntin}
                       showDimensions={true}
-                      scale={isMobile ? 0.4 : 0.5}
+                      scale={isMobile ? 0.5 : 0.65}
                       glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                       onComponentClick={handleComponentClick}
                       onDimensionChange={(newWidth, newHeight) => {
