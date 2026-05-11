@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import type {
   ProductType,
@@ -147,6 +147,21 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview, setShowPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
+  const configPopupRef = useRef<HTMLDivElement>(null);
+  
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (configPopupRef.current && !configPopupRef.current.contains(event.target as Node)) {
+        setShowConfigPopup(false);
+      }
+    };
+    
+    if (showConfigPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showConfigPopup]);
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -198,6 +213,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     if (activeWindowIndex >= newWindows.length) {
       setActiveWindowIndex(newWindows.length - 1);
     }
+  };
+
+  const duplicateWindow = (index: number) => {
+    const winToClone = windows[index];
+    const newId = Math.max(...windows.map(w => w.id)) + 1;
+    const newWindow = { ...winToClone, id: newId, name: `Fereastra #${newId}` };
+    setWindows([...windows, newWindow]);
+    setActiveWindowIndex(windows.length);
   };
 
   useEffect(() => {
@@ -921,7 +944,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
                   {/* Config Popup */}
                   {showConfigPopup && (
-                    <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 mb-2 space-y-2">
+                    <div ref={configPopupRef} className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 mb-2 space-y-2">
                       <div className="text-[10px] font-semibold text-slate-500 mb-1">Configurare Canaturi</div>
                        <div className="flex gap-1">
                         <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
@@ -984,13 +1007,21 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         key={win.id}
                         onClick={() => setActiveWindowIndex(idx)}
                         className={cn(
-                          "px-3 py-1 rounded text-xs font-medium flex items-center gap-1 whitespace-nowrap",
+                          "px-2 py-1 rounded text-xs font-medium flex items-center gap-1 whitespace-nowrap",
                           activeWindowIndex === idx ? "bg-primary-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                         )}
                       >
-                        {win.name}
+                        <span>{win.name}</span>
+                        <span className="text-[9px] opacity-75">{win.width}x{win.height}</span>
+                        <span 
+                          onClick={(e) => { e.stopPropagation(); duplicateWindow(idx); }}
+                          className="ml-0.5 text-[10px] opacity-50 hover:opacity-100 hover:text-blue-400"
+                          title="Duplică"
+                        >
+                          ⧉
+                        </span>
                         {windows.length > 1 && (
-                          <span onClick={(e) => { e.stopPropagation(); removeWindow(idx); }} className="ml-1 text-[10px] hover:text-red-500">×</span>
+                          <span onClick={(e) => { e.stopPropagation(); removeWindow(idx); }} className="ml-0.5 text-[10px] hover:text-red-500">×</span>
                         )}
                       </button>
                     ))}
@@ -1003,7 +1034,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   <div className="flex-1 flex items-center justify-center gap-4 min-w-0 overflow-x-auto">
                     {windows.map((win, idx) => (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                        <div className="text-[10px] text-center text-slate-500 mb-1">{win.name}</div>
+                        <div className="text-[10px] text-center text-slate-500 mb-1">{win.name} <span className="opacity-75">({win.width}x{win.height})</span></div>
                         <Window2D
                           productType={productType ?? "window_2_canate"}
                           width={win.width}
