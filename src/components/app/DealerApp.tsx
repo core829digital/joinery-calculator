@@ -892,25 +892,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         </div>
 
         {/* Center - Preview & Info */}
-        <div className={cn(
-          "flex-1 flex flex-col overflow-hidden",
-          isMobile ? "flex flex-col min-h-[50vh]" : ""
-        )}>
-{/* 2D Preview - Always visible on mobile */}
+        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+          {/* 2D Preview - Always visible on mobile */}
           {(showPreview || isMobile) && (
-            <div className={cn(
-              "flex-1 flex flex-col",
-              isMobile ? "p-2" : "p-4"
-            )}>
-              <div className={cn(
-              "flex-1 flex flex-col",
-              isMobile ? "max-w-full" : "max-w-4xl"
-            )}>
+            <div className="flex-1 flex flex-col min-h-0 p-2">
+              <div className="flex-1 flex flex-col min-h-0">
                 {/* Window 2D with Side Controls - centered */}
-                <div className={cn(
-                  "flex-1 flex items-center justify-center",
-                  isMobile ? "flex-col gap-2" : "gap-4"
-                )}>
+                <div className="flex-1 flex items-center justify-center min-h-0">
                   {/* Left Side Controls - Hidden on mobile, use toggle */}
                   <div className={cn(
                     "flex flex-row flex-wrap gap-1 text-[10px] justify-center",
@@ -1062,8 +1050,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       </div>
                     ))}
                   </div>
-
-</div>
+                </div>
               </div>
             </div>
           )}

@@ -149,8 +149,9 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 80;
-  const svgHeight = h + 80;
+  const margin = Math.max(20, 35 * scale);
+  const svgWidth = w + margin * 2;
+  const svgHeight = h + margin * 2;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -315,32 +316,24 @@ export default function Window2D({
 
   return (
     <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
-      <div className="px-4 py-3 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vizualizare 2D</span>
-          <span className="text-xs px-2 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">{config.type}</span>
-          <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">{openingSide === "left" ? "← Stânga" : "Dreapta →"}</span>
-          <span className={`text-xs px-2 py-0.5 rounded font-medium ${openingType === "oscilobativ" ? "bg-violet-100 text-violet-700" : "bg-amber-100 text-amber-700"}`}>
-            {openingType === "oscilobativ" ? "Oscilobativ" : "Batant"}
-          </span>
-          <span className={`text-xs px-2 py-0.5 rounded font-medium ${openingDirection === "inward" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"}`}>
-            {openingDirection === "inward" ? "Interior" : "Exterior"}
+      <div className="px-2 py-1.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-1">
+        <div className="flex items-center gap-1 flex-wrap">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">2D</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">{config.type}</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">{openingSide === "left" ? "← St" : "Dr →"}</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${openingDirection === "inward" ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"}`}>
+            {openingDirection === "inward" ? "Int" : "Ext"}
           </span>
           {sashConfiguration && (
-            <span className={`text-xs px-2 py-0.5 rounded font-medium ${sashConfiguration === "stulp" ? "bg-purple-100 text-purple-700" : "bg-indigo-100 text-indigo-700"}`}>
-              {sashConfiguration === "stulp" ? "Stulp" : "Montant"}
-            </span>
-          )}
-          {glassType && (
-            <span className="text-xs px-2 py-0.5 rounded bg-cyan-100 text-cyan-700 font-medium">
-              {glassType}
+            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${sashConfiguration === "stulp" ? "bg-purple-100 text-purple-700" : "bg-indigo-100 text-indigo-700"}`}>
+              {sashConfiguration === "stulp" ? "Stulp" : "Mont"}
             </span>
           )}
         </div>
         {showDimensions && (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <label className="text-xs text-slate-500 font-medium">L:</label>
+          <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-0.5">
+              <label className="text-[10px] text-slate-500 font-medium">L:</label>
               <input
                 type="number"
                 value={localWidth}
@@ -351,15 +344,14 @@ export default function Window2D({
                     onDimensionChange?.(val, localHeight);
                   }
                 }}
-                className="w-16 px-2 py-1 text-xs font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
+                className="w-14 px-1 py-0.5 text-[10px] font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
                 min={300}
                 max={3000}
               />
-              <span className="text-xs text-slate-400">mm</span>
             </div>
-            <span className="text-slate-300">×</span>
-            <div className="flex items-center gap-1">
-              <label className="text-xs text-slate-500 font-medium">H:</label>
+            <span className="text-slate-300 text-[10px]">×</span>
+            <div className="flex items-center gap-0.5">
+              <label className="text-[10px] text-slate-500 font-medium">H:</label>
               <input
                 type="number"
                 value={localHeight}
@@ -370,22 +362,21 @@ export default function Window2D({
                     onDimensionChange?.(localWidth, val);
                   }
                 }}
-                className="w-16 px-2 py-1 text-xs font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
+                className="w-14 px-1 py-0.5 text-[10px] font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
                 min={300}
                 max={3000}
               />
-              <span className="text-xs text-slate-400">mm</span>
             </div>
-            <span className="text-slate-300">|</span>
-            <span className="text-xs text-slate-500">{((localWidth * localHeight) / 1000000).toFixed(3)} m²</span>
+            <span className="text-[10px] text-slate-500">{((localWidth * localHeight) / 1000000).toFixed(2)}m²</span>
           </div>
         )}
       </div>
 
-      <div className="p-2 md:p-4 flex items-center justify-center bg-slate-50 w-full h-full">
+      <div className="flex items-center justify-center bg-slate-50 w-full h-full overflow-hidden" style={{ minHeight: 0 }}>
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="max-w-full max-h-full w-auto h-auto"
+          preserveAspectRatio="xMidYMid meet"
+          style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', display: 'block' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -404,7 +395,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(40, 40)">
+          <g transform={`translate(${margin}, ${margin})`}>
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
@@ -676,36 +667,22 @@ export default function Window2D({
         </svg>
       </div>
 
-      {/* Legend */}
-      <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex flex-wrap gap-3 text-xs">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm" style={{ background: `linear-gradient(180deg, ${_frameColorInterior} 0%, ${_frameColorExterior} 100%)` }}></div>
+      {/* Legend - Compact */}
+      <div className="px-2 py-1 bg-slate-50 border-t border-slate-100 flex items-center gap-2 text-[10px] flex-wrap">
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm" style={{ background: `linear-gradient(180deg, ${_frameColorInterior} 0%, ${_frameColorExterior} 100%)` }}></div>
           <span className="text-slate-600">Toc</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#E3F2FD', border: '1px solid #90CAF9' }}></div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: '#E3F2FD', border: '1px solid #90CAF9' }}></div>
           <span className="text-slate-600">Sticlă</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-slate-400"></div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-slate-400"></div>
           <span className="text-slate-600">Maner</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-slate-500"></div>
-          <span className="text-slate-600">Balamale</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-sm bg-blue-600"></div>
-          <span className="text-slate-600">Deschidere</span>
-        </div>
-        {config.isDoor && (
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-gray-600"></div>
-            <span className="text-slate-600">Prag</span>
-          </div>
-        )}
-        <div className="ml-auto flex items-center gap-1.5 text-primary-600">
-          <span className="font-medium">{hoveredComponent ? `${COMPONENT_LABELS[hoveredComponent]} selectat` : 'Click pe elemente pentru configurare'}</span>
+        <div className="ml-auto text-primary-600">
+          <span className="font-medium">{hoveredComponent ? `${COMPONENT_LABELS[hoveredComponent]} selectat` : 'Click pe elemente'}</span>
         </div>
       </div>
     </div>
