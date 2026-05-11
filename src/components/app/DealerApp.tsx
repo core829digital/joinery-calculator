@@ -104,17 +104,7 @@ interface DealerAppProps {
 export default function DealerApp({ userRole = "dealer", clientCode, dealerId }: DealerAppProps) {
   const { addOrder } = useAuth();
   const [productType, setProductType] = useState<ProductType | null>(null);
-  const [width, setWidth] = useState(1200);
-  const [height, setHeight] = useState(1400);
   const [profileSeries, setProfileSeries] = useState<ProfileSeries | null>(null);
-  const [openingType, setOpeningType] = useState<OpeningType | null>(null);
-  const [openingSide, setOpeningSide] = useState<"left" | "right">("right");
-  const [openingDirection, setOpeningDirection] = useState<"inward" | "outward">("inward");
-  const [sashConfiguration, setSashConfiguration] = useState<"stulp" | "montant" | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [sashRoles, setSashRoles] = useState<Record<string, "active" | "inactive" | "fixed">>({}); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [showThreshold, setShowThreshold] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [horizontalMuntin, setHorizontalMuntin] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const [handleHeight, setHandleHeight] = useState(100); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [interiorColor, setInteriorColor] = useState<Color | null>(null);
   const [exteriorColor, setExteriorColor] = useState<Color | null>(null);
   const [glassType, setGlassType] = useState<GlassType | null>(null);
@@ -124,6 +114,35 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [distance, setDistance] = useState(30);
   const [includeMontaj, setIncludeMontaj] = useState(false);
 
+  // Per-window config
+  interface WindowConfig {
+    id: number;
+    name: string;
+    width: number;
+    height: number;
+    openingType: OpeningType | null;
+    openingSide: "left" | "right";
+    openingDirection: "inward" | "outward";
+    sashConfiguration: "stulp" | "montant" | null;
+    sashRoles: Record<string, "active" | "inactive" | "fixed">;
+    showThreshold: boolean;
+    horizontalMuntin: boolean;
+    handleHeight: number;
+  }
+  
+  const defaultWindowConfig: Omit<WindowConfig, "id" | "name"> = {
+    width: 1200,
+    height: 1400,
+    openingType: null,
+    openingSide: "right",
+    openingDirection: "inward",
+    sashConfiguration: null,
+    sashRoles: {},
+    showThreshold: false,
+    horizontalMuntin: false,
+    handleHeight: 100,
+  };
+  
   const [activeMenu, setActiveMenu] = useState("produse");
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview, setShowPreview] = useState(true);
@@ -152,12 +171,23 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [mobileViewMode, setMobileViewMode] = useState<"canvas" | "panel">("panel");
 
   // Multi-window state
-  const [windows, setWindows] = useState([{ id: 1, name: "Fereastra #1" }]);
+  const [windows, setWindows] = useState<WindowConfig[]>([
+    { id: 1, name: "Fereastra #1", ...defaultWindowConfig }
+  ]);
   const [activeWindowIndex, setActiveWindowIndex] = useState(0);
+  
+  const activeWindow = windows[activeWindowIndex];
+  
+  // Helper to update active window property
+  const updateActiveWindow = <K extends keyof WindowConfig>(key: K, value: WindowConfig[K]) => {
+    setWindows(prev => prev.map((win, idx) => 
+      idx === activeWindowIndex ? { ...win, [key]: value } : win
+    ));
+  };
 
   const addWindow = () => {
     const newId = windows.length + 1;
-    setWindows([...windows, { id: newId, name: `Fereastra #${newId}` }]);
+    setWindows([...windows, { id: newId, name: `Fereastra #${newId}`, ...defaultWindowConfig }]);
     setActiveWindowIndex(windows.length);
   };
 
@@ -193,11 +223,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   const handleReset = () => {
     setProductType(null);
-    setWidth(1200);
-    setHeight(1400);
     setProfileSeries(null);
-    setOpeningType(null);
-    setOpeningSide("right");
     setInteriorColor(null);
     setExteriorColor(null);
     setGlassType(null);
@@ -208,6 +234,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setIncludeMontaj(false);
     setActiveMenu("produse");
     setSelectedComponent(null);
+    // Reset active window to defaults
+    setWindows(prev => prev.map((win, idx) => 
+      idx === activeWindowIndex ? { ...win, ...defaultWindowConfig } : win
+    ));
   };
 
   const handleSave = () => {
@@ -223,8 +253,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       dealerId: dealerId || undefined,
       supplierId: "supplier_1",
       productType,
-      width,
-      height,
+      width: activeWindow.width,
+      height: activeWindow.height,
       profileSeries: profileSeries || "premium_82",
       interiorColor: interiorColor || "alb_ral9003",
       exteriorColor: exteriorColor || "antracit_ral7016",
@@ -315,9 +345,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     const price = glassType && interiorColor && exteriorColor
       ? calculatePrice({
           productType,
-          width,
-          height,
-          profileSeries: profileSeries || "premium_82",
+      width: activeWindow.width,
+      height: activeWindow.height,
+      profileSeries: profileSeries || "premium_82",
           glassType,
           interiorColor,
           exteriorColor,
@@ -341,8 +371,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       dealerId: dealerId || undefined,
       supplierId: "supplier_1",
       productType,
-      width,
-      height,
+      width: activeWindow.width,
+      height: activeWindow.height,
       profileSeries: profileSeries || "premium_82",
       interiorColor: interiorColor || "alb_ral9003",
       exteriorColor: exteriorColor || "antracit_ral7016",
@@ -380,10 +410,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     
     // Send email if client email provided
     if (orderForm.clientEmail) {
-      const subject = `Solicitare Ofertă - ${productType.replace(/_/g, " ")} - ${width}x${height}mm`;
+      const subject = `Solicitare Ofertă - ${productType.replace(/_/g, " ")} - ${activeWindow.width}x${activeWindow.height}mm`;
       const body = `Bună ziua,\n\nAm solicitat o ofertă pentru următoarea configurație:\n\n` +
         `PRODUS: ${productType.replace(/_/g, " ")}\n` +
-        `DIMENSIUNI: ${width} × ${height} mm\n` +
+        `DIMENSIUNI: ${activeWindow.width} × ${activeWindow.height} mm\n` +
         `PROFIL: ${profileSeries || "premium_82"}\n` +
         `CULORI: Interior - ${interiorColor || "alb"}, Exterior - ${exteriorColor || "antracit"}\n` +
         `STICLĂ: ${glassType || "tripan"}\n` +
@@ -398,7 +428,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setShowOrderModal(false);
     setOrderForm({ clientName: "", clientEmail: "", clientPhone: "", notes: "" });
     alert("Comanda a fost trimisă cu succes! Veți fi contactat în cel mai scurt timp.");
-  }, [productType, width, height, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
+  }, [productType, activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
 
   const activeCategory = MENU_CATEGORIES.find((c) => c.id === activeMenu);
   const panelTitle = selectedComponent
@@ -488,8 +518,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           <div className="p-8">
             <PrintLayout
               productType={productType ?? "window_2_canate"}
-              width={width}
-              height={height}
+              width={activeWindow.width}
+              height={activeWindow.height}
               profileSeries={profileSeries ?? "premium_82"}
               glassType={glassType}
               interiorColor={interiorColor}
@@ -734,15 +764,15 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 onSelect={setProductType}
               />
               <DimensionsPanel
-                width={width}
-                height={height}
-                onWidthChange={setWidth}
-                onHeightChange={setHeight}
+                width={activeWindow.width}
+                height={activeWindow.height}
+                onWidthChange={(w) => updateActiveWindow("width", w)}
+                onHeightChange={(h) => updateActiveWindow("height", h)}
                 productType={productType}
               />
               <OpeningPanel
-                selected={openingType}
-                onSelect={(v) => setOpeningType(v as OpeningType)}
+                selected={activeWindow.openingType}
+                onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
               />
             </div>
           )}
@@ -815,8 +845,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             <div className="space-y-4">
               <PricingPanel
                 productType={productType ?? "window_2_canate"}
-                width={width}
-                height={height}
+                width={activeWindow.width}
+                height={activeWindow.height}
                 profileSeries={profileSeries ?? "premium_82"}
                 interiorColor={interiorColor ?? "alb_ral9003"}
                 exteriorColor={exteriorColor ?? "antracit_ral7016"}
@@ -863,23 +893,23 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     "flex flex-row flex-wrap gap-1 text-[10px] justify-center",
                     isMobile ? "order-2" : "w-20"
                   )}>
-                    <button onClick={() => setOpeningSide("left")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
-                    <button onClick={() => setOpeningSide("right")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
-                    <button onClick={() => setOpeningDirection("inward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Interior</button>
-                    <button onClick={() => setOpeningDirection("outward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
+                    <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
+                    <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
+                    <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Interior</button>
+                    <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
                   </div>
 
                   {/* Header Controls */}
                   <div className="flex items-center justify-between gap-2 px-2 py-1.5 bg-slate-100 rounded-lg mb-2">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] font-medium text-slate-500">Deschidere:</span>
-                      <button onClick={() => setOpeningSide("left")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>← St</button>
-                      <button onClick={() => setOpeningSide("right")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>Dr →</button>
+                      <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>← St</button>
+                      <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>Dr →</button>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] font-medium text-slate-500">Direcție:</span>
-                      <button onClick={() => setOpeningDirection("inward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600")}>Int</button>
-                      <button onClick={() => setOpeningDirection("outward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600")}>Ext</button>
+                      <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600")}>Int</button>
+                      <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600")}>Ext</button>
                     </div>
                     <button 
                       onClick={() => setShowConfigPopup(!showConfigPopup)}
@@ -893,53 +923,53 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {showConfigPopup && (
                     <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 mb-2 space-y-2">
                       <div className="text-[10px] font-semibold text-slate-500 mb-1">Configurare Canaturi</div>
-                      <div className="flex gap-1">
-                        <button onClick={() => setSashConfiguration("stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
-                        <button onClick={() => setSashConfiguration("montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
-                        <button onClick={() => setSashConfiguration(null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
+                       <div className="flex gap-1">
+                        <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
+                        <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
+                        <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
                       </div>
                       
                       <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
                       <div className="flex gap-1">
-                        <button onClick={() => setShowThreshold(!showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
-                        <button onClick={() => setHorizontalMuntin(!horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
+                        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
+                        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
                       </div>
                       
                       <div>
-                        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime maner: {handleHeight}mm</div>
+                        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime maner: {activeWindow.handleHeight}mm</div>
                         <input
                           type="range"
                           min="30"
                           max="200"
-                          value={handleHeight}
-                          onChange={(e) => setHandleHeight(Number(e.target.value))}
+                          value={activeWindow.handleHeight}
+                          onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))}
                           className="w-full h-1.5 accent-primary-600"
                         />
                       </div>
                       
-                      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && sashConfiguration) && (
+                      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
                         <div>
                           <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
                           <div className="flex gap-1">
                             <button
                               onClick={() => {
-                                const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
+                                const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
                                 const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                                setSashRoles({ ...roles, left: nextRole[roles.left as keyof typeof nextRole] });
+                                updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] });
                               }}
-                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashRoles.left === "active" ? "bg-green-600 text-white" : sashRoles.left === "inactive" ? "bg-amber-600 text-white" : sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
+                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
                             >
-                              St: {sashRoles.left === "active" ? "Activ" : sashRoles.left === "inactive" ? "Inact" : "Fix"}
+                              St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}
                             </button>
                             <button
                               onClick={() => {
-                                const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
+                                const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
                                 const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                                setSashRoles({ ...roles, right: nextRole[roles.right as keyof typeof nextRole] });
+                                updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] });
                               }}
-                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashRoles.right === "active" ? "bg-green-600 text-white" : sashRoles.right === "inactive" ? "bg-amber-600 text-white" : sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
+                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
                             >
-                              Dr: {sashRoles.right === "active" ? "Activ" : sashRoles.right === "inactive" ? "Inact" : "Fix"}
+                              Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}
                             </button>
                           </div>
                         </div>
@@ -976,25 +1006,26 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         <div className="text-[10px] text-center text-slate-500 mb-1">{win.name}</div>
                         <Window2D
                           productType={productType ?? "window_2_canate"}
-                          width={width}
-                          height={height}
+                          width={win.width}
+                          height={win.height}
                           interiorColor={interiorColor ?? "alb_ral9003"}
                           exteriorColor={exteriorColor ?? "antracit_ral7016"}
-                          openingSide={openingSide}
-                          openingType={openingType === "oscilobatant" ? "oscilobativ" : (openingType === "batant_dreapta" || openingType === "batant_stanga" || openingType === "basculant" || openingType === "obluc") ? "normal" : undefined}
-                          openingDirection={openingDirection}
-                          sashConfiguration={sashConfiguration ?? undefined}
-                          sashRoles={sashRoles}
-                          handleHeight={handleHeight}
-                          showThreshold={showThreshold}
-                          horizontalMuntin={horizontalMuntin}
+                          openingSide={win.openingSide}
+                          openingType={win.openingType === "oscilobatant" ? "oscilobativ" : (win.openingType === "batant_dreapta" || win.openingType === "batant_stanga" || win.openingType === "basculant" || win.openingType === "obluc") ? "normal" : undefined}
+                          openingDirection={win.openingDirection}
+                          sashConfiguration={win.sashConfiguration ?? undefined}
+                          sashRoles={win.sashRoles}
+                          handleHeight={win.handleHeight}
+                          showThreshold={win.showThreshold}
+                          horizontalMuntin={win.horizontalMuntin}
                           showDimensions={true}
                           scale={isMobile ? 0.3 : 0.4}
                           glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                           onComponentClick={handleComponentClick}
                           onDimensionChange={(newWidth, newHeight) => {
-                            setWidth(newWidth);
-                            setHeight(newHeight);
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, width: newWidth, height: newHeight } : w
+                            ));
                           }}
                         />
                       </div>
@@ -1101,7 +1132,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               <div className="flex justify-between">
                 <span className="text-slate-500">Deschidere:</span>
                 <span className="font-medium">
-                  {openingSide === "left" ? "Stânga" : "Dreapta"}
+                  {activeWindow.openingSide === "left" ? "Stânga" : "Dreapta"}
                 </span>
               </div>
             </div>
@@ -1181,8 +1212,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 {activeMenu === "produse" && (
                   <div className="space-y-3">
                     <ProductTypePanel selected={productType} onSelect={setProductType} />
-                    <DimensionsPanel width={width} height={height} onWidthChange={setWidth} onHeightChange={setHeight} productType={productType} />
-                    <OpeningPanel selected={openingType} onSelect={(v) => setOpeningType(v as OpeningType)} />
+                    <DimensionsPanel width={activeWindow.width} height={activeWindow.height} onWidthChange={(w) => updateActiveWindow("width", w)} onHeightChange={(h) => updateActiveWindow("height", h)} productType={productType} />
+                    <OpeningPanel selected={activeWindow.openingType} onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)} />
                   </div>
                 )}
                 {activeMenu === "profil" && <ProfilePanel selected={profileSeries} onSelect={setProfileSeries} />}
@@ -1192,7 +1223,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 {activeMenu === "accesorii" && <AccessoriesPanel selected={accessories} onToggle={toggleAccessory} />}
                 {activeMenu === "servicii" && <ServicesPanel distance={distance} includeMontaj={includeMontaj} onDistanceChange={setDistance} onMontajChange={setIncludeMontaj} />}
                 {activeMenu === "ofertare" && productType && (
-                  <PricingPanel productType={productType} width={width} height={height} profileSeries={profileSeries ?? "premium_82"} interiorColor={interiorColor ?? "alb_ral9003"} exteriorColor={exteriorColor ?? "antracit_ral7016"} glassType={glassType ?? "tripan_4_16_4"} hardwareBrand={hardwareBrand ?? "siegenia"} hardwareLevel={hardwareLevel ?? "premium"} accessories={accessories} userRole={userRole} distance={distance} includeMontaj={includeMontaj} />
+                  <PricingPanel productType={productType} width={activeWindow.width} height={activeWindow.height} profileSeries={profileSeries ?? "premium_82"} interiorColor={interiorColor ?? "alb_ral9003"} exteriorColor={exteriorColor ?? "antracit_ral7016"} glassType={glassType ?? "tripan_4_16_4"} hardwareBrand={hardwareBrand ?? "siegenia"} hardwareLevel={hardwareLevel ?? "premium"} accessories={accessories} userRole={userRole} distance={distance} includeMontaj={includeMontaj} />
                 )}
               </div>
             )}
