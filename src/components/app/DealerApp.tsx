@@ -849,6 +849,20 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     <button onClick={() => setOpeningDirection("outward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
                   </div>
 
+                  {/* Header Controls */}
+                  <div className="flex items-center justify-between gap-2 px-2 py-1.5 bg-slate-100 rounded-lg mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-medium text-slate-500">Deschidere:</span>
+                      <button onClick={() => setOpeningSide("left")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>← St</button>
+                      <button onClick={() => setOpeningSide("right")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>Dr →</button>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-medium text-slate-500">Direcție:</span>
+                      <button onClick={() => setOpeningDirection("inward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600")}>Int</button>
+                      <button onClick={() => setOpeningDirection("outward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600")}>Ext</button>
+                    </div>
+                  </div>
+
                   {/* Window 2D Canvas */}
                   <div className="flex-1 flex items-center justify-center min-w-0">
                     <Window2D
@@ -931,37 +945,25 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             </div>
           )}
 
-          {/* Bottom Status */}
-          <div className="h-16 border-t border-slate-200 bg-white flex items-center justify-between px-6">
-            <div className="flex items-center gap-6 text-sm">
-              <div>
-                <span className="text-slate-500">Produs:</span>
-                <span className="ml-2 font-medium text-slate-900">
-                  {productType ? productType.replace(/_/g, " ") : "—"}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-500">Profil:</span>
-                <span className="ml-2 font-medium text-slate-900">
-                  {profileSeries || "—"}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-500">Sticlă:</span>
-                <span className="ml-2 font-medium text-slate-900">
-                  {glassType || "—"}
-                </span>
-              </div>
+          {/* Bottom Status - Compact */}
+          <div className="h-10 border-t border-slate-200 bg-white flex items-center justify-between px-4 text-xs">
+            <div className="flex items-center gap-3">
+              <span className="text-slate-400">Produs:</span>
+              <span className="font-medium text-slate-700">{productType ? productType.replace(/_/g, " ") : "—"}</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-400">Profil:</span>
+              <span className="font-medium text-slate-700">{profileSeries || "—"}</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-400">Sticlă:</span>
+              <span className="font-medium text-slate-700">{glassType || "—"}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <Calculator className="w-4 h-4 text-slate-400" />
-                <span className="text-sm text-slate-500">Dealer Mode</span>
-                <span className="px-2 py-0.5 bg-primary-100 text-primary-700 text-xs font-medium rounded">
-                  -18%
-                </span>
-              </div>
+              <Calculator className="w-3 h-3 text-slate-400" />
+              <span className="text-slate-500">Dealer</span>
+              <span className="px-1.5 py-0.5 bg-primary-100 text-primary-700 text-[10px] font-medium rounded">
+                -18%
+              </span>
             </div>
           </div>
         </div>
