@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { Settings, X, Check } from "lucide-react";
+import { Settings, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProductType, Color } from "@/types";
 import { COLORS } from "@/data/joinery";
@@ -79,6 +79,7 @@ export default function Window2D({
   const [localWidth, setLocalWidth] = useState(width);
   const [localHeight, setLocalHeight] = useState(height);
   const [showSashConfig, setShowSashConfig] = useState(false);
+  const [selectedSashForConfig, setSelectedSashForConfig] = useState<string | null>(null);
 
   // Frame colors from props (used in legend)
   const _frameColorInterior = interiorColor && COLOR_MAP[interiorColor] ? COLOR_MAP[interiorColor] : "#F8F9FA";
@@ -735,7 +736,7 @@ export default function Window2D({
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-800">Configurare Canat</h3>
+              <h3 className="text-lg font-semibold text-slate-800">Configurare Canaturi</h3>
               <button
                 onClick={() => setShowSashConfig(false)}
                 className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
@@ -744,139 +745,54 @@ export default function Window2D({
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-4 space-y-4">
-              {/* Tip Deschidere */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Tip Deschidere</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { id: "fix", label: "Fix", desc: "Fără deschidere", disabled: false },
-                    { id: "batant_dreapta", label: "Batant Dreapta", desc: "Deschidere laterală dreapta", disabled: false },
-                    { id: "batant_stanga", label: "Batant Stânga", desc: "Deschidere laterală stânga", disabled: false },
-                    { id: "basculant", label: "Basculant (Kip)", desc: "Rotație ax orizontal", disabled: false },
-                    { id: "obluc", label: "Obluc (Roto)", desc: "Batant + Basculant", disabled: false },
-                    { id: "oscilobatant", label: "Oscilobatant", desc: "Oscilant + Batant", disabled: false },
-                    { id: "ghilotina", label: "Ghilotină", desc: "Glisare verticală", disabled: true },
-                    { id: "pliant", label: "Pliant (Folding)", desc: "Acordeon (în curând)", disabled: true },
-                    { id: "coulissant", label: "Coulissant (Glisant)", desc: "Glisare orizontală (în curând)", disabled: true },
-                  ].map((opt) => (
+            {/* Visual Sash Selection */}
+            <div className="p-4 border-b border-slate-100">
+              <label className="block text-sm font-medium text-slate-700 mb-3">Selectează canatul pentru configurare:</label>
+              <div className="flex justify-center gap-2">
+                {config.sashes.map((sash, idx) => {
+                  const sashId = sash.side || String(idx);
+                  const role = sashRoles[sashId] || "active";
+                  const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+                  
+                  return (
                     <button
-                      key={opt.id}
-                      onClick={() => !opt.disabled && onOpeningTypeChange?.(opt.id as any)}
-                      disabled={opt.disabled}
+                      key={sashId}
+                      onClick={() => setSelectedSashForConfig(sashId)}
                       className={cn(
-                        "p-3 rounded-lg border text-left transition-all",
-                        opt.disabled && "opacity-50 cursor-not-allowed bg-slate-50",
-                        openingType === opt.id && !opt.disabled
+                        "p-4 rounded-xl border-2 transition-all hover:scale-105 min-w-[120px]",
+                        selectedSashForConfig === sashId
                           ? "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
                           : "border-slate-200 hover:border-primary-300"
                       )}
                     >
-                      <div className="font-medium text-slate-800">{opt.label}</div>
-                      <div className="text-xs text-slate-500">{opt.desc}</div>
+                      <div className={cn(
+                        "w-16 h-20 rounded-lg border-2 mx-auto mb-2",
+                        role === "active" ? "border-green-500 bg-green-50" : 
+                        role === "inactive" ? "border-amber-500 bg-amber-50" : 
+                        "border-slate-400 bg-slate-100"
+                      )}>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-slate-600">{sash.side === "left" ? "←" : sash.side === "right" ? "→" : "○"}</span>
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium text-slate-800">{label}</div>
+                      <div className={cn(
+                        "text-xs mt-1",
+                        role === "active" ? "text-green-600" : 
+                        role === "inactive" ? "text-amber-600" : 
+                        "text-slate-500"
+                      )}>
+                        {role === "active" ? "Activ" : role === "inactive" ? "Inactiv" : "Fix"}
+                      </div>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Direcție Deschidere */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Direcție Deschidere</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {/* Need prop for direction */}}
-                    className={cn(
-                      "flex-1 p-2 rounded-lg border text-center transition-all",
-                      openingDirection === "inward"
-                        ? "border-green-500 bg-green-50 text-green-700"
-                        : "border-slate-200 hover:border-green-300"
-                    )}
-                  >
-                    <span className="text-sm font-medium">Interior</span>
-                  </button>
-                  <button
-                    onClick={() => {/* Need prop for direction */}}
-                    className={cn(
-                      "flex-1 p-2 rounded-lg border text-center transition-all",
-                      openingDirection === "outward"
-                        ? "border-orange-500 bg-orange-50 text-orange-700"
-                        : "border-slate-200 hover:border-orange-300"
-                    )}
-                  >
-                    <span className="text-sm font-medium">Exterior</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Deschidere Laterală */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Deschidere Laterală</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {/* Need prop for side */}}
-                    className={cn(
-                      "flex-1 p-2 rounded-lg border text-center transition-all",
-                      openingSide === "left"
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-slate-200 hover:border-blue-300"
-                    )}
-                  >
-                    <span className="text-sm font-medium">← Stânga</span>
-                  </button>
-                  <button
-                    onClick={() => {/* Need prop for side */}}
-                    className={cn(
-                      "flex-1 p-2 rounded-lg border text-center transition-all",
-                      openingSide === "right"
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-slate-200 hover:border-blue-300"
-                    )}
-                  >
-                    <span className="text-sm font-medium">Dreapta →</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Rol Canat */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Rol Canat</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      if (config.sashes.length === 1 && onSashRoleChange) {
-                        onSashRoleChange(config.sashes[0].side || "0", "active");
-                      }
-                    }}
-                    className="flex-1 p-2 rounded-lg border border-green-200 bg-green-50 text-green-700 text-center hover:bg-green-100 transition-all"
-                  >
-                    <span className="text-sm font-medium">Activ</span>
-                    <div className="text-xs text-green-600">Se deschide</div>
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (config.sashes.length === 1 && onSashRoleChange) {
-                        onSashRoleChange(config.sashes[0].side || "0", "inactive");
-                      }
-                    }}
-                    className="flex-1 p-2 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 text-center hover:bg-amber-100 transition-all"
-                  >
-                    <span className="text-sm font-medium">Inactiv</span>
-                    <div className="text-xs text-amber-600">Nu se deschide</div>
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (config.sashes.length === 1 && onSashRoleChange) {
-                        onSashRoleChange(config.sashes[0].side || "0", "fixed");
-                      }
-                    }}
-                    className="flex-1 p-2 rounded-lg border border-slate-200 bg-slate-100 text-slate-700 text-center hover:bg-slate-200 transition-all"
-                  >
-                    <span className="text-sm font-medium">Fix</span>
-                    <div className="text-xs text-slate-500">Nu are deschidere</div>
-                  </button>
-                </div>
-              </div>
+            {/* Instructions */}
+            <div className="p-4 text-center text-sm text-slate-500">
+              Click pe un canat pentru a-l configura
             </div>
 
             {/* Footer */}
@@ -885,14 +801,123 @@ export default function Window2D({
                 onClick={() => setShowSashConfig(false)}
                 className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                Anulează
+                Închide
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Individual Sash Configuration Popup */}
+      {selectedSashForConfig && (
+        <div 
+          className="fixed inset-0 bg-black/70 z-[110] flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedSashForConfig(null);
+          }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">
+                Configurare {config.sashes.find((s, i) => (s.side || String(i)) === selectedSashForConfig)?.side === "left" ? "Canat Stânga" : 
+                  config.sashes.find((s, i) => (s.side || String(i)) === selectedSashForConfig)?.side === "right" ? "Canat Dreapta" : 
+                  config.sashes.find((s, i) => (s.side || String(i)) === selectedSashForConfig)?.side === "center" ? "Canat Central" : "Canat"}
+              </h3>
               <button
-                onClick={() => setShowSashConfig(false)}
-                className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
+                onClick={() => setSelectedSashForConfig(null)}
+                className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <Check className="w-4 h-4" />
-                Salvează
+                <X className="w-5 h-5 text-slate-500" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-4 space-y-4">
+              {/* Rol Canat */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Rol Canat</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onSashRoleChange?.(selectedSashForConfig, "active")}
+                    className={cn(
+                      "flex-1 p-3 rounded-lg border text-center transition-all",
+                      sashRoles[selectedSashForConfig] === "active"
+                        ? "border-green-500 bg-green-50 text-green-700"
+                        : "border-slate-200 hover:border-green-300"
+                    )}
+                  >
+                    <span className="text-sm font-medium">Activ</span>
+                    <div className="text-xs text-green-600">Se deschide</div>
+                  </button>
+                  <button
+                    onClick={() => onSashRoleChange?.(selectedSashForConfig, "inactive")}
+                    className={cn(
+                      "flex-1 p-3 rounded-lg border text-center transition-all",
+                      sashRoles[selectedSashForConfig] === "inactive"
+                        ? "border-amber-500 bg-amber-50 text-amber-700"
+                        : "border-slate-200 hover:border-amber-300"
+                    )}
+                  >
+                    <span className="text-sm font-medium">Inactiv</span>
+                    <div className="text-xs text-amber-600">Nu se deschide</div>
+                  </button>
+                  <button
+                    onClick={() => onSashRoleChange?.(selectedSashForConfig, "fixed")}
+                    className={cn(
+                      "flex-1 p-3 rounded-lg border text-center transition-all",
+                      sashRoles[selectedSashForConfig] === "fixed"
+                        ? "border-slate-500 bg-slate-100 text-slate-700"
+                        : "border-slate-200 hover:border-slate-400"
+                    )}
+                  >
+                    <span className="text-sm font-medium">Fix</span>
+                    <div className="text-xs text-slate-500">Fără deschidere</div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Tip Deschidere - only if not fixed */}
+              {sashRoles[selectedSashForConfig] !== "fixed" && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Tip Deschidere</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
+                      { id: "batant_dreapta", label: "Batant Dr", desc: "Dreapta", disabled: false },
+                      { id: "batant_stanga", label: "Batant St", desc: "Stânga", disabled: false },
+                      { id: "basculant", label: "Basculant", desc: "Kip", disabled: false },
+                      { id: "obluc", label: "Obluc", desc: "Roto", disabled: false },
+                      { id: "oscilobatant", label: "Oscilobatant", desc: "Comb", disabled: false },
+                    ].map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => onOpeningTypeChange?.(opt.id as "normal" | "oscilobativ")}
+                        disabled={opt.disabled}
+                        className={cn(
+                          "p-2 rounded-lg border text-center transition-all text-xs",
+                          opt.disabled && "opacity-50 cursor-not-allowed",
+                          openingType === opt.id && !opt.disabled
+                            ? "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
+                            : "border-slate-200 hover:border-primary-300"
+                        )}
+                      >
+                        <div className="font-medium text-slate-800">{opt.label}</div>
+                        <div className="text-[10px] text-slate-500">{opt.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-2 p-4 border-t border-slate-200">
+              <button
+                onClick={() => setSelectedSashForConfig(null)}
+                className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Done
               </button>
             </div>
           </div>
