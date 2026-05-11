@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Settings, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ProductType, Color } from "@/types";
+import type { ProductType, Color, OpeningType } from "@/types";
 import { COLORS } from "@/data/joinery";
 
 export type WindowComponent = "toc" | "canat" | "sticla" | "baghete" | "maner" | "balamale" | "glaf" | "prag" | "stulp" | "montant";
@@ -39,6 +39,7 @@ interface Window2DProps {
   openingDirection?: "inward" | "outward";
   sashConfiguration?: "stulp" | "montant";
   sashRoles?: Record<string, SashRole>;
+  sashOpeningTypes?: Record<string, OpeningType>;
   handleHeight?: number;
   showThreshold?: boolean;
   horizontalMuntin?: boolean;
@@ -48,7 +49,11 @@ interface Window2DProps {
   onComponentClick?: (component: WindowComponent) => void;
   onDimensionChange?: (width: number, height: number) => void;
   onSashRoleChange?: (sashId: string, role: SashRole) => void;
-  onOpeningTypeChange?: (type: "normal" | "oscilobativ") => void;
+  onOpeningTypeChange?: (sashId: string, type: OpeningType) => void;
+  onSashConfigurationChange?: (config: "stulp" | "montant" | null) => void;
+  onShowThresholdChange?: (show: boolean) => void;
+  onHorizontalMuntinChange?: (show: boolean) => void;
+  onHandleHeightChange?: (height: number) => void;
   glassType?: string;
 }
 
@@ -63,6 +68,7 @@ export default function Window2D({
   openingDirection = "inward",
   sashConfiguration,
   sashRoles = {},
+  sashOpeningTypes = {},
   handleHeight,
   showThreshold = false,
   horizontalMuntin = false,
@@ -73,6 +79,10 @@ export default function Window2D({
   onDimensionChange,
   onSashRoleChange,
   onOpeningTypeChange,
+  onSashConfigurationChange,
+  onShowThresholdChange,
+  onHorizontalMuntinChange,
+  onHandleHeightChange,
   glassType,
 }: Window2DProps) {
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
@@ -155,30 +165,6 @@ export default function Window2D({
         };
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
-
-  // Compute available opening types based on sash roles
-  const openingTypeOptions = useMemo(() => {
-    const roles = config.sashes.map((sash, idx) => {
-      const sashKey = sash.side || String(idx);
-      return sashRoles[sashKey] || ((sash.side === openingSide) || (config.sashes.length === 1) ? "active" : "inactive");
-    });
-
-    const hasActive = roles.includes("active");
-    const hasInactive = roles.includes("inactive");
-    const allFixed = roles.length > 0 && roles.every((r) => r === "fixed");
-
-    if (allFixed) return { show: false, options: [] as ("normal" | "oscilobativ")[] };
-    if (hasActive) return { show: true, options: ["normal", "oscilobativ"] as ("normal" | "oscilobativ")[] };
-    if (hasInactive) return { show: true, options: ["normal"] as ("normal" | "oscilobativ")[] };
-    return { show: false, options: [] as ("normal" | "oscilobativ")[] };
-  }, [config.sashes, sashRoles, openingSide]);
-
-  // Reset opening type if current value is no longer valid
-  useEffect(() => {
-    if (openingType === "oscilobativ" && !openingTypeOptions.options.includes("oscilobativ")) {
-      onOpeningTypeChange?.("normal");
-    }
-  }, [openingType, openingTypeOptions.options, onOpeningTypeChange]);
 
   const margin = Math.max(20, 35 * scale);
   const svgWidth = w + margin * 2;
@@ -799,7 +785,7 @@ export default function Window2D({
                 <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => {}}
+                    onClick={() => onSashConfigurationChange?.("stulp")}
                     className={cn(
                       "flex-1 p-2 rounded-lg border text-center text-xs transition-all",
                       sashConfiguration === "stulp"
@@ -810,7 +796,7 @@ export default function Window2D({
                     Stulp
                   </button>
                   <button
-                    onClick={() => {}}
+                    onClick={() => onSashConfigurationChange?.("montant")}
                     className={cn(
                       "flex-1 p-2 rounded-lg border text-center text-xs transition-all",
                       sashConfiguration === "montant"
@@ -838,15 +824,15 @@ export default function Window2D({
               <div className="flex items-center justify-between">
                 <label className="text-xs text-slate-500">Prag</label>
                 <button
-                  onClick={() => {}}
+                  onClick={() => onShowThresholdChange?.(!showThreshold)}
                   className={cn(
                     "w-12 h-6 rounded-full transition-colors",
-                    true ? "bg-primary-600" : "bg-slate-300"
+                    showThreshold ? "bg-primary-600" : "bg-slate-300"
                   )}
                 >
                   <div className={cn(
                     "w-5 h-5 bg-white rounded-full shadow transform transition-transform",
-                    true ? "translate-x-6" : "translate-x-0.5"
+                    showThreshold ? "translate-x-6" : "translate-x-0.5"
                   )} />
                 </button>
               </div>
@@ -855,15 +841,15 @@ export default function Window2D({
               <div className="flex items-center justify-between">
                 <label className="text-xs text-slate-500">Muntin Orizontal</label>
                 <button
-                  onClick={() => {}}
+                  onClick={() => onHorizontalMuntinChange?.(!horizontalMuntin)}
                   className={cn(
                     "w-12 h-6 rounded-full transition-colors",
-                    false ? "bg-primary-600" : "bg-slate-300"
+                    horizontalMuntin ? "bg-primary-600" : "bg-slate-300"
                   )}
                 >
                   <div className={cn(
                     "w-5 h-5 bg-white rounded-full shadow transform transition-transform",
-                    false ? "translate-x-6" : "translate-x-0.5"
+                    horizontalMuntin ? "translate-x-6" : "translate-x-0.5"
                   )} />
                 </button>
               </div>
@@ -876,7 +862,7 @@ export default function Window2D({
                   min="50"
                   max="200"
                   value={handleHeight || 100}
-                  onChange={() => {}}
+                  onChange={(e) => onHandleHeightChange?.(Number(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
@@ -984,12 +970,12 @@ export default function Window2D({
                     ].map((opt) => (
                       <button
                         key={opt.id}
-                        onClick={() => onOpeningTypeChange?.(opt.id as "normal" | "oscilobativ")}
+                        onClick={() => onOpeningTypeChange?.(selectedSashForConfig!, opt.id as OpeningType)}
                         disabled={opt.disabled}
                         className={cn(
                           "p-2 rounded-lg border text-center transition-all text-xs",
                           opt.disabled && "opacity-50 cursor-not-allowed",
-                          openingType === opt.id && !opt.disabled
+                          sashOpeningTypes[selectedSashForConfig!] === opt.id && !opt.disabled
                             ? "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
                             : "border-slate-200 hover:border-primary-300"
                         )}

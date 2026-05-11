@@ -147,6 +147,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     openingDirection: "inward" | "outward";
     sashConfiguration: "stulp" | "montant" | null;
     sashRoles: Record<string, "active" | "inactive" | "fixed">;
+    sashOpeningTypes: Record<string, OpeningType>;
     showThreshold: boolean;
     horizontalMuntin: boolean;
     handleHeight: number;
@@ -160,6 +161,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     openingDirection: "inward",
     sashConfiguration: null,
     sashRoles: {},
+    sashOpeningTypes: {},
     showThreshold: false,
     horizontalMuntin: false,
     handleHeight: 100,
@@ -1123,6 +1125,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           openingDirection={win.openingDirection}
                           sashConfiguration={win.sashConfiguration ?? undefined}
                           sashRoles={win.sashRoles}
+                          sashOpeningTypes={win.sashOpeningTypes}
                           handleHeight={win.handleHeight}
                           showThreshold={win.showThreshold}
                           horizontalMuntin={win.horizontalMuntin}
@@ -1138,6 +1141,31 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           onSashRoleChange={(sashId, role) => {
                             setWindows(prev => prev.map((w, i) => 
                               i === idx ? { ...w, sashRoles: { ...w.sashRoles, [sashId]: role } } : w
+                            ));
+                          }}
+                          onOpeningTypeChange={(sashId, type) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, sashOpeningTypes: { ...w.sashOpeningTypes, [sashId]: type } } : w
+                            ));
+                          }}
+                          onSashConfigurationChange={(config) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, sashConfiguration: config } : w
+                            ));
+                          }}
+                          onShowThresholdChange={(show) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, showThreshold: show } : w
+                            ));
+                          }}
+                          onHorizontalMuntinChange={(show) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, horizontalMuntin: show } : w
+                            ));
+                          }}
+                          onHandleHeightChange={(height) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, handleHeight: height } : w
                             ));
                           }}
                         />
