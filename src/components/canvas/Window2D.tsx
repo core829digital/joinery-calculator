@@ -368,34 +368,6 @@ export default function Window2D({
             <Settings className="w-3 h-3" />
             Config
           </button>
-          {/* Sash Role Toggles */}
-          {config.sashes.length > 1 && onSashRoleChange && (
-            <div className="flex items-center gap-1 ml-1 pl-1 border-l border-slate-200">
-              {config.sashes.map((sash, idx) => {
-                const sashId = sash.side || String(idx);
-                const role = sashRoles[sashId] || "active";
-                const label = sash.side === "left" ? "St" : sash.side === "right" ? "Dr" : sash.side === "center" ? "C" : String(idx + 1);
-                return (
-                  <div key={sashId} className="flex items-center gap-0.5">
-                    <span className="text-[9px] text-slate-400">{label}:</span>
-                    <button
-                      onClick={() => {
-                        const next: SashRole = role === "active" ? "inactive" : role === "inactive" ? "fixed" : "active";
-                        onSashRoleChange(sashId, next);
-                      }}
-                      className={cn(
-                        "px-1 py-0.5 rounded text-[9px] font-medium transition-colors",
-                        role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white"
-                      )}
-                      title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix (fix)"}
-                    >
-                      {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
         {showDimensions && (
           <div className="flex items-center gap-1.5">

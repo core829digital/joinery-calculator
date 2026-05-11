@@ -692,10 +692,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         return (
           <div className="space-y-4">
             <ProductTypePanel selected={productType} onSelect={(v) => setProductType(v)} />
-            <OpeningPanel
-              selected={activeWindow.openingType}
-              onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
-            />
           </div>
         );
       case "profil":
