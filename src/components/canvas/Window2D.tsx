@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import { Settings, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProductType, Color } from "@/types";
@@ -725,8 +724,8 @@ export default function Window2D({
         </div>
       </div>
 
-      {/* Sash Configuration Popup - using portal to render at document root */}
-      {showSashConfig && typeof document !== 'undefined' && createPortal(
+      {/* Sash Configuration Popup */}
+      {showSashConfig && (
         <div 
           className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
           onClick={(e) => {
@@ -897,8 +896,7 @@ export default function Window2D({
               </button>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
     </div>
   );
