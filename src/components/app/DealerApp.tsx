@@ -208,6 +208,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     { id: 1, name: getProductDisplayName(productType) + " #1", ...defaultWindowConfig }
   ]);
   const [activeWindowIndex, setActiveWindowIndex] = useState(0);
+  const [showAddWindowMenu, setShowAddWindowMenu] = useState(false);
   
   const activeWindow = windows[activeWindowIndex];
 
@@ -226,9 +227,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     ));
   };
 
-  const addWindow = () => {
+  const addWindow = (type?: ProductType) => {
     const newId = windows.length + 1;
-    setWindows([...windows, { id: newId, name: getProductDisplayName(productType) + " #" + newId, ...defaultWindowConfig }]);
+    const windowType = type || productType;
+    setWindows([...windows, { id: newId, name: getProductDisplayName(windowType) + " #" + newId, ...defaultWindowConfig }]);
     setActiveWindowIndex(windows.length);
   };
 
@@ -257,6 +259,18 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (!showAddWindowMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('button')) {
+        setShowAddWindowMenu(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showAddWindowMenu]);
 
   const toggleAccessory = useCallback((id: AccessoryType) => {
     setAccessories((prev) =>
@@ -1104,8 +1118,22 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         )}
                       </button>
                     ))}
-                    <button onClick={addWindow} className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200">
+                    <button onClick={() => setShowAddWindowMenu(!showAddWindowMenu)} className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 relative">
                       + Adaugă
+                      {showAddWindowMenu && (
+                        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 min-w-[200px] py-1 max-h-[300px] overflow-y-auto">
+                          <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase border-b border-slate-100">Ferestre</div>
+                          <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră 1 canat</button>
+                          <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră 2 canate</button>
+                          <button onClick={() => { addWindow("window_3_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră 3 canate</button>
+                          <button onClick={() => { addWindow("window_fix"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră Fix</button>
+                          <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase border-t border-b border-slate-100">Uși</div>
+                          <button onClick={() => { addWindow("usa_balcon_1"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Ușă balcon 1 canat</button>
+                          <button onClick={() => { addWindow("usa_balcon_2"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Ușă balcon 2 canate</button>
+                          <button onClick={() => { addWindow("usa_intrare_pvc"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Ușă intrare PVC</button>
+                          <button onClick={() => { addWindow("usa_intrare_aluminiu"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Ușă intrare Aluminiu</button>
+                        </div>
+                      )}
                     </button>
                   </div>
 
