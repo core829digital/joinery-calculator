@@ -149,8 +149,8 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 60; // foarte compact pentru cote
-  const svgHeight = h + 60;
+  const svgWidth = w + 50; // minimal pentru cote
+  const svgHeight = h + 50;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -314,9 +314,9 @@ export default function Window2D({
   };
 
   return (
-    <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
-      <div className="px-4 py-2.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
+    <div className={cn("bg-white rounded-lg border border-slate-200", className)}>
+      <div className="px-3 py-2 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-1">
+        <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Vizualizare 2D</span>
           <span className="text-xs px-2 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">{config.type}</span>
           <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">{openingSide === "left" ? "← Stânga" : "Dreapta →"}</span>
@@ -382,11 +382,11 @@ export default function Window2D({
         )}
       </div>
 
-      <div className="p-2 md:p-4 flex items-center justify-center bg-slate-50 w-full h-full">
+      <div className="p-1 md:p-2 flex items-center justify-center bg-slate-50 w-full h-full">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="max-w-full max-h-full w-auto h-auto"
-          style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
+          className="max-w-full max-h-full w-auto h-auto object-contain"
+          style={{ maxWidth: '100%', maxHeight: '100%' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -405,7 +405,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(30, 30)">
+          <g transform="translate(25, 25)">
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
