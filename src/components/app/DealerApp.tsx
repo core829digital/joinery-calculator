@@ -52,6 +52,8 @@ import {
   Send,
   X,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const MENU_ICONS: Record<string, React.ReactNode> = {
@@ -96,6 +98,12 @@ interface DealerAppProps {
   clientCode?: string | null;
   dealerId?: string;
 }
+
+const SASH_CONFIG_OPTIONS: { key: "stulp" | "montant" | null; label: string; color: string }[] = [
+  { key: "stulp", label: "Stulp", color: "purple" },
+  { key: "montant", label: "Montant", color: "indigo" },
+  { key: null, label: "Niciunul", color: "slate" },
+];
 
 export default function DealerApp({ userRole = "dealer", clientCode, dealerId }: DealerAppProps) {
   const { addOrder } = useAuth();
@@ -166,11 +174,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Popup state for configuration panels (desktop)
   const [showPanelPopup, setShowPanelPopup] = useState(false);
 
-  // Config menu dropdown state
-  const [showConfigMenu, setShowConfigMenu] = useState(false);
-  const configMenuBtnRef = useRef<HTMLButtonElement>(null);
-  const configMenuDropdownRef = useRef<HTMLDivElement>(null);
   const configDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Left sidebar state
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
   // Mobile state
   const [isMobile, setIsMobile] = useState(false);
@@ -510,7 +517,34 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Interior">Int</button>
         <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Exterior">Ext</button>
       </div>
-      <button 
+
+      {/* Sash role toggles in header */}
+      {productType && (productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && (
+        <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
+          <span className="text-[10px] font-medium text-slate-500 mr-1">Canat:</span>
+          {["left", "right"].map((sashId) => {
+            const role = activeWindow.sashRoles[sashId] || "active";
+            const nextMap: Record<string, string> = { active: "inactive", inactive: "fixed", fixed: "active" };
+            const roleClass = role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white";
+            const label = sashId === "left" ? "St" : "Dr";
+            return (
+              <button
+                key={sashId}
+                onClick={() => {
+                  const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
+                  updateActiveWindow("sashRoles", { ...roles, [sashId]: nextMap[role] });
+                }}
+                className={cn("h-5 px-1.5 rounded text-[10px] font-medium transition-colors", roleClass)}
+                title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix"}
+              >
+                {label}: {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <button
         ref={configBtnRef}
         onClick={() => {
           if (!showConfigPopup && configBtnRef.current) {
@@ -521,7 +555,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         }}
         className={cn("px-2 py-1 rounded-lg text-[10px] font-medium border", showConfigPopup ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
       >
-        Config
+        Fereastră
       </button>
     </div>
   );
@@ -530,35 +564,70 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const configDropdown = showConfigPopup && configPopupPos && (
     <div 
       ref={configDropdownRef}
-      className="fixed bg-white border border-slate-200 rounded-xl shadow-2xl p-3 space-y-2 z-[100] w-60"
+      className="fixed bg-white border border-slate-200 rounded-xl shadow-2xl p-3 space-y-2 z-[100] w-56 max-h-[80vh] overflow-y-auto"
       style={{ top: configPopupPos.top, right: configPopupPos.right }}
       onMouseDown={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1">
         <span className="text-[11px] font-semibold text-slate-700">Configurare fereastră</span>
-        <button onClick={() => setShowConfigPopup(false)} className="text-slate-400 hover:text-slate-600 text-xs">×</button>
+        <button onClick={() => setShowConfigPopup(false)} className="text-slate-400 hover:text-slate-600 text-xs leading-none">×</button>
       </div>
-      <div className="text-[10px] font-semibold text-slate-500 mb-1">Canaturi</div>
+
+      {/* Canaturi - fixed widths prevent layout shift */}
+      <div className="text-[10px] font-semibold text-slate-500">Canaturi</div>
       <div className="flex gap-1">
-        <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
-        <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
-        <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
+        {SASH_CONFIG_OPTIONS.map((opt) => {
+          const isActive = activeWindow.sashConfiguration === opt.key;
+          const activeClass = opt.color === "purple" ? "bg-purple-600 text-white" : opt.color === "indigo" ? "bg-indigo-600 text-white" : "bg-slate-600 text-white";
+          return (
+            <button
+              key={opt.label}
+              onClick={() => updateActiveWindow("sashConfiguration", opt.key)}
+              className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", isActive ? activeClass : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
       </div>
-      <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
+
+      {/* Optiuni - fixed widths */}
+      <div className="text-[10px] font-semibold text-slate-500 pt-1">Opțiuni</div>
       <div className="flex gap-1">
-        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
-        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
+        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Prag</button>
+        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Muntin</button>
       </div>
-      <div>
+
+      {/* Handle height slider */}
+      <div className="pt-1">
         <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime mâner: {activeWindow.handleHeight}mm</div>
         <input type="range" min="30" max="200" value={activeWindow.handleHeight} onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
       </div>
+
+      {/* Roluri Canaturi */}
       {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
-        <div>
+        <div className="pt-1">
           <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
           <div className="flex gap-1">
-            <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}</button>
-            <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}</button>
+            {["left", "right"].map((sashId) => {
+              const role = activeWindow.sashRoles[sashId] || "active";
+              const nextMap: Record<string, string> = { active: "inactive", inactive: "fixed", fixed: "active" };
+              const roleClass = role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white";
+              const label = sashId === "left" ? "St" : "Dr";
+              return (
+                <button
+                  key={sashId}
+                  onClick={() => {
+                    const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
+                    updateActiveWindow("sashRoles", { ...roles, [sashId]: nextMap[role] });
+                  }}
+                  className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", roleClass)}
+                  title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix"}
+                >
+                  {label}: {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -589,119 +658,60 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       window.removeEventListener("resize", handleResize);
     };
   }, [showConfigPopup]);
-  // Close config menu dropdown on click outside
-  useEffect(() => {
-    if (!showConfigMenu) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        configMenuDropdownRef.current &&
-        !configMenuDropdownRef.current.contains(e.target as Node) &&
-        configMenuBtnRef.current &&
-        !configMenuBtnRef.current.contains(e.target as Node)
-      ) {
-        setShowConfigMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showConfigMenu]);
-
-  // Config menu for AppLayout toolbar
-  const configMenu = (
-    <div className="relative">
-      <button
-        ref={configMenuBtnRef}
-        onClick={() => setShowConfigMenu(!showConfigMenu)}
-        className={cn(
-          "px-2 py-1 rounded-lg text-[10px] font-medium border transition-colors",
-          showConfigMenu
-            ? "bg-primary-600 text-white border-primary-600"
-            : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
-        )}
-      >
-        Configurare
-      </button>
-      {showConfigMenu && (
-        <div
-          ref={configMenuDropdownRef}
-          className="absolute right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl p-2 w-48 z-[100]"
-        >
-          {MENU_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => {
-                setActiveMenu(cat.id);
-                setSelectedComponent(null);
-                setShowPanelPopup(true);
-                setShowConfigMenu(false);
-              }}
-              className={cn(
-                "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors",
-                activeMenu === cat.id
-                  ? "bg-primary-600 text-white"
-                  : "text-slate-600 hover:bg-slate-100"
-              )}
-            >
-              {MENU_ICONS[cat.id]}
-              <span>{cat.name}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
 
   // Popup renderer for configuration panels
+  const closePanel = () => setShowPanelPopup(false);
+
   const renderPopupContent = () => {
     switch (activeMenu) {
       case "produse":
         return (
           <div className="space-y-4">
-            <ProductTypePanel selected={productType} onSelect={setProductType} />
+            <ProductTypePanel selected={productType} onSelect={(v) => { setProductType(v); closePanel(); }} />
             <DimensionsPanel
               width={activeWindow.width}
               height={activeWindow.height}
-              onWidthChange={(w) => updateActiveWindow("width", w)}
-              onHeightChange={(h) => updateActiveWindow("height", h)}
+              onWidthChange={(w) => { updateActiveWindow("width", w); closePanel(); }}
+              onHeightChange={(h) => { updateActiveWindow("height", h); closePanel(); }}
               productType={productType}
             />
             <OpeningPanel
               selected={activeWindow.openingType}
-              onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
+              onSelect={(v) => { updateActiveWindow("openingType", v as OpeningType); closePanel(); }}
             />
           </div>
         );
       case "profil":
-        return <ProfilePanel selected={profileSeries} onSelect={setProfileSeries} />;
+        return <ProfilePanel selected={profileSeries} onSelect={(v) => { setProfileSeries(v); closePanel(); }} />;
       case "culori":
         return (
           <ColorsPanel
             interiorColor={interiorColor}
             exteriorColor={exteriorColor}
-            onInteriorChange={setInteriorColor}
-            onExteriorChange={setExteriorColor}
+            onInteriorChange={(v) => { setInteriorColor(v); closePanel(); }}
+            onExteriorChange={(v) => { setExteriorColor(v); closePanel(); }}
           />
         );
       case "sticla":
-        return <GlassPanel selected={glassType} onSelect={setGlassType} />;
+        return <GlassPanel selected={glassType} onSelect={(v) => { setGlassType(v); closePanel(); }} />;
       case "feronerie":
         return (
           <HardwarePanel
             brand={hardwareBrand}
             level={hardwareLevel}
-            onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)}
-            onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)}
+            onBrandChange={(v) => { setHardwareBrand(v as HardwareBrand); closePanel(); }}
+            onLevelChange={(v) => { setHardwareLevel(v as HardwareLevel); closePanel(); }}
           />
         );
       case "accesorii":
-        return <AccessoriesPanel selected={accessories} onToggle={toggleAccessory} />;
+        return <AccessoriesPanel selected={accessories} onToggle={(id) => { toggleAccessory(id); closePanel(); }} />;
       case "servicii":
         return (
           <ServicesPanel
             distance={distance}
             includeMontaj={includeMontaj}
-            onDistanceChange={setDistance}
-            onMontajChange={setIncludeMontaj}
+            onDistanceChange={(v) => { setDistance(v); closePanel(); }}
+            onMontajChange={(v) => { setIncludeMontaj(v); closePanel(); }}
           />
         );
       case "ofertare":
@@ -726,9 +736,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             )}
             <ActionsPanel
               price={productType ? 1 : null}
-              onRequestPDF={handleExportPDF}
-              onSendOrder={handleSendEmail}
-              onReset={handleReset}
+              onRequestPDF={() => { handleExportPDF(); closePanel(); }}
+              onSendOrder={() => { handleSendEmail(); closePanel(); }}
+              onReset={() => { handleReset(); closePanel(); }}
             />
           </div>
         );
@@ -974,12 +984,65 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         onSearchChange={handleSearch}
         onToggleFilter={() => setShowFilters(true)}
         windowControls={windowControls}
-        configMenu={configMenu}
       >
-        <div className="flex flex-col md:flex-row h-full">
-        {/* Center - Preview & Info - Full width */}
+        <div className="flex h-full">
+          {/* Left Sidebar - Configurare Proiect */}
+          <div
+            className={cn(
+              "hidden md:flex flex-col border-r border-slate-200 bg-white transition-all duration-300 ease-in-out flex-shrink-0",
+              sidebarExpanded ? "w-56" : "w-12"
+            )}
+          >
+            {/* Toggle */}
+            <button
+              onClick={() => setSidebarExpanded(!sidebarExpanded)}
+              className="flex items-center justify-center h-10 border-b border-slate-100 hover:bg-slate-50 transition-colors"
+              title={sidebarExpanded ? "Restrange meniu" : "Extinde meniu"}
+            >
+              {sidebarExpanded ? (
+                <ChevronLeft className="w-4 h-4 text-slate-500" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-slate-500" />
+              )}
+            </button>
 
-        <div className="flex-1 flex flex-col overflow-hidden min-h-0">
+            {/* Sidebar Header */}
+            {sidebarExpanded && (
+              <div className="px-3 py-2 border-b border-slate-100">
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Configurare Proiect
+                </span>
+              </div>
+            )}
+
+            {/* Menu Items */}
+            <div className="flex-1 overflow-y-auto py-2 space-y-0.5">
+              {MENU_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setActiveMenu(cat.id);
+                    setSelectedComponent(null);
+                    setShowPanelPopup(true);
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2.5 text-left text-xs font-medium transition-colors",
+                    activeMenu === cat.id
+                      ? "bg-primary-50 text-primary-700 border-r-2 border-primary-600"
+                      : "text-slate-600 hover:bg-slate-50",
+                    !sidebarExpanded && "justify-center px-0"
+                  )}
+                  title={cat.name}
+                >
+                  <span className="flex-shrink-0">{MENU_ICONS[cat.id]}</span>
+                  {sidebarExpanded && <span className="truncate">{cat.name}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Center - Preview & Info */}
+          <div className="flex-1 flex flex-col overflow-hidden min-h-0">
           {/* 2D Preview - Always visible on mobile */}
           {(showPreview || isMobile) && (
             <div className="flex-1 flex flex-col min-h-0 p-2">

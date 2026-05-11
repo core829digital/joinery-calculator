@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB923C"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FB923C"/>
+      <stop offset="50%" stop-color="#EA580C"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Window panes -->
+  <rect x="35" y="5" width="55" height="45" fill="url(#blueGrad)" rx="3" stroke="white" stroke-width="1.5"/>
+  <rect x="97" y="5" width="55" height="45" fill="url(#blueGrad)" rx="3" stroke="white" stroke-width="1.5"/>
+  <rect x="35" y="52" width="55" height="45" fill="#93C5FD" rx="3" stroke="white" stroke-width="1.5"/>
+  <rect x="97" y="52" width="55" height="45" fill="#93C5FD" rx="3" stroke="white" stroke-width="1.5"/>
+  
+  <!-- Orange arrow -->
+  <path d="M 50 85 L 80 55 L 70 55 L 90 35 L 110 55 L 100 55 L 130 85" fill="none" stroke="url(#orangeGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="125,80 140,95 120,95" fill="url(#orangeGrad)"/>
+  
+  <!-- Text -->
+  <text x="100" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="url(#textGrad)" letter-spacing="2">WINMEETH</text>
+</svg>

@@ -25,7 +25,6 @@ interface AppLayoutProps {
   onSearchChange?: (query: string) => void;
   onToggleFilter?: () => void;
   windowControls?: React.ReactNode;
-  configMenu?: React.ReactNode;
 }
 
 export default function AppLayout({
@@ -38,7 +37,6 @@ export default function AppLayout({
   onSearchChange,
   onToggleFilter,
   windowControls,
-  configMenu,
 }: AppLayoutProps) {
   const [windowFocused, setWindowFocused] = useState(true);
   const { user } = useAuth();
@@ -71,13 +69,7 @@ export default function AppLayout({
       >
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center shadow-lg overflow-hidden">
-            <svg viewBox="0 0 100 100" className="w-full h-full p-1">
-              <rect x="10" y="10" width="35" height="35" fill="#60A5FA" rx="2"/>
-              <rect x="55" y="10" width="35" height="35" fill="#60A5FA" rx="2"/>
-              <rect x="10" y="55" width="35" height="35" fill="#93C5FD" rx="2"/>
-              <rect x="55" y="55" width="35" height="35" fill="#93C5FD" rx="2"/>
-              <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
-            </svg>
+            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain" />
           </div>
           <span className="text-white font-semibold text-sm tracking-wide">
             Winmeeth SRL - Calculator Tâmplărie
@@ -109,13 +101,7 @@ export default function AppLayout({
       <div className="h-14 bg-gradient-to-r from-primary-600 to-primary-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden">
-            <svg viewBox="0 0 100 100" className="w-full h-full p-1">
-              <rect x="10" y="10" width="35" height="35" fill="white" rx="2"/>
-              <rect x="55" y="10" width="35" height="35" fill="white" rx="2"/>
-              <rect x="10" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
-              <rect x="55" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
-              <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
-            </svg>
+            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain" />
           </div>
           <span className="text-white font-semibold text-base">Winmeeth</span>
         </div>
@@ -167,13 +153,6 @@ export default function AppLayout({
         {windowControls && (
           <div className="hidden md:flex items-center">
             {windowControls}
-          </div>
-        )}
-
-        {/* Config Menu */}
-        {configMenu && (
-          <div className="hidden md:flex items-center">
-            {configMenu}
           </div>
         )}
 

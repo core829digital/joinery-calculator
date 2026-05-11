@@ -91,13 +91,7 @@ export default function LoginPage() {
           className="text-center mb-8"
         >
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-primary-500/30 overflow-hidden">
-            <svg viewBox="0 0 100 100" className="w-full h-full p-2">
-              <rect x="10" y="10" width="35" height="35" fill="white" rx="2"/>
-              <rect x="55" y="10" width="35" height="35" fill="white" rx="2"/>
-              <rect x="10" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
-              <rect x="55" y="55" width="35" height="35" fill="white" rx="2" opacity="0.7"/>
-              <path d="M 50 10 L 50 90 M 10 50 L 90 50" stroke="white" strokeWidth="3"/>
-            </svg>
+            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain p-1" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Winmeeth SRL</h1>
           <p className="text-slate-400">Calculator Tâmplărie PVC & Aluminiu</p>

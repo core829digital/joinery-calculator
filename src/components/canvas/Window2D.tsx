@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import type { ProductType, Color } from "@/types";
 import { COLORS } from "@/data/joinery";
@@ -47,6 +47,7 @@ interface Window2DProps {
   onComponentClick?: (component: WindowComponent) => void;
   onDimensionChange?: (width: number, height: number) => void;
   onSashRoleChange?: (sashId: string, role: SashRole) => void;
+  onOpeningTypeChange?: (type: "normal" | "oscilobativ") => void;
   glassType?: string;
 }
 
@@ -70,6 +71,7 @@ export default function Window2D({
   onComponentClick,
   onDimensionChange,
   onSashRoleChange,
+  onOpeningTypeChange,
   glassType,
 }: Window2DProps) {
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
@@ -150,6 +152,30 @@ export default function Window2D({
         };
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
+
+  // Compute available opening types based on sash roles
+  const openingTypeOptions = useMemo(() => {
+    const roles = config.sashes.map((sash, idx) => {
+      const sashKey = sash.side || String(idx);
+      return sashRoles[sashKey] || ((sash.side === openingSide) || (config.sashes.length === 1) ? "active" : "inactive");
+    });
+
+    const hasActive = roles.includes("active");
+    const hasInactive = roles.includes("inactive");
+    const allFixed = roles.length > 0 && roles.every((r) => r === "fixed");
+
+    if (allFixed) return { show: false, options: [] as ("normal" | "oscilobativ")[] };
+    if (hasActive) return { show: true, options: ["normal", "oscilobativ"] as ("normal" | "oscilobativ")[] };
+    if (hasInactive) return { show: true, options: ["normal"] as ("normal" | "oscilobativ")[] };
+    return { show: false, options: [] as ("normal" | "oscilobativ")[] };
+  }, [config.sashes, sashRoles, openingSide]);
+
+  // Reset opening type if current value is no longer valid
+  useEffect(() => {
+    if (openingType === "oscilobativ" && !openingTypeOptions.options.includes("oscilobativ")) {
+      onOpeningTypeChange?.("normal");
+    }
+  }, [openingType, openingTypeOptions.options, onOpeningTypeChange]);
 
   const margin = Math.max(20, 35 * scale);
   const svgWidth = w + margin * 2;
@@ -318,8 +344,8 @@ export default function Window2D({
 
   return (
     <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
-      <div className="px-2 py-1.5 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-1">
-        <div className="flex items-center gap-1 flex-wrap">
+      <div className="px-2 py-1 bg-gradient-to-r from-slate-100 to-slate-50 border-b border-slate-200 flex items-center justify-between h-7">
+        <div className="flex items-center gap-1 overflow-hidden">
           <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wide">2D</span>
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary-100 text-primary-700 font-medium">{config.type}</span>
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-medium">{openingSide === "left" ? "← St" : "Dr →"}</span>
@@ -330,6 +356,24 @@ export default function Window2D({
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${sashConfiguration === "stulp" ? "bg-purple-100 text-purple-700" : "bg-indigo-100 text-indigo-700"}`}>
               {sashConfiguration === "stulp" ? "Stulp" : "Mont"}
             </span>
+          )}
+          {/* Opening Type Dropdown - gated by sash roles */}
+          {onSashRoleChange && openingTypeOptions.show && (
+            <select
+              value={openingType}
+              onChange={(e) => {
+                const val = e.target.value as "normal" | "oscilobativ";
+                onOpeningTypeChange?.(val);
+              }}
+              className="text-[9px] h-4 px-1 rounded border border-slate-200 bg-white text-slate-600"
+            >
+              {openingTypeOptions.options.includes("normal") && (
+                <option value="normal">Normal</option>
+              )}
+              {openingTypeOptions.options.includes("oscilobativ") && (
+                <option value="oscilobativ">Oscilobatant</option>
+              )}
+            </select>
           )}
           {/* Sash Role Toggles */}
           {config.sashes.length > 1 && onSashRoleChange && (
