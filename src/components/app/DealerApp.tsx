@@ -767,6 +767,36 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   return (
     <>
       {configDropdown}
+      
+      {/* Add Window Dropdown - Fixed positioned to avoid z-index issues */}
+      {showAddWindowMenu && (
+        <div className="fixed inset-0 z-[9998]" onClick={() => setShowAddWindowMenu(false)}>
+          <div 
+            className="absolute bg-white border border-slate-200 rounded-lg shadow-xl min-w-[200px] z-[9999]"
+            style={{ 
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">Adaugă produs nou</div>
+            <div className="p-2">
+              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase">Ferestre</div>
+              <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 1 canat</button>
+              <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 2 canate</button>
+              <button onClick={() => { addWindow("window_3_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 3 canate</button>
+              <button onClick={() => { addWindow("window_fix"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră Fix</button>
+              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase border-t border-slate-100 mt-2">Uși</div>
+              <button onClick={() => { addWindow("usa_balcon_1"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă balcon 1 canat</button>
+              <button onClick={() => { addWindow("usa_balcon_2"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă balcon 2 canate</button>
+              <button onClick={() => { addWindow("usa_intrare_pvc"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă intrare PVC</button>
+              <button onClick={() => { addWindow("usa_intrare_aluminiu"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă intrare Aluminiu</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {showPanelPopup && (
         <div
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
@@ -1117,20 +1147,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       >
                         + Adaugă
                       </button>
-                      {showAddWindowMenu && (
-                        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg min-w-[180px] max-w-[90vw] z-[9999] overflow-visible">
-                          <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase border-b border-slate-100">Ferestre</div>
-                          <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Fereastră 1 canat</button>
-                          <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Fereastră 2 canate</button>
-                          <button onClick={() => { addWindow("window_3_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Fereastră 3 canate</button>
-                          <button onClick={() => { addWindow("window_fix"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Fereastră Fix</button>
-                          <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase border-t border-b border-slate-100">Uși</div>
-                          <button onClick={() => { addWindow("usa_balcon_1"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Ușă balcon 1 canat</button>
-                          <button onClick={() => { addWindow("usa_balcon_2"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Ușă balcon 2 canate</button>
-                          <button onClick={() => { addWindow("usa_intrare_pvc"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Ușă intrare PVC</button>
-                          <button onClick={() => { addWindow("usa_intrare_aluminiu"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-100 text-slate-700 whitespace-nowrap">Ușă intrare Aluminiu</button>
-                        </div>
-                      )}
                     </div>
                   </div>
 
