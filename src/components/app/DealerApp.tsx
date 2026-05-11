@@ -127,6 +127,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [activeMenu, setActiveMenu] = useState("produse");
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview, setShowPreview] = useState(true);
+  const [showConfigPopup, setShowConfigPopup] = useState(false);
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -880,7 +881,71 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       <button onClick={() => setOpeningDirection("inward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600")}>Int</button>
                       <button onClick={() => setOpeningDirection("outward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600")}>Ext</button>
                     </div>
+                    <button 
+                      onClick={() => setShowConfigPopup(!showConfigPopup)}
+                      className={cn("px-2 py-0.5 rounded text-[10px] font-medium", showConfigPopup ? "bg-purple-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")}
+                    >
+                      Config
+                    </button>
                   </div>
+
+                  {/* Config Popup */}
+                  {showConfigPopup && (
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 mb-2 space-y-2">
+                      <div className="text-[10px] font-semibold text-slate-500 mb-1">Configurare Canaturi</div>
+                      <div className="flex gap-1">
+                        <button onClick={() => setSashConfiguration("stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
+                        <button onClick={() => setSashConfiguration("montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
+                        <button onClick={() => setSashConfiguration(null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
+                      </div>
+                      
+                      <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
+                      <div className="flex gap-1">
+                        <button onClick={() => setShowThreshold(!showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
+                        <button onClick={() => setHorizontalMuntin(!horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
+                      </div>
+                      
+                      <div>
+                        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime maner: {handleHeight}mm</div>
+                        <input
+                          type="range"
+                          min="30"
+                          max="200"
+                          value={handleHeight}
+                          onChange={(e) => setHandleHeight(Number(e.target.value))}
+                          className="w-full h-1.5 accent-primary-600"
+                        />
+                      </div>
+                      
+                      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && sashConfiguration) && (
+                        <div>
+                          <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => {
+                                const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
+                                const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
+                                setSashRoles({ ...roles, left: nextRole[roles.left as keyof typeof nextRole] });
+                              }}
+                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashRoles.left === "active" ? "bg-green-600 text-white" : sashRoles.left === "inactive" ? "bg-amber-600 text-white" : sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
+                            >
+                              St: {sashRoles.left === "active" ? "Activ" : sashRoles.left === "inactive" ? "Inact" : "Fix"}
+                            </button>
+                            <button
+                              onClick={() => {
+                                const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
+                                const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
+                                setSashRoles({ ...roles, right: nextRole[roles.right as keyof typeof nextRole] });
+                              }}
+                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", sashRoles.right === "active" ? "bg-green-600 text-white" : sashRoles.right === "inactive" ? "bg-amber-600 text-white" : sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
+                            >
+                              Dr: {sashRoles.right === "active" ? "Activ" : sashRoles.right === "inactive" ? "Inact" : "Fix"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Window Tabs */}
                   <div className="flex items-center gap-1 mb-2 overflow-x-auto">
