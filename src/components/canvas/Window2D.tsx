@@ -45,6 +45,8 @@ interface Window2DProps {
   scale?: number;
   className?: string;
   onComponentClick?: (component: WindowComponent) => void;
+  onDimensionChange?: (width: number, height: number) => void;
+  glassType?: string;
 }
 
 export default function Window2D({
@@ -62,11 +64,15 @@ export default function Window2D({
   showThreshold = false,
   horizontalMuntin = false,
   showDimensions = true,
-  scale = 0.55,
+  scale = 0.65,
   className,
   onComponentClick,
+  onDimensionChange,
+  glassType,
 }: Window2DProps) {
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
+  const [localWidth, setLocalWidth] = useState(width);
+  const [localHeight, setLocalHeight] = useState(height);
 
   // Frame colors from props (used in legend)
   const _frameColorInterior = interiorColor && COLOR_MAP[interiorColor] ? COLOR_MAP[interiorColor] : "#F8F9FA";
@@ -325,12 +331,53 @@ export default function Window2D({
               {sashConfiguration === "stulp" ? "Stulp" : "Montant"}
             </span>
           )}
+          {glassType && (
+            <span className="text-xs px-2 py-0.5 rounded bg-cyan-100 text-cyan-700 font-medium">
+              {glassType}
+            </span>
+          )}
         </div>
         {showDimensions && (
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            <span className="font-medium">{width} × {height} mm</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <label className="text-xs text-slate-500 font-medium">L:</label>
+              <input
+                type="number"
+                value={localWidth}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 0;
+                  setLocalWidth(val);
+                  if (val >= 300 && val <= 3000) {
+                    onDimensionChange?.(val, localHeight);
+                  }
+                }}
+                className="w-16 px-2 py-1 text-xs font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
+                min={300}
+                max={3000}
+              />
+              <span className="text-xs text-slate-400">mm</span>
+            </div>
+            <span className="text-slate-300">×</span>
+            <div className="flex items-center gap-1">
+              <label className="text-xs text-slate-500 font-medium">H:</label>
+              <input
+                type="number"
+                value={localHeight}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 0;
+                  setLocalHeight(val);
+                  if (val >= 300 && val <= 3000) {
+                    onDimensionChange?.(localWidth, val);
+                  }
+                }}
+                className="w-16 px-2 py-1 text-xs font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
+                min={300}
+                max={3000}
+              />
+              <span className="text-xs text-slate-400">mm</span>
+            </div>
             <span className="text-slate-300">|</span>
-            <span>{((width * height) / 1000000).toFixed(3)} m²</span>
+            <span className="text-xs text-slate-500">{((localWidth * localHeight) / 1000000).toFixed(3)} m²</span>
           </div>
         )}
       </div>
@@ -450,6 +497,31 @@ export default function Window2D({
                   fill="url(#glassShine)"
                   pointerEvents="none"
                 />
+                {/* Eticheta tip sticla pe desen */}
+                {glassType && sash.w > 80 * scale && (
+                  <g>
+                    <rect
+                      x={sash.x + sash.w / 2 - 20 * scale}
+                      y={sash.y + sash.h / 2 - 6 * scale}
+                      width={40 * scale}
+                      height={12 * scale}
+                      fill="rgba(255,255,255,0.85)"
+                      rx={2 * scale}
+                      stroke="#90CAF9"
+                      strokeWidth={0.5 * scale}
+                    />
+                    <text
+                      x={sash.x + sash.w / 2}
+                      y={sash.y + sash.h / 2 + 2 * scale}
+                      textAnchor="middle"
+                      fontSize={5 * scale}
+                      fill="#1565C0"
+                      fontWeight="600"
+                    >
+                      {glassType}
+                    </text>
+                  </g>
+                )}
 
                 {/* BAGHETE / Glazing beads */}
                 <rect

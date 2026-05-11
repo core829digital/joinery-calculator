@@ -867,8 +867,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       showThreshold={showThreshold}
                       horizontalMuntin={horizontalMuntin}
                       showDimensions={true}
-                      scale={0.4}
+                      scale={0.65}
+                      glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                       onComponentClick={handleComponentClick}
+                      onDimensionChange={(newWidth, newHeight) => {
+                        setWidth(newWidth);
+                        setHeight(newHeight);
+                      }}
                     />
                   </div>
 
