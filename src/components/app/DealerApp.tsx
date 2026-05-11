@@ -659,59 +659,57 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     };
   }, [showConfigPopup]);
 
-  // Popup renderer for configuration panels
-  const closePanel = () => setShowPanelPopup(false);
-
+  // Popup renderer for configuration panels - NO auto-close, user saves manually
   const renderPopupContent = () => {
     switch (activeMenu) {
       case "produse":
         return (
           <div className="space-y-4">
-            <ProductTypePanel selected={productType} onSelect={(v) => { setProductType(v); closePanel(); }} />
+            <ProductTypePanel selected={productType} onSelect={(v) => setProductType(v)} />
             <DimensionsPanel
               width={activeWindow.width}
               height={activeWindow.height}
-              onWidthChange={(w) => { updateActiveWindow("width", w); closePanel(); }}
-              onHeightChange={(h) => { updateActiveWindow("height", h); closePanel(); }}
+              onWidthChange={(w) => updateActiveWindow("width", w)}
+              onHeightChange={(h) => updateActiveWindow("height", h)}
               productType={productType}
             />
             <OpeningPanel
               selected={activeWindow.openingType}
-              onSelect={(v) => { updateActiveWindow("openingType", v as OpeningType); closePanel(); }}
+              onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
             />
           </div>
         );
       case "profil":
-        return <ProfilePanel selected={profileSeries} onSelect={(v) => { setProfileSeries(v); closePanel(); }} />;
+        return <ProfilePanel selected={profileSeries} onSelect={(v) => setProfileSeries(v)} />;
       case "culori":
         return (
           <ColorsPanel
             interiorColor={interiorColor}
             exteriorColor={exteriorColor}
-            onInteriorChange={(v) => { setInteriorColor(v); closePanel(); }}
-            onExteriorChange={(v) => { setExteriorColor(v); closePanel(); }}
+            onInteriorChange={(v) => setInteriorColor(v)}
+            onExteriorChange={(v) => setExteriorColor(v)}
           />
         );
       case "sticla":
-        return <GlassPanel selected={glassType} onSelect={(v) => { setGlassType(v); closePanel(); }} />;
+        return <GlassPanel selected={glassType} onSelect={(v) => setGlassType(v)} />;
       case "feronerie":
         return (
           <HardwarePanel
             brand={hardwareBrand}
             level={hardwareLevel}
-            onBrandChange={(v) => { setHardwareBrand(v as HardwareBrand); closePanel(); }}
-            onLevelChange={(v) => { setHardwareLevel(v as HardwareLevel); closePanel(); }}
+            onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)}
+            onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)}
           />
         );
       case "accesorii":
-        return <AccessoriesPanel selected={accessories} onToggle={(id) => { toggleAccessory(id); closePanel(); }} />;
+        return <AccessoriesPanel selected={accessories} onToggle={(id) => toggleAccessory(id)} />;
       case "servicii":
         return (
           <ServicesPanel
             distance={distance}
             includeMontaj={includeMontaj}
-            onDistanceChange={(v) => { setDistance(v); closePanel(); }}
-            onMontajChange={(v) => { setIncludeMontaj(v); closePanel(); }}
+            onDistanceChange={(v) => setDistance(v)}
+            onMontajChange={(v) => setIncludeMontaj(v)}
           />
         );
       case "ofertare":
@@ -736,9 +734,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             )}
             <ActionsPanel
               price={productType ? 1 : null}
-              onRequestPDF={() => { handleExportPDF(); closePanel(); }}
-              onSendOrder={() => { handleSendEmail(); closePanel(); }}
-              onReset={() => { handleReset(); closePanel(); }}
+              onRequestPDF={() => handleExportPDF()}
+              onSendOrder={() => handleSendEmail()}
+              onReset={() => handleReset()}
             />
           </div>
         );
@@ -774,6 +772,21 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             </div>
             <div className="p-4">
               {renderPopupContent()}
+            </div>
+            <div className="flex justify-end gap-3 p-4 border-t border-slate-100 bg-slate-50">
+              <button
+                onClick={() => setShowPanelPopup(false)}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                Renunță
+              </button>
+              <button
+                onClick={() => setShowPanelPopup(false)}
+                className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
+              >
+                <Check className="w-4 h-4" />
+                Salvează și închide
+              </button>
             </div>
           </div>
         </div>
