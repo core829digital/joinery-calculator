@@ -28,6 +28,28 @@ const COMPONENT_LABELS: Record<WindowComponent, string> = {
 
 export type SashRole = "active" | "inactive" | "fixed";
 
+const HARDWARE_HANDLE_COLORS: Record<string, string> = {
+  siegenia: "#A0A0A0",
+  gu: "#A0A0A0",
+  maco: "#B8B8B8",
+  roto: "#888888",
+  hoppe: "#C0C0C0",
+  axor: "#A0A0A0",
+  vhs: "#909090",
+  winkhaus: "#989898",
+};
+
+const HARDWARE_HANDLE_COLORS_DARK: Record<string, string> = {
+  siegenia: "#505050",
+  gu: "#505050",
+  maco: "#606060",
+  roto: "#404040",
+  hoppe: "#606060",
+  axor: "#505050",
+  vhs: "#505050",
+  winkhaus: "#505050",
+};
+
 interface Window2DProps {
   productType: ProductType;
   width: number;
@@ -35,7 +57,6 @@ interface Window2DProps {
   interiorColor: Color | null;
   exteriorColor: Color | null;
   openingSide?: "left" | "right";
-  openingType?: "normal" | "oscilobativ";
   openingDirection?: "inward" | "outward";
   sashConfiguration?: "stulp" | "montant";
   sashRoles?: Record<string, SashRole>;
@@ -55,6 +76,7 @@ interface Window2DProps {
   onHorizontalMuntinChange?: (show: boolean) => void;
   onHandleHeightChange?: (height: number) => void;
   glassType?: string;
+  hardwareBrand?: string;
 }
 
 export default function Window2D({
@@ -64,7 +86,6 @@ export default function Window2D({
   interiorColor,
   exteriorColor,
   openingSide = "right",
-  openingType = "normal",
   openingDirection = "inward",
   sashConfiguration,
   sashRoles = {},
@@ -84,6 +105,7 @@ export default function Window2D({
   onHorizontalMuntinChange,
   onHandleHeightChange,
   glassType,
+  hardwareBrand,
 }: Window2DProps) {
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
   const [localWidth, setLocalWidth] = useState(width);
@@ -91,9 +113,40 @@ export default function Window2D({
   const [showSashConfig, setShowSashConfig] = useState(false);
   const [selectedSashForConfig, setSelectedSashForConfig] = useState<string | null>(null);
 
-  // Frame colors from props (used in legend)
-  const _frameColorInterior = interiorColor && COLOR_MAP[interiorColor] ? COLOR_MAP[interiorColor] : "#F8F9FA";
-  const _frameColorExterior = exteriorColor && COLOR_MAP[exteriorColor] ? COLOR_MAP[exteriorColor] : "#E9ECEF";
+  const getTocColor = () => {
+    if (interiorColor && COLOR_MAP[interiorColor]) {
+      return COLOR_MAP[interiorColor];
+    }
+    return "#F8F9FA";
+  };
+
+  const getTocStrokeColor = () => {
+    if (exteriorColor && COLOR_MAP[exteriorColor]) {
+      return COLOR_MAP[exteriorColor];
+    }
+    return "#E9ECEF";
+  };
+
+  const getHandleColor = () => {
+    if (!hardwareBrand) return "#9CA3AF";
+    if (HARDWARE_HANDLE_COLORS_DARK[hardwareBrand]) {
+      return HARDWARE_HANDLE_COLORS_DARK[hardwareBrand];
+    }
+    return "#9CA3AF";
+  };
+
+  const getHandleAccentColor = () => {
+    if (!hardwareBrand) return "#D1D5DB";
+    if (HARDWARE_HANDLE_COLORS[hardwareBrand]) {
+      return HARDWARE_HANDLE_COLORS[hardwareBrand];
+    }
+    return "#D1D5DB";
+  };
+
+  const tocColor = getTocColor();
+  const tocStrokeColor = getTocStrokeColor();
+  const handleColor = getHandleColor();
+  const handleAccentColor = getHandleAccentColor();
 
   const w = width * scale;
   const h = height * scale;
@@ -191,7 +244,8 @@ export default function Window2D({
     const sashRole = sashRoles[sashKey] || 
       ((sash.side === openingSide) || (config.sashes.length === 1) ? "active" : "inactive");
 
-    if (sashRole === "fixed") return null;
+    const sashOpeningType = sashOpeningTypes[sashKey] || "normal";
+    const isOscilobatant = sashOpeningType === "oscilobatant";
 
     const isLeft = sash.side === "left";
     const isInward = openingDirection === "inward";
@@ -210,6 +264,17 @@ export default function Window2D({
     const farX = isLeft ? rightX : leftX;
     const handleXPos = isLeft ? rightX : leftX;
 
+    if (sashRole === "fixed") {
+      return (
+        <g key={`fixed-${idx}`} opacity={0.95}>
+          <line x1={leftX} y1={topY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} />
+          <line x1={rightX} y1={topY} x2={leftX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} />
+          <circle cx={centerX} cy={centerY} r={4 * scale} fill="none" stroke={lineColor} strokeWidth={1.5 * scale} opacity={0.6} />
+          <text x={centerX} y={topY - 8 * scale} textAnchor="middle" fontSize={5 * scale} fill={lineColor} fontWeight="bold">FIX</text>
+        </g>
+      );
+    }
+
     if (sashRole === "inactive") {
       return (
         <g key={`inactive-${idx}`} opacity={0.9}>
@@ -219,13 +284,14 @@ export default function Window2D({
           <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * scale} strokeDasharray={`${4 * scale} ${3 * scale}`} />
           <circle cx={hingeX} cy={topY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
           <circle cx={hingeX} cy={bottomY} r={3 * scale} fill={lineColor} stroke="white" strokeWidth={0.8 * scale} />
-          <circle cx={centerX} cy={centerY} r={3.5 * scale} fill="#F59E0B" stroke="white" strokeWidth={0.8 * scale} />
+          <circle cx={centerX} cy={centerY} r={4.5 * scale} fill="#F59E0B" stroke="white" strokeWidth={0.8 * scale} />
+          <text x={centerX - 3 * scale} y={centerY + 1.5 * scale} textAnchor="middle" fontSize={7 * scale} fill="white" fontWeight="bold">+</text>
           <text x={centerX} y={topY - 8 * scale} textAnchor="middle" fontSize={5 * scale} fill="#F59E0B" fontWeight="bold">INACTIV</text>
         </g>
       );
     }
 
-    if (openingType === "oscilobativ") {
+    if (isOscilobatant) {
       return (
         <g key={`oscilo-${idx}`} opacity={0.95}>
           <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * scale} />
@@ -313,8 +379,8 @@ export default function Window2D({
           width={handleW}
           height={handleH}
           rx={2 * scale}
-          fill={hoveredComponent === "maner" ? "#2563EB" : "#9CA3AF"}
-          stroke={hoveredComponent === "maner" ? "#1D4ED8" : "#6B7280"}
+          fill={hoveredComponent === "maner" ? handleColor : handleAccentColor}
+          stroke={hoveredComponent === "maner" ? "#1D4ED8" : handleColor}
           strokeWidth={hoveredComponent === "maner" ? 1 : 0.5}
         />
         <rect
@@ -323,7 +389,7 @@ export default function Window2D({
           width={handleW - 3 * scale}
           height={handleH - 3 * scale}
           rx={1.5 * scale}
-          fill={hoveredComponent === "maner" ? "#60A5FA" : "#D1D5DB"}
+          fill={hoveredComponent === "maner" ? "#60A5FA" : "#E5E7EB"}
           stroke="#FFFFFF"
           strokeWidth={0.3 * scale}
         />
@@ -414,9 +480,13 @@ export default function Window2D({
               <stop offset="100%" stopColor="#2196F3" stopOpacity="0.05" />
             </linearGradient>
             <linearGradient id="frameGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#F8F9FA" />
-              <stop offset="50%" stopColor="#E9ECEF" />
-              <stop offset="100%" stopColor="#DEE2E6" />
+              <stop offset="0%" stopColor={tocColor} />
+              <stop offset="50%" stopColor={tocColor} stopOpacity="0.95" />
+              <stop offset="100%" stopColor={tocStrokeColor} />
+            </linearGradient>
+            <linearGradient id="sashGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={tocColor} stopOpacity="0.98" />
+              <stop offset="100%" stopColor={tocStrokeColor} />
             </linearGradient>
           </defs>
 
@@ -440,7 +510,7 @@ export default function Window2D({
               width={w}
               height={h}
               fill="url(#frameGradient)"
-              stroke={hoveredComponent === "toc" ? "#2563EB" : "#0F172A"}
+              stroke={hoveredComponent === "toc" ? "#2563EB" : tocStrokeColor}
               strokeWidth={hoveredComponent === "toc" ? 4 * scale : 3 * scale}
               onClick={(e) => { e.stopPropagation(); onComponentClick?.("toc"); }}
               onMouseEnter={() => handleComponentHover("toc")}
@@ -468,8 +538,8 @@ export default function Window2D({
                   y={sash.y - sashThickness}
                   width={sash.w + sashThickness * 2}
                   height={sash.h + sashThickness * 2}
-                  fill="url(#frameGradient)"
-                  stroke={hoveredComponent === "canat" ? "#2563EB" : "#1E293B"}
+                  fill="url(#sashGradient)"
+                  stroke={hoveredComponent === "canat" ? "#2563EB" : tocStrokeColor}
                   strokeWidth={hoveredComponent === "canat" ? 3 * scale : 2 * scale}
                   onClick={(e) => { e.stopPropagation(); onComponentClick?.("canat"); }}
                   onMouseEnter={() => handleComponentHover("canat")}
@@ -695,7 +765,7 @@ export default function Window2D({
       {/* Legend - Compact */}
       <div className="px-2 py-1 bg-slate-50 border-t border-slate-100 flex items-center gap-2 text-[10px] flex-wrap">
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm" style={{ background: `linear-gradient(180deg, ${_frameColorInterior} 0%, ${_frameColorExterior} 100%)` }}></div>
+          <div className="w-2 h-2 rounded-sm" style={{ background: `linear-gradient(180deg, ${tocColor} 0%, ${tocStrokeColor} 100%)` }}></div>
           <span className="text-slate-600">Toc</span>
         </div>
         <div className="flex items-center gap-1">
@@ -703,7 +773,7 @@ export default function Window2D({
           <span className="text-slate-600">Sticlă</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-sm bg-slate-400"></div>
+          <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: handleColor }}></div>
           <span className="text-slate-600">Maner</span>
         </div>
         <div className="ml-auto text-primary-600">
@@ -837,9 +907,9 @@ export default function Window2D({
                 </button>
               </div>
 
-              {/* Muntin */}
+              {/* Montant Orizontal */}
               <div className="flex items-center justify-between">
-                <label className="text-xs text-slate-500">Muntin Orizontal</label>
+                <label className="text-xs text-slate-500">Montant Orizontal</label>
                 <button
                   onClick={() => onHorizontalMuntinChange?.(!horizontalMuntin)}
                   className={cn(
@@ -926,7 +996,7 @@ export default function Window2D({
                     )}
                   >
                     <span className="text-sm font-medium">Activ</span>
-                    <div className="text-xs text-green-600">Se deschide</div>
+                    <div className="text-xs text-green-600">Toate deschiderile</div>
                   </button>
                   <button
                     onClick={() => onSashRoleChange?.(selectedSashForConfig, "inactive")}
@@ -938,7 +1008,7 @@ export default function Window2D({
                     )}
                   >
                     <span className="text-sm font-medium">Inactiv</span>
-                    <div className="text-xs text-amber-600">Nu se deschide</div>
+                    <div className="text-xs text-amber-600">Deschidere limitată</div>
                   </button>
                   <button
                     onClick={() => onSashRoleChange?.(selectedSashForConfig, "fixed")}
@@ -956,18 +1026,22 @@ export default function Window2D({
               </div>
 
               {/* Tip Deschidere - only if not fixed */}
-              {sashRoles[selectedSashForConfig] !== "fixed" && (
+              {sashRoles[selectedSashForConfig] !== "fixed" && (() => {
+                const currentRole = sashRoles[selectedSashForConfig] || "active";
+                const isInactive = currentRole === "inactive";
+                const openingOptions = [
+                  { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
+                  { id: "batant_dreapta", label: "Batant Dr", desc: "Dreapta", disabled: isInactive },
+                  { id: "batant_stanga", label: "Batant St", desc: "Stânga", disabled: isInactive },
+                  { id: "basculant", label: "Basculant", desc: "Kip", disabled: false },
+                  { id: "obluc", label: "Obluc", desc: "Roto", disabled: isInactive },
+                  { id: "oscilobatant", label: "Oscilobatant", desc: "Comb", disabled: isInactive },
+                ];
+                return (
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Tip Deschidere</label>
                   <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
-                      { id: "batant_dreapta", label: "Batant Dr", desc: "Dreapta", disabled: false },
-                      { id: "batant_stanga", label: "Batant St", desc: "Stânga", disabled: false },
-                      { id: "basculant", label: "Basculant", desc: "Kip", disabled: false },
-                      { id: "obluc", label: "Obluc", desc: "Roto", disabled: false },
-                      { id: "oscilobatant", label: "Oscilobatant", desc: "Comb", disabled: false },
-                    ].map((opt) => (
+                    {openingOptions.map((opt) => (
                       <button
                         key={opt.id}
                         onClick={() => onOpeningTypeChange?.(selectedSashForConfig!, opt.id as OpeningType)}
@@ -985,8 +1059,14 @@ export default function Window2D({
                       </button>
                     ))}
                   </div>
+                  {isInactive && (
+                    <p className="text-xs text-amber-600 mt-2">
+                      Canatul inactiv are deschidere limitată (nu poate fi oscilobatant)
+                    </p>
+                  )}
                 </div>
-              )}
+                );
+              })()}
             </div>
 
             {/* Footer */}

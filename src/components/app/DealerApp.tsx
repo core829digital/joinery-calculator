@@ -623,7 +623,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       <div className="text-[10px] font-semibold text-slate-500 pt-1">Opțiuni</div>
       <div className="flex gap-1">
         <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Prag</button>
-        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Muntin</button>
+        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Montant</button>
       </div>
 
       {/* Handle height slider */}
@@ -1121,7 +1121,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           interiorColor={interiorColor ?? "alb_ral9003"}
                           exteriorColor={exteriorColor ?? "antracit_ral7016"}
                           openingSide={win.openingSide}
-                          openingType={win.openingType === "oscilobatant" ? "oscilobativ" : (win.openingType === "batant_dreapta" || win.openingType === "batant_stanga" || win.openingType === "basculant" || win.openingType === "obluc") ? "normal" : undefined}
                           openingDirection={win.openingDirection}
                           sashConfiguration={win.sashConfiguration ?? undefined}
                           sashRoles={win.sashRoles}
@@ -1132,6 +1131,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           showDimensions={true}
                           scale={isMobile ? 0.3 : 0.4}
                           glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
+                          hardwareBrand={hardwareBrand ?? undefined}
                           onComponentClick={handleComponentClick}
                           onDimensionChange={(newWidth, newHeight) => {
                             setWindows(prev => prev.map((w, i) => 
