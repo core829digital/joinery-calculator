@@ -81,10 +81,10 @@ export default function Window2D({
   const w = width * scale;
   const h = height * scale;
 
-  // GROSIME MĂRITĂ pentru toc și cercevea - conform promptului
-  const tocThickness = 24 * scale;  // mult mai gros (era 14)
-  const sashThickness = 18 * scale; // mai gros (era 10)
-  const glassGap = 4 * scale; // spațiu mai mare pentru sticlă
+  // GROSIME MĂRITĂ pentru toc și cercevea - stil CAD foarte pronunțat
+  const tocThickness = 40 * scale;  // foarte gros - stil CAD
+  const sashThickness = 28 * scale; // foarte gros - stil CAD
+  const glassGap = 6 * scale; // spațiu mai mare pentru sticlă
 
   const handleComponentHover = (component: WindowComponent | null) => {
     setHoveredComponent(component);
@@ -417,44 +417,44 @@ export default function Window2D({
               strokeDasharray={`${6 * scale} ${3 * scale}`}
             />
 
-            {/* TOC EXTERIOR - Rama principala */}
+            {/* TOC EXTERIOR - Rama principala - STIL CAD */}
             <rect
               x={0}
               y={0}
               width={w}
               height={h}
               fill="url(#frameGradient)"
-              stroke={hoveredComponent === "toc" ? "#3B82F6" : "#1F2937"}
-              strokeWidth={hoveredComponent === "toc" ? 2.5 : 1.5}
+              stroke={hoveredComponent === "toc" ? "#2563EB" : "#0F172A"}
+              strokeWidth={hoveredComponent === "toc" ? 4 * scale : 3 * scale}
               onClick={(e) => { e.stopPropagation(); onComponentClick?.("toc"); }}
               onMouseEnter={() => handleComponentHover("toc")}
               onMouseLeave={() => handleComponentHover(null)}
               style={{ cursor: "pointer" }}
             />
 
-            {/* TOC INTERIOR - Linie de contur interioara */}
+            {/* TOC INTERIOR - Linie de contur interioara - CAD stil */}
             <rect
-              x={tocThickness - 2 * scale}
-              y={tocThickness - 2 * scale}
-              width={w - (tocThickness - 2 * scale) * 2}
-              height={h - (tocThickness - 2 * scale) * 2}
+              x={tocThickness - 1 * scale}
+              y={tocThickness - 1 * scale}
+              width={w - (tocThickness - 1 * scale) * 2}
+              height={h - (tocThickness - 1 * scale) * 2}
               fill="none"
-              stroke="#9CA3AF"
-              strokeWidth={0.8 * scale}
+              stroke="#64748B"
+              strokeWidth={1.5 * scale}
             />
 
             {/* CANATURI / Sashes */}
             {config.sashes.map((sash, idx) => (
               <g key={`sash-${idx}`}>
-                {/* CERCEVEA EXTERIOARA - rama canatului */}
+                {/* CERCEVEA EXTERIOARA - rama canatului - STIL CAD */}
                 <rect
                   x={sash.x - sashThickness}
                   y={sash.y - sashThickness}
                   width={sash.w + sashThickness * 2}
                   height={sash.h + sashThickness * 2}
                   fill="url(#frameGradient)"
-                  stroke={hoveredComponent === "canat" ? "#3B82F6" : "#374151"}
-                  strokeWidth={hoveredComponent === "canat" ? 2 : 1}
+                  stroke={hoveredComponent === "canat" ? "#2563EB" : "#1E293B"}
+                  strokeWidth={hoveredComponent === "canat" ? 3 * scale : 2 * scale}
                   onClick={(e) => { e.stopPropagation(); onComponentClick?.("canat"); }}
                   onMouseEnter={() => handleComponentHover("canat")}
                   onMouseLeave={() => handleComponentHover(null)}

@@ -110,11 +110,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [openingType, setOpeningType] = useState<OpeningType | null>(null);
   const [openingSide, setOpeningSide] = useState<"left" | "right">("right");
   const [openingDirection, setOpeningDirection] = useState<"inward" | "outward">("inward");
-  const [sashConfiguration, setSashConfiguration] = useState<"stulp" | "montant" | null>(null);
-  const [sashRoles, setSashRoles] = useState<Record<string, "active" | "inactive" | "fixed">>({});
-  const [showThreshold, setShowThreshold] = useState(false);
-  const [horizontalMuntin, setHorizontalMuntin] = useState(false);
-  const [handleHeight, setHandleHeight] = useState(100);
+  const [sashConfiguration, setSashConfiguration] = useState<"stulp" | "montant" | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [sashRoles, setSashRoles] = useState<Record<string, "active" | "inactive" | "fixed">>({}); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [showThreshold, setShowThreshold] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [horizontalMuntin, setHorizontalMuntin] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [handleHeight, setHandleHeight] = useState(100); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [interiorColor, setInteriorColor] = useState<Color | null>(null);
   const [exteriorColor, setExteriorColor] = useState<Color | null>(null);
   const [glassType, setGlassType] = useState<GlassType | null>(null);
@@ -936,57 +936,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     ))}
                   </div>
 
-                  {/* Right Side Controls */}
-                  <div className="w-20 flex flex-col gap-1 text-[10px]">
-                    <div className="text-center font-semibold text-slate-600 py-1">Config</div>
-                    <button onClick={() => setSashConfiguration("stulp")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
-                    <button onClick={() => setSashConfiguration("montant")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
-                    <button onClick={() => setShowThreshold(!showThreshold)} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
-                    <button onClick={() => setHorizontalMuntin(!horizontalMuntin)} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
-                    {/* Handle Height Slider */}
-                    <div className="mt-1 pt-1 border-t border-slate-200">
-                      <div className="text-[9px] text-center text-slate-500 mb-1">Înălțime maner</div>
-                      <input
-                        type="range"
-                        min="30"
-                        max="200"
-                        value={handleHeight}
-                        onChange={(e) => setHandleHeight(Number(e.target.value))}
-                        className="w-full h-1.5 accent-primary-600"
-                      />
-                      <div className="text-[9px] text-center text-slate-600 mt-0.5">{handleHeight}mm</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sash Roles - Below Window */}
-                {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && sashConfiguration) && (
-                  <div className="mt-2">
-                    <div className="text-[10px] text-center text-slate-500 mb-1">Canaturi</div>
-                    <div className="grid grid-cols-2 gap-1">
-                      <button
-                        onClick={() => {
-                          const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
-                          const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                          setSashRoles({ ...roles, left: nextRole[roles.left as keyof typeof nextRole] });
-                        }}
-                        className={cn("px-2 py-1 rounded text-[10px] font-medium transition-all", sashRoles.left === "active" ? "bg-green-600 text-white" : sashRoles.left === "inactive" ? "bg-amber-600 text-white" : sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
-                      >
-                        St: {sashRoles.left === "active" ? "Activ" : sashRoles.left === "inactive" ? "Inact" : "Fix"}
-                      </button>
-                      <button
-                        onClick={() => {
-                          const roles = { left: sashRoles.left || "active", right: sashRoles.right || "inactive" };
-                          const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                          setSashRoles({ ...roles, right: nextRole[roles.right as keyof typeof nextRole] });
-                        }}
-                        className={cn("px-2 py-1 rounded text-[10px] font-medium transition-all", sashRoles.right === "active" ? "bg-green-600 text-white" : sashRoles.right === "inactive" ? "bg-amber-600 text-white" : sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
-                      >
-                        Dr: {sashRoles.right === "active" ? "Activ" : sashRoles.right === "inactive" ? "Inact" : "Fix"}
-                      </button>
-                    </div>
-                  </div>
-                )}
+</div>
               </div>
             </div>
           )}
