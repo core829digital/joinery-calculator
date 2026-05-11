@@ -263,8 +263,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   useEffect(() => {
     if (!showAddWindowMenu) return;
     const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('button')) {
+      const menu = document.getElementById('addWindowMenu');
+      const buttons = document.querySelectorAll('button[title="Adauga"]');
+      const isClickOnButton = Array.from(buttons).some(btn => btn.contains(e.target as Node));
+      if (menu && !menu.contains(e.target as Node) && !isClickOnButton) {
         setShowAddWindowMenu(false);
       }
     };
@@ -1118,10 +1120,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         )}
                       </button>
                     ))}
-                    <button onClick={() => setShowAddWindowMenu(!showAddWindowMenu)} className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 relative">
+                    <button onClick={(e) => { e.stopPropagation(); setShowAddWindowMenu(!showAddWindowMenu); }} className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 relative" title="Adauga">
                       + Adaugă
                       {showAddWindowMenu && (
-                        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 min-w-[200px] py-1 max-h-[300px] overflow-y-auto">
+                        <div id="addWindowMenu" className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 min-w-[200px] py-1 max-h-[300px] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                           <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase border-b border-slate-100">Ferestre</div>
                           <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră 1 canat</button>
                           <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-xs text-left hover:bg-slate-50 text-slate-700">Fereastră 2 canate</button>
