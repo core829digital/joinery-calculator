@@ -105,6 +105,24 @@ const SASH_CONFIG_OPTIONS: { key: "stulp" | "montant" | null; label: string; col
   { key: null, label: "Niciunul", color: "slate" },
 ];
 
+const PRODUCT_DISPLAY_NAMES: Record<string, string> = {
+  window_1_canat: "Fereastră 1 canat",
+  window_2_canate: "Fereastră 2 canate",
+  window_3_canate: "Fereastră 3 canate",
+  window_fix: "Fereastră Fix",
+  usa_balcon_1: "Ușă balcon 1 canat",
+  usa_balcon_2: "Ușă balcon 2 canate",
+  usa_intrare_pvc: "Ușă intrare PVC",
+  usa_intrare_aluminiu: "Ușă intrare Aluminiu",
+  pervaz_fereastra: "Pervaz fereastră",
+  pervaz_usa: "Pervaz ușă",
+};
+
+const getProductDisplayName = (type: ProductType | null | undefined): string => {
+  if (!type) return "Fereastră";
+  return PRODUCT_DISPLAY_NAMES[type] || "Produs";
+};
+
 export default function DealerApp({ userRole = "dealer", clientCode, dealerId }: DealerAppProps) {
   const { addOrder } = useAuth();
   const [productType, setProductType] = useState<ProductType | null>(null);
@@ -185,11 +203,19 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   // Multi-window state
   const [windows, setWindows] = useState<WindowConfig[]>([
-    { id: 1, name: "Fereastra #1", ...defaultWindowConfig }
+    { id: 1, name: getProductDisplayName(productType) + " #1", ...defaultWindowConfig }
   ]);
   const [activeWindowIndex, setActiveWindowIndex] = useState(0);
   
   const activeWindow = windows[activeWindowIndex];
+
+  // Update window names when productType changes
+  useEffect(() => {
+    setWindows(prev => prev.map((win, idx) => ({
+      ...win,
+      name: getProductDisplayName(productType) + ` #${idx + 1}`
+    })));
+  }, [productType]);
   
   // Helper to update active window property
   const updateActiveWindow = <K extends keyof WindowConfig>(key: K, value: WindowConfig[K]) => {
@@ -200,7 +226,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   const addWindow = () => {
     const newId = windows.length + 1;
-    setWindows([...windows, { id: newId, name: `Fereastra #${newId}`, ...defaultWindowConfig }]);
+    setWindows([...windows, { id: newId, name: getProductDisplayName(productType) + " #" + newId, ...defaultWindowConfig }]);
     setActiveWindowIndex(windows.length);
   };
 
@@ -216,7 +242,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const duplicateWindow = (index: number) => {
     const winToClone = windows[index];
     const newId = Math.max(...windows.map(w => w.id)) + 1;
-    const newWindow = { ...winToClone, id: newId, name: `Fereastra #${newId}` };
+    const newWindow = { ...winToClone, id: newId, name: getProductDisplayName(productType) + " #" + newId };
     setWindows([...windows, newWindow]);
     setActiveWindowIndex(windows.length);
   };
