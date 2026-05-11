@@ -25,6 +25,7 @@ interface AppLayoutProps {
   onSearchChange?: (query: string) => void;
   onToggleFilter?: () => void;
   windowControls?: React.ReactNode;
+  configMenu?: React.ReactNode;
 }
 
 export default function AppLayout({
@@ -37,6 +38,7 @@ export default function AppLayout({
   onSearchChange,
   onToggleFilter,
   windowControls,
+  configMenu,
 }: AppLayoutProps) {
   const [windowFocused, setWindowFocused] = useState(true);
   const { user } = useAuth();
@@ -165,6 +167,13 @@ export default function AppLayout({
         {windowControls && (
           <div className="hidden md:flex items-center">
             {windowControls}
+          </div>
+        )}
+
+        {/* Config Menu */}
+        {configMenu && (
+          <div className="hidden md:flex items-center">
+            {configMenu}
           </div>
         )}
 

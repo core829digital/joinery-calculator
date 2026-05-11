@@ -46,6 +46,7 @@ interface Window2DProps {
   className?: string;
   onComponentClick?: (component: WindowComponent) => void;
   onDimensionChange?: (width: number, height: number) => void;
+  onSashRoleChange?: (sashId: string, role: SashRole) => void;
   glassType?: string;
 }
 
@@ -68,6 +69,7 @@ export default function Window2D({
   className,
   onComponentClick,
   onDimensionChange,
+  onSashRoleChange,
   glassType,
 }: Window2DProps) {
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
@@ -328,6 +330,34 @@ export default function Window2D({
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${sashConfiguration === "stulp" ? "bg-purple-100 text-purple-700" : "bg-indigo-100 text-indigo-700"}`}>
               {sashConfiguration === "stulp" ? "Stulp" : "Mont"}
             </span>
+          )}
+          {/* Sash Role Toggles */}
+          {config.sashes.length > 1 && onSashRoleChange && (
+            <div className="flex items-center gap-1 ml-1 pl-1 border-l border-slate-200">
+              {config.sashes.map((sash, idx) => {
+                const sashId = sash.side || String(idx);
+                const role = sashRoles[sashId] || "active";
+                const label = sash.side === "left" ? "St" : sash.side === "right" ? "Dr" : sash.side === "center" ? "C" : String(idx + 1);
+                return (
+                  <div key={sashId} className="flex items-center gap-0.5">
+                    <span className="text-[9px] text-slate-400">{label}:</span>
+                    <button
+                      onClick={() => {
+                        const next: SashRole = role === "active" ? "inactive" : role === "inactive" ? "fixed" : "active";
+                        onSashRoleChange(sashId, next);
+                      }}
+                      className={cn(
+                        "px-1 py-0.5 rounded text-[9px] font-medium transition-colors",
+                        role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white"
+                      )}
+                      title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix (fix)"}
+                    >
+                      {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
         {showDimensions && (

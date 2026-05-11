@@ -14,7 +14,7 @@ import type {
   UserRole,
   Order,
 } from "@/types";
-import { MENU_CATEGORIES, ACCESSORIES } from "@/data/joinery";
+import { MENU_CATEGORIES } from "@/data/joinery";
 import { useAuth } from "@/context/AuthContext";
 import AppLayout from "@/components/layout/AppLayout";
 import Window2D, { WindowComponent } from "@/components/canvas/Window2D";
@@ -46,10 +46,7 @@ import {
   PlusSquare,
   Truck,
   FileText,
-  ChevronRight,
-  Eye,
   Grid3X3,
-  Paintbrush,
   Warehouse,
   Wrench,
   Send,
@@ -144,7 +141,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   
   const [activeMenu, setActiveMenu] = useState("produse");
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
-  const [showPreview, setShowPreview] = useState(true);
+  const [showPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
   const configBtnRef = useRef<HTMLButtonElement>(null);
   const [configPopupPos, setConfigPopupPos] = useState<{top: number; right: number} | null>(null);
@@ -166,10 +163,18 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Print/Export state
   const [showPrintView, setShowPrintView] = useState(false);
 
+  // Popup state for configuration panels (desktop)
+  const [showPanelPopup, setShowPanelPopup] = useState(false);
+
+  // Config menu dropdown state
+  const [showConfigMenu, setShowConfigMenu] = useState(false);
+  const configMenuBtnRef = useRef<HTMLButtonElement>(null);
+  const configMenuDropdownRef = useRef<HTMLDivElement>(null);
+  const configDropdownRef = useRef<HTMLDivElement>(null);
+
   // Mobile state
   const [isMobile, setIsMobile] = useState(false);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
-  const [mobileViewMode, setMobileViewMode] = useState<"canvas" | "panel">("panel");
 
   // Multi-window state
   const [windows, setWindows] = useState<WindowConfig[]>([
@@ -228,7 +233,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setSelectedComponent(component);
     const menu = COMPONENT_TO_MENU[component];
     setActiveMenu(menu);
-  }, []);
+    if (!isMobile) {
+      setShowPanelPopup(true);
+    }
+  }, [isMobile]);
 
   const handleReset = () => {
     setProductType(null);
@@ -490,14 +498,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     ],
   };
 
-  const displayMenuItems = searchQuery.length >= 2
-    ? MENU_CATEGORIES.filter(
-        (cat) =>
-          cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.id.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : MENU_CATEGORIES;
-
   const windowControls = (
     <div className="flex items-center gap-1">
       <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
@@ -529,6 +529,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Config dropdown rendered at root level with fixed position
   const configDropdown = showConfigPopup && configPopupPos && (
     <div 
+      ref={configDropdownRef}
       className="fixed bg-white border border-slate-200 rounded-xl shadow-2xl p-3 space-y-2 z-[100] w-60"
       style={{ top: configPopupPos.top, right: configPopupPos.right }}
       onMouseDown={(e) => e.stopPropagation()}
@@ -567,22 +568,206 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Close config dropdown on click outside or scroll/resize
   useEffect(() => {
     if (!showConfigPopup) return;
-    const handleClose = () => setShowConfigPopup(false);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        configDropdownRef.current &&
+        !configDropdownRef.current.contains(e.target as Node) &&
+        configBtnRef.current &&
+        !configBtnRef.current.contains(e.target as Node)
+      ) {
+        setShowConfigPopup(false);
+      }
+    };
     const handleScroll = () => setShowConfigPopup(false);
-    document.addEventListener("mousedown", handleClose);
+    const handleResize = () => setShowConfigPopup(false);
+    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll, true);
-    window.addEventListener("resize", handleClose);
+    window.addEventListener("resize", handleResize);
     return () => {
-      document.removeEventListener("mousedown", handleClose);
+      document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll, true);
-      window.removeEventListener("resize", handleClose);
+      window.removeEventListener("resize", handleResize);
     };
   }, [showConfigPopup]);
+  // Close config menu dropdown on click outside
+  useEffect(() => {
+    if (!showConfigMenu) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        configMenuDropdownRef.current &&
+        !configMenuDropdownRef.current.contains(e.target as Node) &&
+        configMenuBtnRef.current &&
+        !configMenuBtnRef.current.contains(e.target as Node)
+      ) {
+        setShowConfigMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showConfigMenu]);
+
+  // Config menu for AppLayout toolbar
+  const configMenu = (
+    <div className="relative">
+      <button
+        ref={configMenuBtnRef}
+        onClick={() => setShowConfigMenu(!showConfigMenu)}
+        className={cn(
+          "px-2 py-1 rounded-lg text-[10px] font-medium border transition-colors",
+          showConfigMenu
+            ? "bg-primary-600 text-white border-primary-600"
+            : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+        )}
+      >
+        Configurare
+      </button>
+      {showConfigMenu && (
+        <div
+          ref={configMenuDropdownRef}
+          className="absolute right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl p-2 w-48 z-[100]"
+        >
+          {MENU_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setActiveMenu(cat.id);
+                setSelectedComponent(null);
+                setShowPanelPopup(true);
+                setShowConfigMenu(false);
+              }}
+              className={cn(
+                "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs transition-colors",
+                activeMenu === cat.id
+                  ? "bg-primary-600 text-white"
+                  : "text-slate-600 hover:bg-slate-100"
+              )}
+            >
+              {MENU_ICONS[cat.id]}
+              <span>{cat.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // Popup renderer for configuration panels
+  const renderPopupContent = () => {
+    switch (activeMenu) {
+      case "produse":
+        return (
+          <div className="space-y-4">
+            <ProductTypePanel selected={productType} onSelect={setProductType} />
+            <DimensionsPanel
+              width={activeWindow.width}
+              height={activeWindow.height}
+              onWidthChange={(w) => updateActiveWindow("width", w)}
+              onHeightChange={(h) => updateActiveWindow("height", h)}
+              productType={productType}
+            />
+            <OpeningPanel
+              selected={activeWindow.openingType}
+              onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
+            />
+          </div>
+        );
+      case "profil":
+        return <ProfilePanel selected={profileSeries} onSelect={setProfileSeries} />;
+      case "culori":
+        return (
+          <ColorsPanel
+            interiorColor={interiorColor}
+            exteriorColor={exteriorColor}
+            onInteriorChange={setInteriorColor}
+            onExteriorChange={setExteriorColor}
+          />
+        );
+      case "sticla":
+        return <GlassPanel selected={glassType} onSelect={setGlassType} />;
+      case "feronerie":
+        return (
+          <HardwarePanel
+            brand={hardwareBrand}
+            level={hardwareLevel}
+            onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)}
+            onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)}
+          />
+        );
+      case "accesorii":
+        return <AccessoriesPanel selected={accessories} onToggle={toggleAccessory} />;
+      case "servicii":
+        return (
+          <ServicesPanel
+            distance={distance}
+            includeMontaj={includeMontaj}
+            onDistanceChange={setDistance}
+            onMontajChange={setIncludeMontaj}
+          />
+        );
+      case "ofertare":
+        return (
+          <div className="space-y-4">
+            {productType && (
+              <PricingPanel
+                productType={productType}
+                width={activeWindow.width}
+                height={activeWindow.height}
+                profileSeries={profileSeries ?? "premium_82"}
+                interiorColor={interiorColor ?? "alb_ral9003"}
+                exteriorColor={exteriorColor ?? "antracit_ral7016"}
+                glassType={glassType ?? "tripan_4_16_4"}
+                hardwareBrand={hardwareBrand ?? "siegenia"}
+                hardwareLevel={hardwareLevel ?? "premium"}
+                accessories={accessories}
+                userRole={userRole}
+                distance={distance}
+                includeMontaj={includeMontaj}
+              />
+            )}
+            <ActionsPanel
+              price={productType ? 1 : null}
+              onRequestPDF={handleExportPDF}
+              onSendOrder={handleSendEmail}
+              onReset={handleReset}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
       {configDropdown}
-      
+      {showPanelPopup && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowPanelPopup(false);
+          }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto relative">
+            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                {MENU_ICONS[activeMenu]}
+                <h2 className="text-lg font-semibold text-slate-800">
+                  {MENU_CATEGORIES.find((c) => c.id === activeMenu)?.name || "Configurare"}
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowPanelPopup(false)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-slate-500" />
+              </button>
+            </div>
+            <div className="p-4">
+              {renderPopupContent()}
+            </div>
+          </div>
+        </div>
+      )}
       {/* Print View Overlay */}
       {showPrintView && (
         <div className="fixed inset-0 bg-white z-50 overflow-auto">
@@ -789,179 +974,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         onSearchChange={handleSearch}
         onToggleFilter={() => setShowFilters(true)}
         windowControls={windowControls}
+        configMenu={configMenu}
       >
         <div className="flex flex-col md:flex-row h-full">
-        {/* Left Panel - Configuration - Desktop only */}
-        <div className={cn(
-          "hidden md:block border-r border-slate-200 overflow-y-auto p-3 space-y-3 bg-white md:w-80"
-        )}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              {selectedComponent ? (
-                <button
-                  onClick={() => setSelectedComponent(null)}
-                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
-                  title="Înapoi la meniu"
-                >
-                  <ChevronRight className="w-4 h-4 text-slate-600 rotate-180" />
-                </button>
-              ) : isMobile ? (
-                <button
-                  onClick={() => setMobilePanelOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
-                >
-                  <X className="w-4 h-4 text-slate-600" />
-                </button>
-              ) : null}
-              <div className="flex items-center gap-2">
-                {getComponentIcon()}
-                <h2 className="text-base font-semibold text-slate-800">
-                  {panelTitle}
-                </h2>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              {isMobile && (
-                <button
-                  onClick={() => setMobileViewMode(mobileViewMode === "panel" ? "canvas" : "panel")}
-                  className={cn(
-                    "p-2 rounded-lg transition-colors",
-                    mobileViewMode === "canvas"
-                      ? "bg-primary-100 text-primary-600"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  )}
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-              )}
-              <button
-                onClick={() => setShowPreview(!showPreview)}
-                className={cn(
-                  "p-2 rounded-lg transition-colors hidden md:flex",
-                  showPreview
-                    ? "bg-primary-100 text-primary-600"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                )}
-                title={showPreview ? "Ascunde preview" : "Arată preview"}
-              >
-                <Eye className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+        {/* Center - Preview & Info - Full width */}
 
-          {/* Products Sub-menu */}
-          {activeMenu === "produse" && (
-            <div className="space-y-4">
-              <ProductTypePanel
-                selected={productType}
-                onSelect={setProductType}
-              />
-              <DimensionsPanel
-                width={activeWindow.width}
-                height={activeWindow.height}
-                onWidthChange={(w) => updateActiveWindow("width", w)}
-                onHeightChange={(h) => updateActiveWindow("height", h)}
-                productType={productType}
-              />
-              <OpeningPanel
-                selected={activeWindow.openingType}
-                onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)}
-              />
-            </div>
-          )}
-
-          {/* Profile */}
-          {activeMenu === "profil" && (
-            <div>
-              <ProfilePanel
-                selected={profileSeries}
-                onSelect={setProfileSeries}
-              />
-            </div>
-          )}
-
-          {/* Colors */}
-          {activeMenu === "culori" && (
-            <div>
-              <ColorsPanel
-                interiorColor={interiorColor}
-                exteriorColor={exteriorColor}
-                onInteriorChange={setInteriorColor}
-                onExteriorChange={setExteriorColor}
-              />
-            </div>
-          )}
-
-          {/* Glass */}
-          {activeMenu === "sticla" && (
-            <div>
-              <GlassPanel selected={glassType} onSelect={setGlassType} />
-            </div>
-          )}
-
-          {/* Hardware */}
-          {activeMenu === "feronerie" && (
-            <div>
-              <HardwarePanel
-                brand={hardwareBrand}
-                level={hardwareLevel}
-                onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)}
-                onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)}
-              />
-            </div>
-          )}
-
-          {/* Accessories */}
-          {activeMenu === "accesorii" && (
-            <div>
-              <AccessoriesPanel
-                selected={accessories}
-                onToggle={toggleAccessory}
-              />
-            </div>
-          )}
-
-          {/* Services */}
-          {activeMenu === "servicii" && (
-            <div>
-              <ServicesPanel
-                distance={distance}
-                includeMontaj={includeMontaj}
-                onDistanceChange={setDistance}
-                onMontajChange={setIncludeMontaj}
-              />
-            </div>
-          )}
-
-          {/* Pricing Summary */}
-          {activeMenu === "ofertare" && (
-            <div className="space-y-4">
-              <PricingPanel
-                productType={productType ?? "window_2_canate"}
-                width={activeWindow.width}
-                height={activeWindow.height}
-                profileSeries={profileSeries ?? "premium_82"}
-                interiorColor={interiorColor ?? "alb_ral9003"}
-                exteriorColor={exteriorColor ?? "antracit_ral7016"}
-                glassType={glassType ?? "tripan_4_16_4"}
-                hardwareBrand={hardwareBrand ?? "siegenia"}
-                hardwareLevel={hardwareLevel ?? "premium"}
-                accessories={accessories}
-                userRole={userRole}
-                distance={distance}
-                includeMontaj={includeMontaj}
-              />
-              <ActionsPanel
-                price={productType ? 1 : null}
-                onRequestPDF={handleExportPDF}
-                onSendOrder={handleSendEmail}
-                onReset={handleReset}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Center - Preview & Info */}
         <div className="flex-1 flex flex-col overflow-hidden min-h-0">
           {/* 2D Preview - Always visible on mobile */}
           {(showPreview || isMobile) && (
@@ -1027,6 +1044,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                               i === idx ? { ...w, width: newWidth, height: newHeight } : w
                             ));
                           }}
+                          onSashRoleChange={(sashId, role) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, sashRoles: { ...w.sashRoles, [sashId]: role } } : w
+                            ));
+                          }}
                         />
                       </div>
                     ))}
@@ -1057,107 +1079,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               <span className="text-slate-400 text-[10px] hidden sm:inline">Dărmănești</span>
             </div>
           </div>
-        </div>
-
-        {/* Right Panel - Quick Actions */}
-        <div className="w-72 border-l border-slate-200 overflow-y-auto p-4 bg-slate-50">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4">
-            Meniu Rapid
-          </h3>
-
-          <div className="space-y-1">
-            {displayMenuItems.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  setActiveMenu(cat.id);
-                  setSelectedComponent(null);
-                }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left text-sm transition-colors min-h-[48px]",
-                  activeMenu === cat.id
-                    ? "bg-primary-600 text-white"
-                    : "text-slate-600 hover:bg-slate-100"
-                )}
-              >
-                {MENU_ICONS[cat.id]}
-                <span>{cat.name}</span>
-                <ChevronRight className="w-4 h-4 ml-auto opacity-50" />
-              </button>
-            ))}
-          </div>
-
-          {/* Component Selection Info */}
-          {selectedComponent && (
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <Paintbrush className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-semibold text-blue-900">
-                  Componenta selectată
-                </span>
-              </div>
-              <p className="text-sm text-blue-700 mb-3">
-                Faceți clic pe orice componentă a ferestrei 2D pentru a accesa meniul de configurare.
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span className="text-sm font-medium text-blue-900">
-                  {COMPONENT_LABELS[selectedComponent]}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Quick Stats */}
-          <div className="mt-6 p-3 bg-white rounded-lg border border-slate-200">
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
-              Statistici
-            </h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">Produse:</span>
-                <span className="font-medium">{productType ? "1" : "0"}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Culori:</span>
-                <span className="font-medium">
-                  {interiorColor && exteriorColor ? "2" : interiorColor || exteriorColor ? "1" : "0"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Accesorii:</span>
-                <span className="font-medium">{accessories.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">Deschidere:</span>
-                <span className="font-medium">
-                  {activeWindow.openingSide === "left" ? "Stânga" : "Dreapta"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Accessories Summary */}
-          {accessories.length > 0 && (
-            <div className="mt-4 p-3 bg-white rounded-lg border border-slate-200">
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
-                Accesorii Selectate
-              </h4>
-              <div className="space-y-1">
-                {accessories.map((accId) => {
-                  const acc = ACCESSORIES.find((a) => a.id === accId);
-                  return acc ? (
-                    <div key={accId} className="flex justify-between text-sm">
-                      <span className="text-slate-600">{acc.name}</span>
-                      <span className="font-medium text-slate-900">
-                        {acc.price} lei
-                      </span>
-                    </div>
-                  ) : null;
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Mobile Configuration Drawer */}
