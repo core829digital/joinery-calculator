@@ -829,29 +829,28 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               "flex-1 overflow-auto",
               isMobile ? "p-1" : "p-4"
             )}>
-              <div className={cn(
-                "mx-auto",
-                isMobile ? "max-w-full" : "max-w-2xl"
-              )}>
-                {/* Window 2D with Side Controls - Stack on mobile */}
+<div className={cn(
+              "mx-auto",
+              isMobile ? "max-w-full" : "max-w-xl"
+            )}>
+                {/* Window 2D with Side Controls - centered */}
                 <div className={cn(
-                  "flex items-stretch gap-2",
+                  "flex items-center justify-center gap-3",
                   isMobile ? "flex-col" : ""
                 )}>
                   {/* Left Side Controls - Hidden on mobile, use toggle */}
                   <div className={cn(
-                    "flex flex-col gap-1 text-[10px]",
-                    isMobile ? "flex-row flex-wrap justify-center" : "w-20"
+                    "flex flex-row flex-wrap gap-1 text-[10px] justify-center",
+                    isMobile ? "" : "w-16"
                   )}>
-                    <div className="text-center font-semibold text-slate-600 py-1">Deschidere</div>
-                    <button onClick={() => setOpeningSide("left")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
-                    <button onClick={() => setOpeningSide("right")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
-                    <button onClick={() => setOpeningDirection("inward")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Interior</button>
-                    <button onClick={() => setOpeningDirection("outward")} className={cn("px-1 py-2 rounded text-[10px] font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
+                    <button onClick={() => setOpeningSide("left")} className={cn("px-2 py-1.5 rounded text-[10px] font-medium transition-all", openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← St</button>
+                    <button onClick={() => setOpeningSide("right")} className={cn("px-2 py-1.5 rounded text-[10px] font-medium transition-all", openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dr →</button>
+                    <button onClick={() => setOpeningDirection("inward")} className={cn("px-2 py-1.5 rounded text-[10px] font-medium transition-all", openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Int</button>
+                    <button onClick={() => setOpeningDirection("outward")} className={cn("px-2 py-1.5 rounded text-[10px] font-medium transition-all", openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Ext</button>
                   </div>
 
                   {/* Window 2D Canvas */}
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <Window2D
                       productType={productType ?? "window_2_canate"}
                       width={width}
@@ -867,7 +866,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       showThreshold={showThreshold}
                       horizontalMuntin={horizontalMuntin}
                       showDimensions={true}
-                      scale={0.65}
+                      scale={0.55}
                       glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                       onComponentClick={handleComponentClick}
                       onDimensionChange={(newWidth, newHeight) => {

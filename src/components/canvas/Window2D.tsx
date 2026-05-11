@@ -149,8 +149,8 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 80; // compact pentru cote
-  const svgHeight = h + 80;
+  const svgWidth = w + 60; // foarte compact pentru cote
+  const svgHeight = h + 60;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -405,7 +405,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(40, 40)">
+          <g transform="translate(30, 30)">
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
@@ -653,24 +653,24 @@ export default function Window2D({
               <rect x={w - 6 * scale} y={-2 * scale} width={6 * scale} height={tocThickness - 2 * scale} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * scale} />
             </g>
 
-            {/* COTE / Dimension lines - COMPACTE */}
+            {/* COTE / Dimension lines - MINIMAL */}
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-16 * scale} x2={w} y2={-16 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={0} y1={-20 * scale} x2={0} y2={-10 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={w} y1={-20 * scale} x2={w} y2={-10 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <polygon points={`${-6 * scale},${-16 * scale} ${6 * scale},${-16 * scale} ${0},${-22 * scale}`} fill="#1e293b" />
-                <polygon points={`${w - 6 * scale},${-16 * scale} ${w + 6 * scale},${-16 * scale} ${w},${-22 * scale}`} fill="#1e293b" />
-                <text x={w / 2} y={-26 * scale} textAnchor="middle" fontSize={11 * scale} fill="#1e293b" fontWeight="700">{width} mm</text>
+                <line x1={0} y1={-12 * scale} x2={w} y2={-12 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <line x1={0} y1={-16 * scale} x2={0} y2={-8 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <line x1={w} y1={-16 * scale} x2={w} y2={-8 * scale} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <polygon points={`${-5 * scale},${-12 * scale} ${5 * scale},${-12 * scale} ${0},${-17 * scale}`} fill="#1e293b" />
+                <polygon points={`${w - 5 * scale},${-12 * scale} ${w + 5 * scale},${-12 * scale} ${w},${-17 * scale}`} fill="#1e293b" />
+                <text x={w / 2} y={-20 * scale} textAnchor="middle" fontSize={9 * scale} fill="#1e293b" fontWeight="600">{width}</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-16 * scale} y1={0} x2={-16 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={-20 * scale} y1={0} x2={-10 * scale} y2={0} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={-20 * scale} y1={h} x2={-10 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <polygon points={`${-16 * scale},${-6 * scale} ${-16 * scale},${6 * scale} ${-22 * scale},${0}`} fill="#1e293b" />
-                <polygon points={`${-16 * scale},${h - 6 * scale} ${-16 * scale},${h + 6 * scale} ${-22 * scale},${h}`} fill="#1e293b" />
-                <text x={-28 * scale} y={h / 2} textAnchor="middle" fontSize={11 * scale} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-28 * scale}, ${h / 2})`}>{height} mm</text>
+                <line x1={-12 * scale} y1={0} x2={-12 * scale} y2={h} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <line x1={-16 * scale} y1={0} x2={-8 * scale} y2={0} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <line x1={-16 * scale} y1={h} x2={-8 * scale} y2={h} stroke="#1e293b" strokeWidth={1.5 * scale} strokeLinecap="round" />
+                <polygon points={`${-12 * scale},${-5 * scale} ${-12 * scale},${5 * scale} ${-17 * scale},${0}`} fill="#1e293b" />
+                <polygon points={`${-12 * scale},${h - 5 * scale} ${-12 * scale},${h + 5 * scale} ${-17 * scale},${h}`} fill="#1e293b" />
+                <text x={-22 * scale} y={h / 2} textAnchor="middle" fontSize={9 * scale} fill="#1e293b" fontWeight="600" transform={`rotate(-90, ${-22 * scale}, ${h / 2})`}>{height}</text>
               </>
             )}
           </g>
