@@ -790,6 +790,98 @@ export default function Window2D({
               </div>
             </div>
 
+            {/* Window Options Section */}
+            <div className="p-4 space-y-4 border-b border-slate-100">
+              <label className="block text-sm font-medium text-slate-700">Opțiuni Fereastră</label>
+              
+              {/* Stulp / Montant */}
+              <div>
+                <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {}}
+                    className={cn(
+                      "flex-1 p-2 rounded-lg border text-center text-xs transition-all",
+                      sashConfiguration === "stulp"
+                        ? "border-purple-500 bg-purple-50 text-purple-700"
+                        : "border-slate-200 hover:border-purple-300"
+                    )}
+                  >
+                    Stulp
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className={cn(
+                      "flex-1 p-2 rounded-lg border text-center text-xs transition-all",
+                      sashConfiguration === "montant"
+                        ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                        : "border-slate-200 hover:border-indigo-300"
+                    )}
+                  >
+                    Montant
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className={cn(
+                      "flex-1 p-2 rounded-lg border text-center text-xs transition-all",
+                      !sashConfiguration
+                        ? "border-slate-500 bg-slate-100 text-slate-700"
+                        : "border-slate-200 hover:border-slate-400"
+                    )}
+                  >
+                    Niciunul
+                  </button>
+                </div>
+              </div>
+
+              {/* Prag */}
+              <div className="flex items-center justify-between">
+                <label className="text-xs text-slate-500">Prag</label>
+                <button
+                  onClick={() => {}}
+                  className={cn(
+                    "w-12 h-6 rounded-full transition-colors",
+                    true ? "bg-primary-600" : "bg-slate-300"
+                  )}
+                >
+                  <div className={cn(
+                    "w-5 h-5 bg-white rounded-full shadow transform transition-transform",
+                    true ? "translate-x-6" : "translate-x-0.5"
+                  )} />
+                </button>
+              </div>
+
+              {/* Muntin */}
+              <div className="flex items-center justify-between">
+                <label className="text-xs text-slate-500">Muntin Orizontal</label>
+                <button
+                  onClick={() => {}}
+                  className={cn(
+                    "w-12 h-6 rounded-full transition-colors",
+                    false ? "bg-primary-600" : "bg-slate-300"
+                  )}
+                >
+                  <div className={cn(
+                    "w-5 h-5 bg-white rounded-full shadow transform transition-transform",
+                    false ? "translate-x-6" : "translate-x-0.5"
+                  )} />
+                </button>
+              </div>
+
+              {/* Handle Height */}
+              <div>
+                <label className="block text-xs text-slate-500 mb-1">Înălțime mâner: {handleHeight || 100}mm</label>
+                <input
+                  type="range"
+                  min="50"
+                  max="200"
+                  value={handleHeight || 100}
+                  onChange={() => {}}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
+
             {/* Instructions */}
             <div className="p-4 text-center text-sm text-slate-500">
               Click pe un canat pentru a-l configura
