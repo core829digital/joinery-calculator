@@ -24,6 +24,7 @@ interface AppLayoutProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onToggleFilter?: () => void;
+  windowControls?: React.ReactNode;
 }
 
 export default function AppLayout({
@@ -35,6 +36,7 @@ export default function AppLayout({
   searchQuery = "",
   onSearchChange,
   onToggleFilter,
+  windowControls,
 }: AppLayoutProps) {
   const [windowFocused, setWindowFocused] = useState(true);
   const { user } = useAuth();
@@ -146,6 +148,13 @@ export default function AppLayout({
             <span className="hidden sm:inline">Email</span>
           </button>
         </div>
+
+        {/* Window Controls */}
+        {windowControls && (
+          <div className="hidden md:flex items-center">
+            {windowControls}
+          </div>
+        )}
 
         {/* Search - Hidden on small mobile */}
         <div className="relative hidden sm:block">

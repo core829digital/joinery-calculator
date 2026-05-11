@@ -512,6 +512,57 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       )
     : MENU_CATEGORIES;
 
+  const windowControls = (
+    <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
+        <span className="text-[10px] font-medium text-slate-500 mr-1">Deschidere:</span>
+        <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Stânga">← St</button>
+        <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Dreapta">Dr →</button>
+      </div>
+      <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
+        <span className="text-[10px] font-medium text-slate-500 mr-1">Direcție:</span>
+        <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Interior">Int</button>
+        <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Exterior">Ext</button>
+      </div>
+      <div className="relative">
+        <button 
+          onClick={() => setShowConfigPopup(!showConfigPopup)}
+          className={cn("px-2 py-1 rounded-lg text-[10px] font-medium border", showConfigPopup ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
+        >
+          Config
+        </button>
+        {showConfigPopup && (
+          <div ref={configPopupRef} className="absolute top-full right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl p-2.5 space-y-2 z-50 w-56">
+            <div className="text-[10px] font-semibold text-slate-500 mb-1">Canaturi</div>
+            <div className="flex gap-1">
+              <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
+              <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
+              <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
+            </div>
+            <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
+            <div className="flex gap-1">
+              <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
+              <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
+            </div>
+            <div>
+              <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime mâner: {activeWindow.handleHeight}mm</div>
+              <input type="range" min="30" max="200" value={activeWindow.handleHeight} onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
+            </div>
+            {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
+              <div>
+                <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
+                <div className="flex gap-1">
+                  <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}</button>
+                  <button onClick={() => { const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" }; const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const; updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] }); }} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}>Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* Print View Overlay */}
@@ -719,6 +770,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onToggleFilter={() => setShowFilters(true)}
+        windowControls={windowControls}
       >
         <div className="flex flex-col md:flex-row h-full">
         {/* Left Panel - Configuration - Desktop only */}
@@ -898,96 +950,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             <div className="flex-1 flex flex-col min-h-0 p-2">
               <div className="flex-1 flex flex-col min-h-0">
                 {/* Window 2D with Side Controls - centered */}
-                <div className="flex-1 flex items-center justify-center min-h-0">
-                  {/* Left Side Controls - Hidden on mobile, use toggle */}
-                  <div className={cn(
-                    "flex flex-row flex-wrap gap-1 text-[10px] justify-center",
-                    isMobile ? "order-2" : "w-20"
-                  )}>
-                    <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>← Stânga</button>
-                    <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600")}>Dreapta →</button>
-                    <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-600")}>Interior</button>
-                    <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-4 py-2 rounded text-sm font-medium transition-all", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-slate-100 text-slate-600")}>Exterior</button>
-                  </div>
-
-                  {/* Header Controls */}
-                  <div className="flex items-center justify-between gap-2 px-2 py-1.5 bg-slate-100 rounded-lg mb-2">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-medium text-slate-500">Deschidere:</span>
-                      <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>← St</button>
-                      <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600")}>Dr →</button>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-medium text-slate-500">Direcție:</span>
-                      <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600")}>Int</button>
-                      <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-2 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600")}>Ext</button>
-                    </div>
-                    <button 
-                      onClick={() => setShowConfigPopup(!showConfigPopup)}
-                      className={cn("px-2 py-0.5 rounded text-[10px] font-medium", showConfigPopup ? "bg-purple-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")}
-                    >
-                      Config
-                    </button>
-                  </div>
-
-                  {/* Config Popup */}
-                  {showConfigPopup && (
-                    <div ref={configPopupRef} className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 mb-2 space-y-2">
-                      <div className="text-[10px] font-semibold text-slate-500 mb-1">Configurare Canaturi</div>
-                       <div className="flex gap-1">
-                        <button onClick={() => updateActiveWindow("sashConfiguration", "stulp")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "stulp" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600")}>Stulp</button>
-                        <button onClick={() => updateActiveWindow("sashConfiguration", "montant")} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashConfiguration === "montant" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600")}>Montant</button>
-                        <button onClick={() => updateActiveWindow("sashConfiguration", null)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", !activeWindow.sashConfiguration ? "bg-slate-600 text-white" : "bg-slate-100 text-slate-600")}>Niciunul</button>
-                      </div>
-                      
-                      <div className="text-[10px] font-semibold text-slate-500 mb-1">Opțiuni</div>
-                      <div className="flex gap-1">
-                        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600")}>Prag</button>
-                        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600")}>Muntin</button>
-                      </div>
-                      
-                      <div>
-                        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime maner: {activeWindow.handleHeight}mm</div>
-                        <input
-                          type="range"
-                          min="30"
-                          max="200"
-                          value={activeWindow.handleHeight}
-                          onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))}
-                          className="w-full h-1.5 accent-primary-600"
-                        />
-                      </div>
-                      
-                      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
-                        <div>
-                          <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => {
-                                const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
-                                const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                                updateActiveWindow("sashRoles", { ...roles, left: nextRole[roles.left as keyof typeof nextRole] });
-                              }}
-                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.left === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.left === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.left === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
-                            >
-                              St: {activeWindow.sashRoles.left === "active" ? "Activ" : activeWindow.sashRoles.left === "inactive" ? "Inact" : "Fix"}
-                            </button>
-                            <button
-                              onClick={() => {
-                                const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
-                                const nextRole = { active: "inactive", inactive: "fixed", fixed: "active" } as const;
-                                updateActiveWindow("sashRoles", { ...roles, right: nextRole[roles.right as keyof typeof nextRole] });
-                              }}
-                              className={cn("flex-1 px-2 py-1 rounded text-[10px] font-medium", activeWindow.sashRoles.right === "active" ? "bg-green-600 text-white" : activeWindow.sashRoles.right === "inactive" ? "bg-amber-600 text-white" : activeWindow.sashRoles.right === "fixed" ? "bg-slate-500 text-white" : "bg-slate-100 text-slate-600")}
-                            >
-                              Dr: {activeWindow.sashRoles.right === "active" ? "Activ" : activeWindow.sashRoles.right === "inactive" ? "Inact" : "Fix"}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
+                <div className="flex-1 flex flex-col min-h-0">
                   {/* Window Tabs */}
                   <div className="flex items-center gap-1 mb-2 overflow-x-auto">
                     {windows.map((win, idx) => (
