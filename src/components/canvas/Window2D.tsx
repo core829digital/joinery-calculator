@@ -149,8 +149,8 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const svgWidth = w + 140; // mai mult spațiu pentru cote mai mari
-  const svgHeight = h + 140;
+  const svgWidth = w + 80; // compact pentru cote
+  const svgHeight = h + 80;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
@@ -382,12 +382,11 @@ export default function Window2D({
         )}
       </div>
 
-      <div className="p-4 flex items-center justify-center bg-slate-50 min-h-[280px]">
+      <div className="p-2 md:p-4 flex items-center justify-center bg-slate-50 w-full h-full">
         <svg
-          width={svgWidth}
-          height={svgHeight}
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="overflow-visible"
+          className="max-w-full max-h-full w-auto h-auto"
+          style={{ maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -406,7 +405,7 @@ export default function Window2D({
             </linearGradient>
           </defs>
 
-          <g transform="translate(70, 70)">
+          <g transform="translate(40, 40)">
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
               x={-4 * scale}
@@ -654,24 +653,24 @@ export default function Window2D({
               <rect x={w - 6 * scale} y={-2 * scale} width={6 * scale} height={tocThickness - 2 * scale} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * scale} />
             </g>
 
-            {/* COTE / Dimension lines - GROASE SI VIZIBILE */}
+            {/* COTE / Dimension lines - COMPACTE */}
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-20 * scale} x2={w} y2={-20 * scale} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <line x1={0} y1={-26 * scale} x2={0} y2={-14 * scale} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <line x1={w} y1={-26 * scale} x2={w} y2={-14 * scale} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <polygon points={`${-8 * scale},${-20 * scale} ${8 * scale},${-20 * scale} ${0},${-28 * scale}`} fill="#1e293b" />
-                <polygon points={`${w - 8 * scale},${-20 * scale} ${w + 8 * scale},${-20 * scale} ${w},${-28 * scale}`} fill="#1e293b" />
-                <text x={w / 2} y={-32 * scale} textAnchor="middle" fontSize={14 * scale} fill="#1e293b" fontWeight="800">{width} mm</text>
+                <line x1={0} y1={-16 * scale} x2={w} y2={-16 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={0} y1={-20 * scale} x2={0} y2={-10 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={w} y1={-20 * scale} x2={w} y2={-10 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-6 * scale},${-16 * scale} ${6 * scale},${-16 * scale} ${0},${-22 * scale}`} fill="#1e293b" />
+                <polygon points={`${w - 6 * scale},${-16 * scale} ${w + 6 * scale},${-16 * scale} ${w},${-22 * scale}`} fill="#1e293b" />
+                <text x={w / 2} y={-26 * scale} textAnchor="middle" fontSize={11 * scale} fill="#1e293b" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-20 * scale} y1={0} x2={-20 * scale} y2={h} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <line x1={-26 * scale} y1={0} x2={-14 * scale} y2={0} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <line x1={-26 * scale} y1={h} x2={-14 * scale} y2={h} stroke="#1e293b" strokeWidth={2.5 * scale} strokeLinecap="round" />
-                <polygon points={`${-20 * scale},${-8 * scale} ${-20 * scale},${8 * scale} ${-28 * scale},${0}`} fill="#1e293b" />
-                <polygon points={`${-20 * scale},${h - 8 * scale} ${-20 * scale},${h + 8 * scale} ${-28 * scale},${h}`} fill="#1e293b" />
-                <text x={-34 * scale} y={h / 2} textAnchor="middle" fontSize={14 * scale} fill="#1e293b" fontWeight="800" transform={`rotate(-90, ${-34 * scale}, ${h / 2})`}>{height} mm</text>
+                <line x1={-16 * scale} y1={0} x2={-16 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-20 * scale} y1={0} x2={-10 * scale} y2={0} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-20 * scale} y1={h} x2={-10 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-16 * scale},${-6 * scale} ${-16 * scale},${6 * scale} ${-22 * scale},${0}`} fill="#1e293b" />
+                <polygon points={`${-16 * scale},${h - 6 * scale} ${-16 * scale},${h + 6 * scale} ${-22 * scale},${h}`} fill="#1e293b" />
+                <text x={-28 * scale} y={h / 2} textAnchor="middle" fontSize={11 * scale} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-28 * scale}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>
