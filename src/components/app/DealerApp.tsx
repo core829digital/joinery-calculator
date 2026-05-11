@@ -150,6 +150,25 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
   const [mobileViewMode, setMobileViewMode] = useState<"canvas" | "panel">("panel");
 
+  // Multi-window state
+  const [windows, setWindows] = useState([{ id: 1, name: "Fereastra #1" }]);
+  const [activeWindowIndex, setActiveWindowIndex] = useState(0);
+
+  const addWindow = () => {
+    const newId = windows.length + 1;
+    setWindows([...windows, { id: newId, name: `Fereastra #${newId}` }]);
+    setActiveWindowIndex(windows.length);
+  };
+
+  const removeWindow = (index: number) => {
+    if (windows.length === 1) return;
+    const newWindows = windows.filter((_, i) => i !== index);
+    setWindows(newWindows);
+    if (activeWindowIndex >= newWindows.length) {
+      setActiveWindowIndex(newWindows.length - 1);
+    }
+  };
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -863,31 +882,58 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     </div>
                   </div>
 
-                  {/* Window 2D Canvas */}
-                  <div className="flex-1 flex items-center justify-center min-w-0">
-                    <Window2D
-                      productType={productType ?? "window_2_canate"}
-                      width={width}
-                      height={height}
-                      interiorColor={interiorColor ?? "alb_ral9003"}
-                      exteriorColor={exteriorColor ?? "antracit_ral7016"}
-                      openingSide={openingSide}
-                      openingType={openingType === "oscilobatant" ? "oscilobativ" : (openingType === "batant_dreapta" || openingType === "batant_stanga" || openingType === "basculant" || openingType === "obluc") ? "normal" : undefined}
-                      openingDirection={openingDirection}
-                      sashConfiguration={sashConfiguration ?? undefined}
-                      sashRoles={sashRoles}
-                      handleHeight={handleHeight}
-                      showThreshold={showThreshold}
-                      horizontalMuntin={horizontalMuntin}
-                      showDimensions={true}
-                      scale={isMobile ? 0.5 : 0.65}
-                      glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
-                      onComponentClick={handleComponentClick}
-                      onDimensionChange={(newWidth, newHeight) => {
-                        setWidth(newWidth);
-                        setHeight(newHeight);
-                      }}
-                    />
+                  {/* Window Tabs */}
+                  <div className="flex items-center gap-1 mb-2 overflow-x-auto">
+                    {windows.map((win, idx) => (
+                      <button
+                        key={win.id}
+                        onClick={() => setActiveWindowIndex(idx)}
+                        className={cn(
+                          "px-3 py-1 rounded text-xs font-medium flex items-center gap-1 whitespace-nowrap",
+                          activeWindowIndex === idx ? "bg-primary-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        )}
+                      >
+                        {win.name}
+                        {windows.length > 1 && (
+                          <span onClick={(e) => { e.stopPropagation(); removeWindow(idx); }} className="ml-1 text-[10px] hover:text-red-500">×</span>
+                        )}
+                      </button>
+                    ))}
+                    <button onClick={addWindow} className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200">
+                      + Adaugă
+                    </button>
+                  </div>
+
+                  {/* Multiple Windows */}
+                  <div className="flex-1 flex items-center justify-center gap-4 min-w-0 overflow-x-auto">
+                    {windows.map((win, idx) => (
+                      <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
+                        <div className="text-[10px] text-center text-slate-500 mb-1">{win.name}</div>
+                        <Window2D
+                          productType={productType ?? "window_2_canate"}
+                          width={width}
+                          height={height}
+                          interiorColor={interiorColor ?? "alb_ral9003"}
+                          exteriorColor={exteriorColor ?? "antracit_ral7016"}
+                          openingSide={openingSide}
+                          openingType={openingType === "oscilobatant" ? "oscilobativ" : (openingType === "batant_dreapta" || openingType === "batant_stanga" || openingType === "basculant" || openingType === "obluc") ? "normal" : undefined}
+                          openingDirection={openingDirection}
+                          sashConfiguration={sashConfiguration ?? undefined}
+                          sashRoles={sashRoles}
+                          handleHeight={handleHeight}
+                          showThreshold={showThreshold}
+                          horizontalMuntin={horizontalMuntin}
+                          showDimensions={true}
+                          scale={isMobile ? 0.3 : 0.4}
+                          glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
+                          onComponentClick={handleComponentClick}
+                          onDimensionChange={(newWidth, newHeight) => {
+                            setWidth(newWidth);
+                            setHeight(newHeight);
+                          }}
+                        />
+                      </div>
+                    ))}
                   </div>
 
                   {/* Right Side Controls */}
