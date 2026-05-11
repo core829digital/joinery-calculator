@@ -358,9 +358,9 @@ export default function Window2D({
             </span>
           )}
           {/* Opening Type Dropdown - gated by sash roles */}
-          {onSashRoleChange && openingTypeOptions.show && (
+          {openingTypeOptions.show && (
             <select
-              value={openingType}
+              value={openingTypeOptions.options.includes(openingType) ? openingType : openingTypeOptions.options[0] || "normal"}
               onChange={(e) => {
                 const val = e.target.value as "normal" | "oscilobativ";
                 onOpeningTypeChange?.(val);
