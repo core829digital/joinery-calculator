@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { Building2, Users, ShoppingCart, Lock, ArrowRight, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 
 type LoginRole = "supplier" | "dealer" | "client";
 
@@ -91,7 +92,7 @@ export default function LoginPage() {
           className="text-center mb-8"
         >
           <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden border border-white/20">
-            <img src="/images/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
+            <Logo size={64} className="object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">TERMOPLAST</h1>
           <p className="text-slate-400">Calculator Tâmplărie PVC & Aluminiu</p>

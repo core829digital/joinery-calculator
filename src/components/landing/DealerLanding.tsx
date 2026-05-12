@@ -14,6 +14,7 @@ import {
   Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Logo from "@/components/Logo";
 
 interface DealerLandingProps {
   onLoginClick?: () => void;
@@ -78,9 +79,7 @@ export default function DealerLanding({ onLoginClick }: DealerLandingProps) {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center overflow-hidden">
-              <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
-            </div>
+            <Logo size={40} className="rounded-xl" />
             <span className="font-semibold text-slate-900 text-lg">TERMOPLAST</span>
           </div>
           <div className="flex items-center gap-4">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
+import Logo from "@/components/Logo";
 import {
   Save,
   Printer,
@@ -68,9 +69,7 @@ export default function AppLayout({
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg overflow-hidden">
-            <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
-          </div>
+          <Logo size={28} className="rounded-md" />
           <span className="text-white font-semibold text-sm tracking-wide">
             TERMOPLAST - Calculator Tâmplărie
           </span>
@@ -100,9 +99,7 @@ export default function AppLayout({
       {/* Mobile Header */}
       <div className="h-14 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden">
-            <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
-          </div>
+          <Logo size={32} className="rounded-md" />
           <span className="text-white font-semibold text-base">TERMOPLAST</span>
         </div>
         <div className="flex items-center gap-2">
