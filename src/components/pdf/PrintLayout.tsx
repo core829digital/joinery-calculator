@@ -105,11 +105,11 @@ export default function PrintLayout({
   return (
     <div className="print-layout p-8 bg-white" style={{ fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: '0 auto' }}>
       {/* Header */}
-      <div className="flex justify-between items-start mb-8 border-b-2 border-primary-600 pb-4">
+      <div className="flex justify-between items-start mb-8 border-b-2 border-blue-600 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-primary-600">Winmeeth SRL</h1>
-          <p className="text-sm text-slate-600">Calculator Tâmplărie Profesională</p>
-          <p className="text-xs text-slate-500">Str. Energiei 470, 605300 Dărmănești | Tel: +40 745 700 363</p>
+          <h1 className="text-2xl font-bold text-blue-600">TERMOPLAST</h1>
+          <p className="text-sm text-slate-600">Calculator Tâmplărie PVC & Aluminiu</p>
+          <p className="text-xs text-slate-500">Str. Industriei, Dărmănești | Tel: +40 745 700 363 | termoplast.ro</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold">Ofertă Preliminară</p>
@@ -296,7 +296,7 @@ export default function PrintLayout({
       <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">
         <p>Oferta este valabilă 30 de zile de la data emiterii.</p>
         <p>Prețurile sunt estimative și pot fi ajustate în funcție de complexitatea execuției.</p>
-        <p className="mt-2">Winmeeth SRL - Str. Energiei 470, 605300 Dărmănești | Tel: +40 745 700 363</p>
+        <p className="mt-2">TERMOPLAST - termoplast.ro | Tel: +40 745 700 363</p>
       </div>
     </div>
   );
@@ -341,8 +341,8 @@ export function getOfferteEmailBody(
   }
   body += `\nVom reveni cu o ofertă detaliată în cel mai scurt timp.\n\n`;
   body += `Cu stimă,\n`;
-  body += `Echipa Winmeeth SRL\n`;
-  body += `Str. Energiei 470, 605300 Dărmănești\n`;
+  body += `Echipa TERMOPLAST\n`;
+  body += `termoplast.ro\n`;
   body += `Tel: +40 745 700 363`;
 
   return body;

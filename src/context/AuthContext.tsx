@@ -58,7 +58,7 @@ const defaultDealer: DealerConfig = {
   id: "dealer_demo",
   name: "Dealer Test",
   companyName: "SC TermoServ SRL",
-  email: "dealer@core829.ro",
+  email: "dealer@termoplast.ro",
   phone: "+40 721 000 001",
   address: "Str. Principală Nr. 25, Cluj-Napoca",
   supplierId: "supplier_1",
@@ -71,10 +71,10 @@ const defaultDealer: DealerConfig = {
 const defaultSupplier: SupplierConfig = {
   id: "supplier_1",
   name: "Admin Principal",
-  companyName: "CORE829 - Fabrica Termopane",
-  email: "admin@core829.ro",
+  companyName: "TERMOPLAST - Fabrica Termopane",
+  email: "admin@termoplast.ro",
   phone: "+40 721 234 567",
-  address: "Str. Fabricii Nr. 10, București",
+  address: "Str. Industriei Nr. 10, Dărmănești",
   commissionPercent: 15,
   defaultDiscount: 0,
 };
@@ -119,15 +119,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string, role: UserRole): Promise<boolean> => {
     if (role === "supplier") {
-      const isValid = (email === "admin@core829.ro" && password === "admin123") ||
-        (email === "furnizor@core829.ro" && password === "furnizor123");
+      const isValid = (email === "admin@termoplast.ro" && password === "admin123") ||
+        (email === "furnizor@termoplast.ro" && password === "furnizor123");
       if (isValid) {
         setUser({
           id: "supplier_1",
           name: "Admin Furnizor",
           email,
           role: "supplier",
-          companyName: "CORE829 - Fabrica Termopane",
+          companyName: "TERMOPLAST - Fabrica Termopane",
           supplierId: "supplier_1",
         });
         return true;

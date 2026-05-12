@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Winmeeth SRL - Calculator Tâmplărie",
+  title: "TERMOPLAST - Calculator Tâmplărie PVC & Aluminiu",
   description:
-    "Calculator profesional de ferestre și uși din PVC și aluminiu. Strada Energiei 470, 605300 Dărmănești. Tel: +40 745 700 363",
+    "Calculator profesional de ferestre și uși din PVC și aluminiu. Oferte instant, transport și montaj inclus. termoplast.ro",
 };
 
 export const viewport = {

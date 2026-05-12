@@ -1,28 +1,41 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Users, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ClientLanding from "./ClientLanding";
+import DealerLanding from "./DealerLanding";
+import SupplierLanding from "./SupplierLanding";
 
-interface LandingPageProps {
-  userRole: "guest" | "authenticated";
-}
+type LandingView = "main" | "client" | "dealer" | "supplier";
 
-export default function LandingPage(_props: LandingPageProps) {
-  void _props;
+export default function LandingPage() {
   const router = useRouter();
+  const [view, setView] = useState<LandingView>("main");
+
+  if (view !== "main") {
+    switch (view) {
+      case "client":
+        return <ClientLanding onLoginClick={() => router.push("/login")} />;
+      case "dealer":
+        return <DealerLanding onLoginClick={() => router.push("/login")} />;
+      case "supplier":
+        return <SupplierLanding onLoginClick={() => router.push("/login")} />;
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50/30">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center overflow-hidden">
-            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain p-1" />
-          </div>
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center overflow-hidden">
+              <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
+            </div>
             <span className="font-semibold text-slate-900 text-lg">
-              Winmeeth SRL
+              TERMOPLAST
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -57,83 +70,97 @@ export default function LandingPage(_props: LandingPageProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto"
+            className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto"
           >
-            <button
-              onClick={() => router.push("/configurator?role=client")}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setView("client")}
               className={cn(
-                "group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-8 text-left transition-all duration-300 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-500/10",
+                "group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition-all duration-300 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/10",
                 "hover:-translate-y-1"
               )}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-14 h-14 rounded-xl bg-slate-100 group-hover:bg-primary-100 flex items-center justify-center mb-6 transition-colors">
-                  <Users className="w-7 h-7 text-slate-600 group-hover:text-primary-600 transition-colors" />
+                <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center mb-4 transition-colors">
+                  <Users className="w-6 h-6 text-slate-600 group-hover:text-emerald-600 transition-colors" />
                 </div>
-                <h3 className="text-2xl font-semibold text-slate-900 mb-3">
-                  Sunt Client
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Client
                 </h3>
-                <p className="text-slate-600 mb-4">
-                  Prețuri standard pentru clienți. Configurare rapidă și ofertă
-                  instantanee.
+                <p className="text-slate-600 text-sm mb-3">
+                  Prețuri standard, ofertare rapidă.
                 </p>
-                <span className="text-primary-600 font-medium text-sm flex items-center gap-2">
-                  Acces rapid
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
+                <span className="text-emerald-600 font-medium text-sm flex items-center gap-2">
+                  Vezi mai mult
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
               </div>
-            </button>
+            </motion.button>
 
-            <button
-              onClick={() => router.push("/configurator?role=dealer")}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setView("dealer")}
               className={cn(
-                "group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-8 text-left transition-all duration-300 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-500/10",
+                "group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition-all duration-300 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10",
                 "hover:-translate-y-1"
               )}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-14 h-14 rounded-xl bg-slate-100 group-hover:bg-primary-100 flex items-center justify-center mb-6 transition-colors">
-                  <Building2 className="w-7 h-7 text-slate-600 group-hover:text-primary-600 transition-colors" />
+                <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center mb-4 transition-colors">
+                  <Building2 className="w-6 h-6 text-slate-600 group-hover:text-blue-600 transition-colors" />
                 </div>
-                <h3 className="text-2xl font-semibold text-slate-900 mb-3">
-                  Sunt Partener / Dealer
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Dealer Partener
                 </h3>
-                <p className="text-slate-600 mb-4">
-                  Prețuri cu discount și funcții exclusive. Necesită
-                  autentificare.
+                <p className="text-slate-600 text-sm mb-3">
+                  Discount 15-25%, comisioane.
                 </p>
-                <span className="text-primary-600 font-medium text-sm flex items-center gap-2">
-                  Autentificare necesară
-                  <svg
-                    className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
+                <span className="text-blue-600 font-medium text-sm flex items-center gap-2">
+                  Vezi mai mult
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
               </div>
-            </button>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setView("supplier")}
+              className={cn(
+                "group relative overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-6 text-left transition-all duration-300 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-500/10",
+                "hover:-translate-y-1"
+              )}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-purple-100 flex items-center justify-center mb-4 transition-colors">
+                  <svg className="w-6 h-6 text-slate-600 group-hover:text-purple-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  Administrator
+                </h3>
+                <p className="text-slate-600 text-sm mb-3">
+                  Control total, rapoarte.
+                </p>
+                <span className="text-purple-600 font-medium text-sm flex items-center gap-2">
+                  Vezi mai mult
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </div>
+            </motion.button>
           </motion.div>
 
           <motion.div

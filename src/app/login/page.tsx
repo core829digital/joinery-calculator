@@ -77,23 +77,23 @@ export default function LoginPage() {
   ];
 
   const testCredentials = {
-    supplier: { email: "admin@core829.ro", password: "admin123" },
-    dealer: { email: "dealer@core829.ro", password: "dealer123" },
-    client: { email: "client@test.ro", password: "client123" },
+    supplier: { email: "admin@termoplast.ro", password: "admin123" },
+    dealer: { email: "dealer@termoplast.ro", password: "dealer123" },
+    client: { email: "client@termoplast.ro", password: "client123" },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-primary-500/30 overflow-hidden">
-            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain p-1" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden">
+            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Winmeeth SRL</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">TERMOPLAST</h1>
           <p className="text-slate-400">Calculator Tâmplărie PVC & Aluminiu</p>
         </motion.div>
 
@@ -248,7 +248,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-slate-500 text-sm mt-8">
-          Winmeeth SRL • Str. Energiei 470, Dărmănești • +40 745 700 363
+          TERMOPLAST • termoplast.ro • +40 745 700 363
         </p>
       </div>
     </div>

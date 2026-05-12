@@ -68,11 +68,11 @@ export default function AppLayout({
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-          <div className="w-7 h-7 rounded-lg bg-primary-600 flex items-center justify-center shadow-lg overflow-hidden">
-            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain" />
+          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg overflow-hidden">
+            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
           </div>
           <span className="text-white font-semibold text-sm tracking-wide">
-            Winmeeth SRL - Calculator Tâmplărie
+            TERMOPLAST - Calculator Tâmplărie
           </span>
         </div>
 
@@ -98,12 +98,12 @@ export default function AppLayout({
       </div>
 
       {/* Mobile Header */}
-      <div className="h-14 bg-gradient-to-r from-primary-600 to-primary-700 flex items-center justify-between px-4 md:hidden">
+      <div className="h-14 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden">
-            <img src="/images/winmeeth-logo.png" alt="Winmeeth" className="w-full h-full object-contain" />
+            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
           </div>
-          <span className="text-white font-semibold text-base">Winmeeth</span>
+          <span className="text-white font-semibold text-base">TERMOPLAST</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={onSave} className="p-2 bg-white/20 rounded-lg">
@@ -121,7 +121,7 @@ export default function AppLayout({
         <div className="flex items-center gap-1.5 flex-nowrap">
           <button
             onClick={onSave}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Save className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Salvează</span>
@@ -192,7 +192,7 @@ export default function AppLayout({
           <span className="hidden md:inline">|</span>
           <span className="hidden md:inline">+40 745 700 363</span>
         </div>
-        <div className="text-primary-400 font-medium">Winmeeth SRL</div>
+        <div className="text-blue-400 font-medium">TERMOPLAST</div>
       </div>
     </div>
   );

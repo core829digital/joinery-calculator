@@ -486,9 +486,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         `FERONERIE: ${hardwareBrand || "siegenia"}\n` +
         (price ? `PREȚ ESTIMATIV: ${formatPrice(price.total)} (incl. TVA)\n` : "") +
         `\nDATE CLIENT:\nNume: ${orderForm.clientName || "—"}\nEmail: ${orderForm.clientEmail}\nTelefon: ${orderForm.clientPhone || "—"}\n` +
-        `\nCu stimă,\nEchipa Winmeeth SRL\nStr. Energiei 470, 605300 Dărmănești\nTel: +40 745 700 363`;
+        `\nCu stimă,\nEchipa TERMOPLAST\ntermoplast.ro\nTel: +40 745 700 363`;
       
-      window.location.href = `mailto:contact@core829.ro?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = `mailto:contact@termoplast.ro?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
     
     setShowOrderModal(false);
@@ -1277,7 +1277,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 text-[10px]">Winmeeth SRL</span>
+              <span className="text-slate-400 text-[10px]">TERMOPLAST</span>
               <span className="text-slate-300">|</span>
               <span className="text-slate-400 text-[10px]">+40 745 700 363</span>
               <span className="text-slate-300 hidden sm:inline">|</span>
