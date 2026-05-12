@@ -1226,6 +1226,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                               i === idx ? { ...w, handleHeight: height } : w
                             ));
                           }}
+                          onProductTypeChange={(type) => {
+                            setWindows(prev => prev.map((w, i) => 
+                              i === idx ? { ...w, productType: type, name: getProductDisplayName(type) + " #" + (i + 1) } : w
+                            ));
+                          }}
                         />
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-1 mt-1">

@@ -75,6 +75,7 @@ interface Window2DProps {
   onShowThresholdChange?: (show: boolean) => void;
   onHorizontalMuntinChange?: (show: boolean) => void;
   onHandleHeightChange?: (height: number) => void;
+  onProductTypeChange?: (type: ProductType) => void;
   glassType?: string;
   hardwareBrand?: string;
 }
@@ -104,6 +105,7 @@ export default function Window2D({
   onShowThresholdChange,
   onHorizontalMuntinChange,
   onHandleHeightChange,
+  onProductTypeChange,
   glassType,
   hardwareBrand,
 }: Window2DProps) {
@@ -799,6 +801,79 @@ export default function Window2D({
               >
                 <X className="w-5 h-5 text-slate-500" />
               </button>
+            </div>
+
+            {/* Product Type Selector */}
+            <div className="p-4 border-b border-slate-100 bg-slate-50">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Tip Produs</label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => onProductTypeChange?.("window_1_canat")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "window_1_canat"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  1 Canat
+                </button>
+                <button
+                  onClick={() => onProductTypeChange?.("window_2_canate")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "window_2_canate"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  2 Canate
+                </button>
+                <button
+                  onClick={() => onProductTypeChange?.("window_3_canate")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "window_3_canate"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  3 Canate
+                </button>
+                <button
+                  onClick={() => onProductTypeChange?.("window_fix")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "window_fix"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  Fix
+                </button>
+                <button
+                  onClick={() => onProductTypeChange?.("usa_balcon_1")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "usa_balcon_1"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  Ușă 1C
+                </button>
+                <button
+                  onClick={() => onProductTypeChange?.("usa_balcon_2")}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    productType === "usa_balcon_2"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
+                >
+                  Ușă 2C
+                </button>
+              </div>
             </div>
 
             {/* Visual Sash Selection */}
