@@ -140,6 +140,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   interface WindowConfig {
     id: number;
     name: string;
+    productType: ProductType;
+    quantity: number;
     width: number;
     height: number;
     openingType: OpeningType | null;
@@ -153,7 +155,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     handleHeight: number;
   }
   
-  const defaultWindowConfig: Omit<WindowConfig, "id" | "name"> = {
+  const defaultWindowConfig: Omit<WindowConfig, "id" | "name" | "productType" | "quantity"> = {
     width: 1200,
     height: 1400,
     openingType: null,
@@ -205,19 +207,21 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   // Multi-window state
   const [windows, setWindows] = useState<WindowConfig[]>([
-    { id: 1, name: getProductDisplayName(productType) + " #1", ...defaultWindowConfig }
+    { id: 1, name: getProductDisplayName(productType) + " #1", productType: productType || "window_2_canate", quantity: 1, ...defaultWindowConfig }
   ]);
   const [activeWindowIndex, setActiveWindowIndex] = useState(0);
   const [showAddWindowMenu, setShowAddWindowMenu] = useState(false);
   
   const activeWindow = windows[activeWindowIndex];
 
-  // Update window names when productType changes
+  // Update window names when productType changes - only for NEW default
   useEffect(() => {
-    setWindows(prev => prev.map((win, idx) => ({
-      ...win,
-      name: getProductDisplayName(productType) + ` #${idx + 1}`
-    })));
+    if (productType) {
+      setWindows(prev => prev.map((win, idx) => ({
+        ...win,
+        name: getProductDisplayName(productType) + ` #${idx + 1}`
+      })));
+    }
   }, [productType]);
   
   // Helper to update active window property
@@ -229,8 +233,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   const addWindow = (type?: ProductType) => {
     const newId = windows.length + 1;
-    const windowType = type || productType;
-    setWindows([...windows, { id: newId, name: getProductDisplayName(windowType) + " #" + newId, ...defaultWindowConfig }]);
+    const windowType = type || productType || "window_2_canate";
+    setWindows([...windows, { 
+      id: newId, 
+      name: getProductDisplayName(windowType) + " #" + newId, 
+      productType: windowType,
+      quantity: 1,
+      ...defaultWindowConfig 
+    }]);
     setActiveWindowIndex(windows.length);
   };
 
@@ -367,15 +377,17 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   }, []);
 
   const handleExportPDF = useCallback(() => {
-    if (!productType) {
+    const winProductType = activeWindow?.productType;
+    if (!winProductType) {
       alert("Selectați un produs înainte de a exporta PDF!");
       return;
     }
     setShowPrintView(true);
-  }, [productType]);
+  }, [activeWindow?.productType]);
 
   const handlePrint = useCallback(() => {
-    if (!productType) {
+    const winProductType = activeWindow?.productType;
+    if (!winProductType) {
       alert("Selectați un produs înainte de a printa!");
       return;
     }
@@ -383,22 +395,22 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setTimeout(() => {
       window.print();
     }, 500);
-  }, [productType]);
+  }, [activeWindow?.productType]);
 
   const handleSendEmail = useCallback(() => {
-    if (!productType) {
+    if (!activeWindow?.productType) {
       alert("Selectați un produs înainte de a trimite email!");
       return;
     }
     setShowOrderModal(true);
-  }, [productType]);
+  }, [activeWindow?.productType]);
 
   const handleConfirmOrder = useCallback(() => {
-    if (!productType) return;
+    if (!activeWindow?.productType) return;
 
     const price = glassType && interiorColor && exteriorColor
       ? calculatePrice({
-          productType,
+          productType: activeWindow.productType,
       width: activeWindow.width,
       height: activeWindow.height,
       profileSeries: profileSeries || "premium_82",
@@ -424,7 +436,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       notes: orderForm.notes || undefined,
       dealerId: dealerId || undefined,
       supplierId: "supplier_1",
-      productType,
+      productType: activeWindow.productType,
       width: activeWindow.width,
       height: activeWindow.height,
       profileSeries: profileSeries || "premium_82",
@@ -463,10 +475,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     addOrder(order);
     
     // Send email if client email provided
-    if (orderForm.clientEmail) {
-      const subject = `Solicitare Ofertă - ${productType.replace(/_/g, " ")} - ${activeWindow.width}x${activeWindow.height}mm`;
+    if (orderForm.clientEmail && activeWindow?.productType) {
+      const subject = `Solicitare Ofertă - ${activeWindow.productType.replace(/_/g, " ")} - ${activeWindow.width}x${activeWindow.height}mm`;
       const body = `Bună ziua,\n\nAm solicitat o ofertă pentru următoarea configurație:\n\n` +
-        `PRODUS: ${productType.replace(/_/g, " ")}\n` +
+        `PRODUS: ${activeWindow.productType.replace(/_/g, " ")}\n` +
         `DIMENSIUNI: ${activeWindow.width} × ${activeWindow.height} mm\n` +
         `PROFIL: ${profileSeries || "premium_82"}\n` +
         `CULORI: Interior - ${interiorColor || "alb"}, Exterior - ${exteriorColor || "antracit"}\n` +
@@ -482,7 +494,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setShowOrderModal(false);
     setOrderForm({ clientName: "", clientEmail: "", clientPhone: "", notes: "" });
     alert("Comanda a fost trimisă cu succes! Veți fi contactat în cel mai scurt timp.");
-  }, [productType, activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
+  }, [activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
 
   const activeCategory = MENU_CATEGORIES.find((c) => c.id === activeMenu);
   const panelTitle = selectedComponent
@@ -731,12 +743,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             onMontajChange={(v) => setIncludeMontaj(v)}
           />
         );
-      case "ofertare":
+      case "ofertare": {
+        const winProductType = activeWindow?.productType;
         return (
           <div className="space-y-4">
-            {productType && (
+            {winProductType && (
               <PricingPanel
-                productType={productType}
+                productType={winProductType}
                 width={activeWindow.width}
                 height={activeWindow.height}
                 profileSeries={profileSeries ?? "premium_82"}
@@ -752,13 +765,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               />
             )}
             <ActionsPanel
-              price={productType ? 1 : null}
+              price={winProductType ? 1 : null}
               onRequestPDF={() => handleExportPDF()}
               onSendOrder={() => handleSendEmail()}
               onReset={() => handleReset()}
             />
           </div>
         );
+      }
       default:
         return null;
     }
@@ -1154,9 +1168,12 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
                     {windows.map((win, idx) => (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                        <div className="text-[10px] text-center text-slate-500 mb-1">{win.name} <span className="opacity-75">({win.width}x{win.height})</span></div>
+                        <div className="text-[10px] text-center text-slate-500 mb-1">
+                          {win.name} <span className="opacity-75">({win.width}x{win.height})</span>
+                          {win.quantity > 1 && <span className="ml-1 text-green-600 font-bold">×{win.quantity}</span>}
+                        </div>
                         <Window2D
-                          productType={productType ?? "window_2_canate"}
+                          productType={win.productType}
                           width={win.width}
                           height={win.height}
                           interiorColor={interiorColor ?? "alb_ral9003"}
@@ -1210,6 +1227,30 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             ));
                           }}
                         />
+                        {/* Quantity Controls */}
+                        <div className="flex items-center gap-1 mt-1">
+                          <button 
+                            onClick={() => {
+                              setWindows(prev => prev.map((w, i) => 
+                                i === idx ? { ...w, quantity: Math.max(1, w.quantity - 1) } : w
+                              ));
+                            }}
+                            className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                          >
+                            -
+                          </button>
+                          <span className="text-[10px] font-medium text-slate-600 w-8 text-center">{win.quantity}</span>
+                          <button 
+                            onClick={() => {
+                              setWindows(prev => prev.map((w, i) => 
+                                i === idx ? { ...w, quantity: w.quantity + 1 } : w
+                              ));
+                            }}
+                            className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
