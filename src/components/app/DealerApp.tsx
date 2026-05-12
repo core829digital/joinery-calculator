@@ -305,7 +305,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   };
 
   const handleSave = () => {
-    if (!productType) {
+    if (!activeWindow?.productType) {
       alert("Selectați un produs înainte de a salva!");
       return;
     }
@@ -316,7 +316,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       clientId: clientCode || undefined,
       dealerId: dealerId || undefined,
       supplierId: "supplier_1",
-      productType,
+      productType: activeWindow.productType,
       width: activeWindow.width,
       height: activeWindow.height,
       profileSeries: profileSeries || "premium_82",
