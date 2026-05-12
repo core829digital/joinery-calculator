@@ -325,7 +325,9 @@ export interface ProductConfig {
   description: string;
   icon: string;
   basePriceMultiplier: number;
+  minWidth: number;
   maxWidth: number;
+  minHeight: number;
   maxHeight: number;
   canHaveTransom: boolean;
   canHaveSidePanel: boolean;

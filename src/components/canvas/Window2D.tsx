@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Settings, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ProductType, Color, OpeningType } from "@/types";
-import { COLORS } from "@/data/joinery";
+import { COLORS, PRODUCT_TYPES } from "@/data/joinery";
 
 export type WindowComponent = "toc" | "canat" | "sticla" | "baghete" | "maner" | "balamale" | "glaf" | "prag" | "stulp" | "montant";
 
@@ -112,8 +112,14 @@ export default function Window2D({
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
   const [localWidth, setLocalWidth] = useState(width);
   const [localHeight, setLocalHeight] = useState(height);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [showSashConfig, setShowSashConfig] = useState(false);
   const [selectedSashForConfig, setSelectedSashForConfig] = useState<string | null>(null);
+
+  const productConfig = useMemo(() => 
+    PRODUCT_TYPES.find(p => p.type === productType),
+    [productType]
+  );
 
   const getTocColor = () => {
     if (interiorColor && COLOR_MAP[interiorColor]) {
@@ -433,13 +439,26 @@ export default function Window2D({
                 onChange={(e) => {
                   const val = parseInt(e.target.value) || 0;
                   setLocalWidth(val);
-                  if (val >= 300 && val <= 3000) {
-                    onDimensionChange?.(val, localHeight);
+                  setValidationError(null);
+                  
+                  if (!productConfig) return;
+                  
+                  if (val < productConfig.minWidth || val > productConfig.maxWidth) {
+                    setValidationError(`Lățime: ${productConfig.minWidth}-${productConfig.maxWidth}mm`);
+                    return;
                   }
+                  
+                  const newHeight = localHeight;
+                  if (newHeight < productConfig.minHeight || newHeight > productConfig.maxHeight) {
+                    setValidationError(`Înălțime: ${productConfig.minHeight}-${productConfig.maxHeight}mm`);
+                    return;
+                  }
+                  
+                  onDimensionChange?.(val, newHeight);
                 }}
                 className="w-14 px-1 py-0.5 text-[10px] font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
-                min={300}
-                max={3000}
+                min={productConfig?.minWidth || 300}
+                max={productConfig?.maxWidth || 3000}
               />
             </div>
             <span className="text-slate-300 text-[10px]">×</span>
@@ -451,17 +470,38 @@ export default function Window2D({
                 onChange={(e) => {
                   const val = parseInt(e.target.value) || 0;
                   setLocalHeight(val);
-                  if (val >= 300 && val <= 3000) {
-                    onDimensionChange?.(localWidth, val);
+                  setValidationError(null);
+                  
+                  if (!productConfig) return;
+                  
+                  if (val < productConfig.minHeight || val > productConfig.maxHeight) {
+                    setValidationError(`Înălțime: ${productConfig.minHeight}-${productConfig.maxHeight}mm`);
+                    return;
                   }
+                  
+                  const newWidth = localWidth;
+                  if (newWidth < productConfig.minWidth || newWidth > productConfig.maxWidth) {
+                    setValidationError(`Lățime: ${productConfig.minWidth}-${productConfig.maxWidth}mm`);
+                    return;
+                  }
+                  
+                  onDimensionChange?.(newWidth, val);
                 }}
                 className="w-14 px-1 py-0.5 text-[10px] font-semibold text-center border border-slate-300 rounded focus:border-primary-500 focus:ring-1 focus:ring-primary-500 bg-white"
-                min={300}
-                max={3000}
+                min={productConfig?.minHeight || 300}
+                max={productConfig?.maxHeight || 3000}
               />
             </div>
             <span className="text-[10px] text-slate-500">{((localWidth * localHeight) / 1000000).toFixed(2)}m²</span>
+            {productConfig && (
+              <span className="text-[9px] text-slate-400">
+                ({productConfig.minWidth}-{productConfig.maxWidth} × {productConfig.minHeight}-{productConfig.maxHeight})
+              </span>
+            )}
           </div>
+        )}
+        {validationError && (
+          <div className="text-[9px] text-red-500 font-medium">{validationError}</div>
         )}
       </div>
 
