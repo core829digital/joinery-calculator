@@ -69,7 +69,7 @@ export default function AppLayout({
       >
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg overflow-hidden">
-            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
           </div>
           <span className="text-white font-semibold text-sm tracking-wide">
             TERMOPLAST - Calculator Tâmplărie
@@ -101,7 +101,7 @@ export default function AppLayout({
       <div className="h-14 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center overflow-hidden">
-            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
           </div>
           <span className="text-white font-semibold text-base">TERMOPLAST</span>
         </div>

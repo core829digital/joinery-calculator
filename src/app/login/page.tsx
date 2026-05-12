@@ -90,8 +90,8 @@ export default function LoginPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden">
-            <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
+          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden border border-white/20">
+            <img src="/images/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">TERMOPLAST</h1>
           <p className="text-slate-400">Calculator Tâmplărie PVC & Aluminiu</p>

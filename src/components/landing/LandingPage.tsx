@@ -32,7 +32,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center overflow-hidden">
-              <img src="/images/termoplast-logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
+              <img src="/logo.png" alt="TERMOPLAST" className="w-full h-full object-contain p-1" />
             </div>
             <span className="font-semibold text-slate-900 text-lg">
               TERMOPLAST
