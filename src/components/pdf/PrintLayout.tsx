@@ -4,10 +4,18 @@ import { PROFILE_SERIES, GLASS_TYPES, COLORS, HARDWARE_BRANDS, HARDWARE_LEVELS, 
 import { calculatePrice, formatPrice, getGlassUwValue } from "@/lib/pricing";
 import type { ProductType, ProfileSeries, GlassType, Color, HardwareBrand, HardwareLevel, AccessoryType, UserRole } from "@/types";
 
-interface PrintLayoutProps {
+interface WindowItem {
+  id: number;
+  name: string;
   productType: ProductType;
+  quantity: number;
   width: number;
   height: number;
+}
+
+interface PrintLayoutProps {
+  windows: WindowItem[];
+  activeWindowIndex?: number;
   profileSeries: ProfileSeries;
   glassType: GlassType | null;
   interiorColor: Color | null;
@@ -26,9 +34,8 @@ interface PrintLayoutProps {
 }
 
 export default function PrintLayout({
-  productType,
-  width,
-  height,
+  windows,
+  activeWindowIndex = 0,
   profileSeries,
   glassType,
   interiorColor,
@@ -45,23 +52,33 @@ export default function PrintLayout({
   clientPhone,
   notes,
 }: PrintLayoutProps) {
-  const price = glassType && interiorColor && exteriorColor
-    ? calculatePrice({
-        productType,
-        width,
-        height,
-        profileSeries,
-        glassType,
-        interiorColor,
-        exteriorColor,
-        hardwareBrand: hardwareBrand || "siegenia",
-        hardwareLevel: hardwareLevel || "standard",
-        accessories,
-        userRole,
-        distance,
-        includeMontaj,
-      })
-    : null;
+  const activeWindow = windows[activeWindowIndex];
+  
+  const getPriceForWindow = (win: WindowItem) => {
+    if (!glassType || !interiorColor || !exteriorColor) return null;
+    return calculatePrice({
+      productType: win.productType,
+      width: win.width,
+      height: win.height,
+      profileSeries,
+      glassType,
+      interiorColor,
+      exteriorColor,
+      hardwareBrand: hardwareBrand || "siegenia",
+      hardwareLevel: hardwareLevel || "standard",
+      accessories,
+      userRole,
+      distance,
+      includeMontaj,
+    });
+  };
+
+  const price = activeWindow ? getPriceForWindow(activeWindow) : null;
+  
+  const totalPrice = windows.reduce((sum, win) => {
+    const winPrice = getPriceForWindow(win);
+    return sum + (winPrice ? winPrice.total * win.quantity : 0);
+  }, 0);
 
   const profile = PROFILE_SERIES.find((p) => p.id === profileSeries);
   const glass = GLASS_TYPES.find((g) => g.id === glassType);
@@ -69,9 +86,6 @@ export default function PrintLayout({
   const extColor = COLORS.find((c) => c.id === exteriorColor);
   const hw = HARDWARE_BRANDS.find((h) => h.id === hardwareBrand);
   const hwLevel = hardwareLevel ? HARDWARE_LEVELS[hardwareLevel] : HARDWARE_LEVELS.standard;
-
-  const area = (width * height) / 1000000;
-  const perimeter = ((width + height) * 2) / 1000;
 
   const productNames: Record<ProductType, string> = {
     window_1_canat: "Fereastră 1 canat",
@@ -117,28 +131,48 @@ export default function PrintLayout({
         </div>
       )}
 
-      {/* Product Details */}
+      {/* Products List */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Specificații Produs</h2>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">Lista Produse ({windows.length} poziții)</h2>
+        
+        <table className="w-full text-sm border-collapse mb-4">
+          <thead>
+            <tr className="bg-slate-100">
+              <th className="py-2 px-2 text-left font-semibold">Nr.</th>
+              <th className="py-2 px-2 text-left font-semibold">Tip Produs</th>
+              <th className="py-2 px-2 text-left font-semibold">Dimensiuni</th>
+              <th className="py-2 px-2 text-center font-semibold">Buc.</th>
+              <th className="py-2 px-2 text-right font-semibold">Suprafață</th>
+            </tr>
+          </thead>
+          <tbody>
+            {windows.map((win, idx) => (
+              <tr key={win.id} className={`border-b ${idx === activeWindowIndex ? 'bg-primary-50' : ''}`}>
+                <td className="py-2 px-2">{idx + 1}</td>
+                <td className="py-2 px-2 font-medium">{productNames[win.productType] || win.productType}</td>
+                <td className="py-2 px-2">{win.width} × {win.height} mm</td>
+                <td className="py-2 px-2 text-center">{win.quantity}</td>
+                <td className="py-2 px-2 text-right">{((win.width * win.height) / 1000000 * win.quantity).toFixed(3)} m²</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="font-semibold bg-slate-50">
+              <td colSpan={4} className="py-2 px-2">Total</td>
+              <td className="py-2 px-2 text-right">
+                {windows.reduce((sum, w) => sum + (w.width * w.height) / 1000000 * w.quantity, 0).toFixed(3)} m²
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      {/* Configuration Summary */}
+      <div className="mb-6 p-4 bg-slate-50 rounded-lg">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">Configurație Unitară (per produs)</h2>
         
         <table className="w-full text-sm border-collapse">
           <tbody>
-            <tr className="border-b">
-              <td className="py-2 text-slate-600">Tip Produs</td>
-              <td className="py-2 font-medium">{productNames[productType] || productType}</td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 text-slate-600">Dimensiuni</td>
-              <td className="py-2 font-medium">{width} × {height} mm ({width/1000} × {height/1000} m)</td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 text-slate-600">Suprafață</td>
-              <td className="py-2 font-medium">{area.toFixed(3)} m²</td>
-            </tr>
-            <tr className="border-b">
-              <td className="py-2 text-slate-600">Perimetru</td>
-              <td className="py-2 font-medium">{perimeter.toFixed(2)} ml</td>
-            </tr>
             <tr className="border-b">
               <td className="py-2 text-slate-600">Seria Profil</td>
               <td className="py-2 font-medium">{profile?.commercialName || profileSeries}</td>
@@ -193,64 +227,70 @@ export default function PrintLayout({
         </div>
       )}
 
-      {/* Price Summary */}
-      {price && (
-        <div className="mt-8 border-2 border-primary-600 rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-primary-600 mb-4"> Rezumat Preț</h2>
-          
-          <table className="w-full text-sm mb-4">
-            <tbody>
-              <tr className="border-b">
-                <td className="py-1 text-slate-600">Profile și etanșare</td>
-                <td className="py-1 text-right">{formatPrice(price.profile)}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-1 text-slate-600">Sticlă</td>
-                <td className="py-1 text-right">{formatPrice(price.glass)}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-1 text-slate-600">Feronerie</td>
-                <td className="py-1 text-right">{formatPrice(price.hardware)}</td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-1 text-slate-600">Accesorii</td>
-                <td className="py-1 text-right">{formatPrice(price.accessories)}</td>
-              </tr>
-              {price.transport > 0 && (
+      {/* Price Summary - Detailed per product */}
+      <div className="mt-8 border-2 border-primary-600 rounded-lg p-4">
+        <h2 className="text-lg font-semibold text-primary-600 mb-4">Rezumat Preț pe Produse</h2>
+        
+        <table className="w-full text-sm mb-4">
+          <thead>
+            <tr className="border-b">
+              <th className="py-1 text-left text-slate-600">Produs</th>
+              <th className="py-1 text-center text-slate-600">Buc.</th>
+              <th className="py-1 text-right text-slate-600">Preț Unitar</th>
+              <th className="py-1 text-right text-slate-600">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {windows.map((win) => {
+              const winPrice = getPriceForWindow(win);
+              return (
+                <tr key={win.id} className="border-b">
+                  <td className="py-1 text-slate-600">
+                    {productNames[win.productType] || win.productType} ({win.width}×{win.height}mm)
+                    {win.quantity > 1 && <span className="text-slate-400"> ×{win.quantity}</span>}
+                  </td>
+                  <td className="py-1 text-center">{win.quantity}</td>
+                  <td className="py-1 text-right">{winPrice ? formatPrice(winPrice.total) : "—"}</td>
+                  <td className="py-1 text-right font-medium">
+                    {winPrice ? formatPrice(winPrice.total * win.quantity) : "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+          <tfoot>
+            {price && (
+              <>
                 <tr className="border-b">
-                  <td className="py-1 text-slate-600">Transport</td>
+                  <td colSpan={3} className="py-1 text-slate-600">Transport</td>
                   <td className="py-1 text-right">{formatPrice(price.transport)}</td>
                 </tr>
-              )}
-              {price.montaj > 0 && (
-                <tr className="border-b">
-                  <td className="py-1 text-slate-600">Montaj</td>
-                  <td className="py-1 text-right">{formatPrice(price.montaj)}</td>
+                {price.montaj > 0 && (
+                  <tr className="border-b">
+                    <td colSpan={3} className="py-1 text-slate-600">Montaj</td>
+                    <td className="py-1 text-right">{formatPrice(price.montaj)}</td>
+                  </tr>
+                )}
+                {price.discount > 0 && (
+                  <tr className="text-primary-600">
+                    <td colSpan={3} className="py-1">Discount</td>
+                    <td className="py-1 text-right">-{formatPrice(price.discount)}</td>
+                  </tr>
+                )}
+                <tr className="border-t border-slate-300 font-medium">
+                  <td colSpan={3} className="py-2">TVA ({Math.round(TVA_RATE * 100)}%)</td>
+                  <td className="py-2 text-right">{formatPrice(price.tva * windows.reduce((sum, w) => sum + w.quantity, 0))}</td>
                 </tr>
-              )}
-              <tr className="border-b font-medium">
-                <td className="py-2">Subtotal</td>
-                <td className="py-2 text-right">{formatPrice(price.subtotal)}</td>
-              </tr>
-              {price.discount > 0 && (
-                <tr className="text-primary-600">
-                  <td className="py-1">Discount</td>
-                  <td className="py-1 text-right">-{formatPrice(price.discount)}</td>
-                </tr>
-              )}
-              <tr className="border-t border-slate-300 font-medium">
-                <td className="py-2">TVA ({Math.round(TVA_RATE * 100)}%)</td>
-                <td className="py-2 text-right">{formatPrice(price.tva)}</td>
-              </tr>
-            </tbody>
-          </table>
-          
-          <div className="bg-primary-600 text-white p-4 rounded-lg flex justify-between items-center">
-            <span className="text-lg font-bold">TOTAL (incl. TVA)</span>
-            <span className="text-2xl font-bold">{formatPrice(price.total)}</span>
-          </div>
+              </>
+            )}
+          </tfoot>
+        </table>
+        
+        <div className="bg-primary-600 text-white p-4 rounded-lg flex justify-between items-center">
+          <span className="text-lg font-bold">TOTAL GENERAL (incl. TVA)</span>
+          <span className="text-2xl font-bold">{formatPrice(totalPrice + (price?.transport || 0) + (price?.montaj || 0) - (price?.discount || 0) + (price?.tva || 0) * windows.reduce((s, w) => s + w.quantity, 0))}</span>
         </div>
-      )}
+      </div>
 
       {/* Footer */}
       <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">

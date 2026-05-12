@@ -880,9 +880,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           </div>
           <div className="p-8">
             <PrintLayout
-              productType={productType ?? "window_2_canate"}
-              width={activeWindow.width}
-              height={activeWindow.height}
+              windows={windows}
+              activeWindowIndex={activeWindowIndex}
               profileSeries={profileSeries ?? "premium_82"}
               glassType={glassType}
               interiorColor={interiorColor}
