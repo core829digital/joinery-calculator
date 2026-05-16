@@ -20,8 +20,6 @@ import AppLayout from "@/components/layout/AppLayout";
 import Window2D, { WindowComponent } from "@/components/canvas/Window2D";
 import {
   ProductTypePanel,
-  DimensionsPanel,
-  OpeningPanel,
 } from "@/components/panels/ProductPanels";
 import {
   ProfilePanel,
@@ -46,14 +44,12 @@ import {
   PlusSquare,
   Truck,
   FileText,
-  Grid3X3,
-  Warehouse,
-  Wrench,
   Send,
   X,
   Check,
   ChevronLeft,
   ChevronRight,
+  Info,
 } from "lucide-react";
 
 const MENU_ICONS: Record<string, React.ReactNode> = {
@@ -78,19 +74,6 @@ const COMPONENT_TO_MENU: Record<WindowComponent, string> = {
   prag: "accesorii",
   stulp: "profil",
   montant: "profil",
-};
-
-const COMPONENT_LABELS: Record<WindowComponent, string> = {
-  toc: "Toc (Rama)",
-  canat: "Canat",
-  sticla: "Sticlă",
-  baghete: "Baghete",
-  maner: "Maner",
-  balamale: "Balamale",
-  glaf: "Glaf",
-  prag: "Prag",
-  stulp: "Stulp",
-  montant: "Montant",
 };
 
 interface DealerAppProps {
@@ -170,6 +153,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   };
   
   const [activeMenu, setActiveMenu] = useState("produse");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
@@ -190,6 +174,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     notes: "",
   });
   
+  // Window Info Popup
+  const [showInfoPopup, setShowInfoPopup] = useState<number | null>(null);
+  const [editingDimensions, setEditingDimensions] = useState<{width: number, height: number} | null>(null);
+  
   // Print/Export state
   const [showPrintView, setShowPrintView] = useState(false);
 
@@ -203,7 +191,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   // Mobile state
   const [isMobile, setIsMobile] = useState(false);
-  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
 
   // Multi-window state
   const [windows, setWindows] = useState<WindowConfig[]>([
@@ -496,32 +483,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     alert("Comanda a fost trimisă cu succes! Veți fi contactat în cel mai scurt timp.");
   }, [activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const activeCategory = MENU_CATEGORIES.find((c) => c.id === activeMenu);
-  const panelTitle = selectedComponent
-    ? `${COMPONENT_LABELS[selectedComponent]} - Configurare`
-    : activeCategory?.name || "Configurare";
-
-  const getComponentIcon = () => {
-    if (!selectedComponent) return null;
-    switch (selectedComponent) {
-      case "toc":
-      case "canat":
-      case "montant":
-        return <Frame className="w-5 h-5" />;
-      case "sticla":
-        return <Square className="w-5 h-5" />;
-      case "maner":
-      case "balamale":
-        return <Settings className="w-5 h-5" />;
-      case "glaf":
-      case "prag":
-        return <Warehouse className="w-5 h-5" />;
-      case "baghete":
-        return <Grid3X3 className="w-5 h-5" />;
-      default:
-        return <Wrench className="w-5 h-5" />;
-    }
-  };
 
   // Filter items for quick filtering
   const filterOptions = {
@@ -1179,10 +1142,70 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                        <div className="text-[10px] text-center text-slate-500 mb-1">
-                          {win.name} <span className="opacity-75">({win.width}x{win.height})</span>
-                          {win.quantity > 1 && <span className="ml-1 text-green-600 font-bold">×{win.quantity}</span>}
+                        {/* Simplified Header */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <button
+                            onClick={() => {
+                              setActiveMenu("produse");
+                              setSelectedComponent(null);
+                              setShowPanelPopup(true);
+                            }}
+                            className="w-7 h-7 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center"
+                            title="Configurare"
+                          >
+                            <Settings className="w-4 h-4 text-slate-600" />
+                          </button>
+                          
+                          <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
+                            <input
+                              type="number"
+                              value={editingDimensions?.width ?? win.width}
+                              onChange={(e) => {
+                                const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.width));
+                                setEditingDimensions(prev => prev ? { ...prev, width: newWidth } : { width: newWidth, height: win.height });
+                              }}
+                              onBlur={() => {
+                                if (editingDimensions) {
+                                  setWindows(prev => prev.map((w, i) => 
+                                    i === idx ? { ...w, width: editingDimensions.width } : w
+                                  ));
+                                  setEditingDimensions(null);
+                                }
+                              }}
+                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                            />
+                            <span className="text-slate-400">×</span>
+                            <input
+                              type="number"
+                              value={editingDimensions?.height ?? win.height}
+                              onChange={(e) => {
+                                const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.height));
+                                setEditingDimensions(prev => prev ? { ...prev, height: newHeight } : { width: win.width, height: newHeight });
+                              }}
+                              onBlur={() => {
+                                if (editingDimensions) {
+                                  setWindows(prev => prev.map((w, i) => 
+                                    i === idx ? { ...w, height: editingDimensions.height } : w
+                                  ));
+                                  setEditingDimensions(null);
+                                }
+                              }}
+                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                            />
+                            <span className="text-[10px] text-slate-400">mm</span>
+                          </div>
+                          
+                          <button
+                            onClick={() => setShowInfoPopup(idx)}
+                            className="w-7 h-7 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
+                            title="Informații produs"
+                          >
+                            <Info className="w-4 h-4 text-blue-600" />
+                          </button>
                         </div>
+                        
                         <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
@@ -1273,104 +1296,90 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       );
                     })}
                   </div>
+
+                  {/* Bottom Status - Compact */}
+                  <div className="h-10 border-t border-slate-200 bg-white flex items-center justify-between px-4 text-xs">
+                    <div className="flex items-center gap-3">
+                      <span className="text-slate-400">Produs:</span>
+                      <span className="font-medium text-slate-700">{productType ? productType.replace(/_/g, " ") : "—"}</span>
+                      <span className="text-slate-300">|</span>
+                      <span className="text-slate-400">Profil:</span>
+                      <span className="font-medium text-slate-700">{profileSeries || "—"}</span>
+                      <span className="text-slate-300">|</span>
+                      <span className="text-slate-400">Sticlă:</span>
+                      <span className="font-medium text-slate-700">{glassType || "—"}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-400 text-[10px]">Core829 SRL</span>
+                      <span className="text-slate-300">|</span>
+                      <span className="text-slate-400 text-[10px]">+40766668482</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Bottom Status - Compact */}
-          <div className="h-10 border-t border-slate-200 bg-white flex items-center justify-between px-4 text-xs">
-            <div className="flex items-center gap-3">
-              <span className="text-slate-400">Produs:</span>
-              <span className="font-medium text-slate-700">{productType ? productType.replace(/_/g, " ") : "—"}</span>
-              <span className="text-slate-300">|</span>
-              <span className="text-slate-400">Profil:</span>
-              <span className="font-medium text-slate-700">{profileSeries || "—"}</span>
-              <span className="text-slate-300">|</span>
-              <span className="text-slate-400">Sticlă:</span>
-              <span className="font-medium text-slate-700">{glassType || "—"}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-slate-400 text-[10px]">Core829 SRL</span>
-              <span className="text-slate-300">|</span>
-              <span className="text-slate-400 text-[10px]">+40 745 700 363</span>
-              <span className="text-slate-300 hidden sm:inline">|</span>
-              <span className="text-slate-400 text-[10px] hidden sm:inline">Dărmănești</span>
-            </div>
+            )}
           </div>
         </div>
+      </AppLayout>
 
-        {/* Mobile Configuration Drawer */}
-        {isMobile && (
-          <div className={cn(
-            "fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary-600 shadow-2xl z-50 flex flex-col transition-all duration-300",
-            mobilePanelOpen ? "h-[70vh]" : "h-16"
-          )}>
-            {/* Drawer Header - Always visible */}
-            <div 
-              className="flex-shrink-0 bg-primary-600 text-white px-4 py-3 flex items-center justify-between cursor-pointer"
-              onClick={() => setMobilePanelOpen(!mobilePanelOpen)}
-            >
-              <div className="flex items-center gap-3">
-                {getComponentIcon()}
-                <span className="font-semibold">{panelTitle}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Settings className="w-4 h-4" />
-                <span className="text-sm">{mobilePanelOpen ? "▼" : "▲"}</span>
-              </div>
-            </div>
-
-            {/* Category Tabs */}
-            {mobilePanelOpen && (
-              <div className="flex-shrink-0 bg-slate-50 border-b border-slate-200 px-2 py-2 flex gap-1 overflow-x-auto">
-                {MENU_CATEGORIES.slice(0, 6).map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setActiveMenu(cat.id);
-                      setSelectedComponent(null);
-                    }}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
-                      activeMenu === cat.id
-                        ? "bg-primary-600 text-white"
-                        : "bg-white text-slate-600 border border-slate-200"
-                    )}
-                  >
-                    {MENU_ICONS[cat.id]}
-                    <span>{cat.name}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Configuration Content */}
-            {mobilePanelOpen && (
-              <div className="flex-1 overflow-y-auto p-3 space-y-3">
-                {activeMenu === "produse" && (
-                  <div className="space-y-3">
-                    <ProductTypePanel selected={productType} onSelect={setProductType} />
-                    <DimensionsPanel width={activeWindow.width} height={activeWindow.height} onWidthChange={(w) => updateActiveWindow("width", w)} onHeightChange={(h) => updateActiveWindow("height", h)} productType={productType} />
-                    <OpeningPanel selected={activeWindow.openingType} onSelect={(v) => updateActiveWindow("openingType", v as OpeningType)} />
-                  </div>
-                )}
-                {activeMenu === "profil" && <ProfilePanel selected={profileSeries} onSelect={setProfileSeries} />}
-                {activeMenu === "culori" && <ColorsPanel interiorColor={interiorColor} exteriorColor={exteriorColor} onInteriorChange={setInteriorColor} onExteriorChange={setExteriorColor} />}
-                {activeMenu === "sticla" && <GlassPanel selected={glassType} onSelect={setGlassType} />}
-                {activeMenu === "feronerie" && <HardwarePanel brand={hardwareBrand} level={hardwareLevel} onBrandChange={(v) => setHardwareBrand(v as HardwareBrand)} onLevelChange={(v) => setHardwareLevel(v as HardwareLevel)} />}
-                {activeMenu === "accesorii" && <AccessoriesPanel selected={accessories} onToggle={toggleAccessory} />}
-                {activeMenu === "servicii" && <ServicesPanel distance={distance} includeMontaj={includeMontaj} onDistanceChange={setDistance} onMontajChange={setIncludeMontaj} />}
-                {activeMenu === "ofertare" && productType && (
-                  <PricingPanel productType={productType} width={activeWindow.width} height={activeWindow.height} profileSeries={profileSeries ?? "premium_82"} interiorColor={interiorColor ?? "alb_ral9003"} exteriorColor={exteriorColor ?? "antracit_ral7016"} glassType={glassType ?? "tripan_4_16_4"} hardwareBrand={hardwareBrand ?? "siegenia"} hardwareLevel={hardwareLevel ?? "premium"} accessories={accessories} userRole={userRole} distance={distance} includeMontaj={includeMontaj} />
-                )}
-              </div>
-            )}
+    {/* Window Info Popup - Global */}
+    {showInfoPopup !== null && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-slate-800">Informații Produs</h2>
+            <button onClick={() => setShowInfoPopup(null)} className="p-2 hover:bg-slate-100 rounded-lg">
+              <X className="w-5 h-5 text-slate-500" />
+            </button>
           </div>
-        )}
+          <div className="space-y-3">
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Tip Produs</span>
+              <span className="font-medium text-slate-800">{getProductDisplayName(windows[showInfoPopup]?.productType)}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Dimensiuni</span>
+              <span className="font-medium text-slate-800">{windows[showInfoPopup]?.width} × {windows[showInfoPopup]?.height} mm</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Suprafață</span>
+              <span className="font-medium text-slate-800">{((windows[showInfoPopup]?.width * windows[showInfoPopup]?.height) / 1000000).toFixed(3)} m²</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Profil</span>
+              <span className="font-medium text-slate-800">{profileSeries || "—"}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Sticlă</span>
+              <span className="font-medium text-slate-800">{glassType || "—"}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Culoare Interior</span>
+              <span className="font-medium text-slate-800">{interiorColor || "—"}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Culoare Exterior</span>
+              <span className="font-medium text-slate-800">{exteriorColor || "—"}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-slate-100">
+              <span className="text-slate-500">Feronerie</span>
+              <span className="font-medium text-slate-800">{hardwareBrand || "—"}</span>
+            </div>
+            <div className="flex justify-between py-2">
+              <span className="text-slate-500">Cantitate</span>
+              <span className="font-medium text-slate-800">{windows[showInfoPopup]?.quantity || 1}</span>
+            </div>
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button onClick={() => setShowInfoPopup(null)} className="flex-1 py-2 px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50">
+              Închide
+            </button>
+          </div>
+        </div>
       </div>
-    </AppLayout>
+    )}
     </>
   );
 }
