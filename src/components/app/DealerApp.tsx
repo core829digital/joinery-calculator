@@ -1166,8 +1166,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
                     {windows.map((win, idx) => {
-                      const maxWidth = 350;
-                      const maxHeight = 400;
+                      const maxWidth = 450;
+                      const maxHeight = 500;
                       const aspectRatio = win.width / win.height;
                       let displayWidth = Math.min(win.width, maxWidth);
                       let displayHeight = displayWidth / aspectRatio;
@@ -1175,7 +1175,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         displayHeight = maxHeight;
                         displayWidth = displayHeight * aspectRatio;
                       }
-                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.3 : 0.4);
+                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.35 : 0.5);
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
@@ -1183,7 +1183,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           {win.name} <span className="opacity-75">({win.width}x{win.height})</span>
                           {win.quantity > 1 && <span className="ml-1 text-green-600 font-bold">×{win.quantity}</span>}
                         </div>
-                        <div className="w-full max-w-[350px] h-[400px] flex items-center justify-center">
+                        <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
                           width={win.width}
