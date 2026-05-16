@@ -17,7 +17,7 @@ import type {
 import { MENU_CATEGORIES } from "@/data/joinery";
 import { useAuth } from "@/context/AuthContext";
 import AppLayout from "@/components/layout/AppLayout";
-import Window2D, { WindowComponent } from "@/components/canvas/Window2D";
+import Window2D, { WindowComponent, SashRole } from "@/components/canvas/Window2D";
 import {
   ProductTypePanel,
 } from "@/components/panels/ProductPanels";
@@ -81,12 +81,6 @@ interface DealerAppProps {
   clientCode?: string | null;
   dealerId?: string;
 }
-
-const SASH_CONFIG_OPTIONS: { key: "stulp" | "montant" | null; label: string; color: string }[] = [
-  { key: "stulp", label: "Stulp", color: "purple" },
-  { key: "montant", label: "Montant", color: "indigo" },
-  { key: null, label: "Niciunul", color: "slate" },
-];
 
 const PRODUCT_DISPLAY_NAMES: Record<string, string> = {
   window_1_canat: "Fereastră 1 canat",
@@ -157,8 +151,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
-  const [configPopupPos, setConfigPopupPos] = useState<{top: number; right: number} | null>(null);
-  const configBtnRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -210,13 +202,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     }
   }, [productType]);
   
-  // Helper to update active window property
-  const updateActiveWindow = <K extends keyof WindowConfig>(key: K, value: WindowConfig[K]) => {
-    setWindows(prev => prev.map((win, idx) => 
-      idx === activeWindowIndex ? { ...win, [key]: value } : win
-    ));
-  };
-
   const addWindow = (type?: ProductType) => {
     const newId = windows.length + 1;
     const windowType = type || productType || "window_2_canate";
@@ -509,110 +494,239 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     ],
   };
 
-  // Config dropdown rendered at root level with fixed position
-  const configDropdown = showConfigPopup && configPopupPos && (
-    <div 
-      ref={configDropdownRef}
-      className="fixed bg-white border border-slate-200 rounded-xl shadow-2xl p-3 space-y-2 z-[100] w-56 max-h-[80vh] overflow-y-auto"
-      style={{ top: configPopupPos.top, right: configPopupPos.right }}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-1">
-        <span className="text-[11px] font-semibold text-slate-700">Configurare fereastră</span>
-        <button onClick={() => setShowConfigPopup(false)} className="text-slate-400 hover:text-slate-600 text-xs leading-none">×</button>
-      </div>
+  // Full Interactive Sash Configuration Popup
+  const configDropdown = showConfigPopup && activeWindow && (() => {
+    const win = windows[activeWindowIndex];
+    const winProductType = win.productType;
+    const sashConfig = win.sashConfiguration;
+    const sashRoles: Record<string, SashRole> = win.sashRoles;
+    const sashOpeningTypes: Record<string, OpeningType> = win.sashOpeningTypes;
+    const showThreshold = win.showThreshold;
+    const horizontalMuntin = win.horizontalMuntin;
+    const handleHeight = win.handleHeight;
 
-      {/* Canaturi - fixed widths prevent layout shift */}
-      <div className="text-[10px] font-semibold text-slate-500">Canaturi</div>
-      <div className="flex gap-1">
-        {SASH_CONFIG_OPTIONS.map((opt) => {
-          const isActive = activeWindow.sashConfiguration === opt.key;
-          const activeClass = opt.color === "purple" ? "bg-purple-600 text-white" : opt.color === "indigo" ? "bg-indigo-600 text-white" : "bg-slate-600 text-white";
-          return (
-            <button
-              key={opt.label}
-              onClick={() => updateActiveWindow("sashConfiguration", opt.key)}
-              className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", isActive ? activeClass : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
-            >
-              {opt.label}
+    const sashes: { side: string }[] = winProductType === "window_1_canat" || winProductType === "usa_balcon_1"
+      ? [{ side: "center" }]
+      : winProductType === "window_fix"
+      ? []
+      : winProductType === "window_3_canate"
+      ? [{ side: "left" }, { side: "center" }, { side: "right" }]
+      : [{ side: "left" }, { side: "right" }];
+
+    const updateWin = <K extends keyof WindowConfig>(key: K, value: WindowConfig[K]) => {
+      setWindows(prev => prev.map((w, i) => i === activeWindowIndex ? { ...w, [key]: value } : w));
+    };
+
+    return (
+      <div 
+        className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+        onClick={(e) => { if (e.target === e.currentTarget) setShowConfigPopup(false); }}
+      >
+        <div 
+          ref={configDropdownRef}
+          className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white rounded-t-2xl z-10">
+            <h3 className="text-lg font-semibold text-slate-800">Configurare Canaturi</h3>
+            <button onClick={() => setShowConfigPopup(false)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+              <X className="w-5 h-5 text-slate-500" />
             </button>
-          );
-        })}
-      </div>
+          </div>
 
-      {/* Optiuni - fixed widths */}
-      <div className="text-[10px] font-semibold text-slate-500 pt-1">Opțiuni</div>
-      <div className="flex gap-1">
-        <button onClick={() => updateActiveWindow("showThreshold", !activeWindow.showThreshold)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.showThreshold ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Prag</button>
-        <button onClick={() => updateActiveWindow("horizontalMuntin", !activeWindow.horizontalMuntin)} className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", activeWindow.horizontalMuntin ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>Montant</button>
-      </div>
-
-      {/* Handle height slider */}
-      <div className="pt-1">
-        <div className="text-[10px] font-semibold text-slate-500 mb-1">Înălțime mâner: {activeWindow.handleHeight}mm</div>
-        <input type="range" min="30" max="200" value={activeWindow.handleHeight} onChange={(e) => updateActiveWindow("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
-      </div>
-
-      {/* Roluri Canaturi */}
-      {((productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && activeWindow.sashConfiguration) && (
-        <div className="pt-1">
-          <div className="text-[10px] font-semibold text-slate-500 mb-1">Roluri Canaturi</div>
-          <div className="flex gap-1">
-            {["left", "right"].map((sashId) => {
-              const role = activeWindow.sashRoles[sashId] || "active";
-              const nextMap: Record<string, string> = { active: "inactive", inactive: "fixed", fixed: "active" };
-              const roleClass = role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white";
-              const label = sashId === "left" ? "St" : "Dr";
-              return (
+          {/* Product Type Selector */}
+          <div className="p-4 border-b border-slate-100 bg-slate-50">
+            <label className="block text-sm font-medium text-slate-700 mb-2">Tip Produs</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { type: "window_1_canat" as ProductType, label: "1 Canat" },
+                { type: "window_2_canate" as ProductType, label: "2 Canate" },
+                { type: "window_3_canate" as ProductType, label: "3 Canate" },
+                { type: "window_fix" as ProductType, label: "Fix" },
+                { type: "usa_balcon_1" as ProductType, label: "Ușă 1C" },
+                { type: "usa_balcon_2" as ProductType, label: "Ușă 2C" },
+              ].map((opt) => (
                 <button
-                  key={sashId}
+                  key={opt.type}
                   onClick={() => {
-                    const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
-                    updateActiveWindow("sashRoles", { ...roles, [sashId]: nextMap[role] });
+                    updateWin("productType", opt.type);
+                    updateWin("name", getProductDisplayName(opt.type) + " #" + (activeWindowIndex + 1));
                   }}
-                  className={cn("h-6 flex-1 px-1 rounded text-[10px] font-medium transition-colors", roleClass)}
-                  title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix"}
+                  className={cn(
+                    "p-2 rounded-lg border text-xs font-medium transition-all",
+                    winProductType === opt.type
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-slate-200 hover:border-primary-300 text-slate-600"
+                  )}
                 >
-                  {label}: {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
+                  {opt.label}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+          {/* Visual Sash Selection */}
+          {sashes.length > 0 && (
+            <div className="p-4 border-b border-slate-100">
+              <label className="block text-sm font-medium text-slate-700 mb-3">Selectează canatul:</label>
+              <div className="flex justify-center gap-2">
+                {sashes.map((sash, idx) => {
+                  const sashId = sash.side || String(idx);
+                  const role = sashRoles[sashId] || "active";
+                  const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+                  return (
+                    <button
+                      key={sashId}
+                      onClick={() => {}}
+                      className={cn(
+                        "p-4 rounded-xl border-2 transition-all hover:scale-105 min-w-[120px]",
+                        "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-16 h-20 rounded-lg border-2 mx-auto mb-2",
+                        role === "active" ? "border-green-500 bg-green-50" : 
+                        role === "inactive" ? "border-amber-500 bg-amber-50" : 
+                        "border-slate-400 bg-slate-100"
+                      )}>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-slate-600">{sash.side === "left" ? "←" : sash.side === "right" ? "→" : "○"}</span>
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium text-slate-800">{label}</div>
+                      <div className={cn(
+                        "text-xs mt-1",
+                        role === "active" ? "text-green-600" : 
+                        role === "inactive" ? "text-amber-600" : 
+                        "text-slate-500"
+                      )}>
+                        {role === "active" ? "Activ" : role === "inactive" ? "Inactiv" : "Fix"}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Window Options */}
+          <div className="p-4 space-y-4 border-b border-slate-100">
+            <label className="block text-sm font-medium text-slate-700">Opțiuni Fereastră</label>
+            
+            {/* Stulp / Montant */}
+            <div>
+              <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
+              <div className="flex gap-2">
+                <button onClick={() => updateWin("sashConfiguration", "stulp")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", sashConfig === "stulp" ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-200 hover:border-purple-300")}>Stulp</button>
+                <button onClick={() => updateWin("sashConfiguration", "montant")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", sashConfig === "montant" ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-300")}>Montant</button>
+                <button onClick={() => updateWin("sashConfiguration", null)} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", !sashConfig ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200 hover:border-slate-400")}>Niciunul</button>
+              </div>
+            </div>
+
+            {/* Prag */}
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-slate-500">Prag</label>
+              <button onClick={() => updateWin("showThreshold", !showThreshold)} className={cn("w-12 h-6 rounded-full transition-colors", showThreshold ? "bg-primary-600" : "bg-slate-300")}>
+                <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", showThreshold ? "translate-x-6" : "translate-x-0.5")} />
+              </button>
+            </div>
+
+            {/* Montant Orizontal */}
+            <div className="flex items-center justify-between">
+              <label className="text-xs text-slate-500">Montant Orizontal</label>
+              <button onClick={() => updateWin("horizontalMuntin", !horizontalMuntin)} className={cn("w-12 h-6 rounded-full transition-colors", horizontalMuntin ? "bg-primary-600" : "bg-slate-300")}>
+                <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", horizontalMuntin ? "translate-x-6" : "translate-x-0.5")} />
+              </button>
+            </div>
+
+            {/* Handle Height */}
+            <div>
+              <div className="text-xs text-slate-500 mb-1">Înălțime mâner: {handleHeight}mm</div>
+              <input type="range" min="30" max="200" value={handleHeight} onChange={(e) => updateWin("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
+            </div>
+          </div>
+
+          {/* Per-Sash Configuration */}
+          {sashes.length > 0 && (
+            <div className="p-4 space-y-4">
+              {sashes.map((sash, idx) => {
+                const sashId = sash.side || String(idx);
+                const role = sashRoles[sashId] || "active";
+                const openingType = sashOpeningTypes[sashId] || "normal";
+                const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+                const openingOptions = role === "inactive"
+                  ? [{ id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false }]
+                  : [
+                      { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
+                      { id: "oscilobatant", label: "Oscilobatant", desc: "Deschidere completă + aerisire", disabled: false },
+                      { id: "batant", label: "Batant", desc: "Doar deschidere completă", disabled: false },
+                    ];
+
+                return (
+                  <div key={sashId} className="p-3 bg-slate-50 rounded-xl space-y-3">
+                    <div className="text-sm font-semibold text-slate-700">{label}</div>
+                    
+                    {/* Rol Canat */}
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">Rol Canat</label>
+                      <div className="flex gap-2">
+                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "active" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "active" ? "border-green-500 bg-green-50 text-green-700" : "border-slate-200")}>Activ</button>
+                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "inactive" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "inactive" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200")}>Inactiv<div className="text-[9px] text-amber-600">Deschidere limitată</div></button>
+                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "fixed" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "fixed" ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200")}>Fix</button>
+                      </div>
+                    </div>
+
+                    {/* Tip Deschidere */}
+                    {role !== "fixed" && (
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">Tip Deschidere</label>
+                        <div className="flex gap-1.5">
+                          {openingOptions.map((opt) => (
+                            <button
+                              key={opt.id}
+                              onClick={() => { const o: Record<string, OpeningType> = { ...sashOpeningTypes, [sashId]: opt.id as OpeningType }; updateWin("sashOpeningTypes", o); }}
+                              className={cn("flex-1 p-1.5 rounded-lg border text-center text-[10px] transition-all", openingType === opt.id && !opt.disabled ? "border-primary-500 bg-primary-50 text-primary-700" : "border-slate-200 text-slate-500", opt.disabled && "opacity-40 cursor-not-allowed")}
+                              disabled={opt.disabled}
+                            >
+                              <div className="font-medium">{opt.label}</div>
+                              <div className="text-[9px] text-slate-400">{opt.desc}</div>
+                            </button>
+                          ))}
+                        </div>
+                        {role === "inactive" && <div className="text-[10px] text-amber-600 mt-1">Canatul inactiv are deschidere limitată</div>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Close Button */}
+          <div className="p-4 border-t border-slate-100">
+            <button onClick={() => setShowConfigPopup(false)} className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+              Închide
+            </button>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    );
+  })();
 
   const openConfigForWindow = (idx: number) => {
     setActiveWindowIndex(idx);
-    const btn = configBtnRefs.current.get(idx);
-    if (btn) {
-      const rect = btn.getBoundingClientRect();
-      setConfigPopupPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
-    }
     setShowConfigPopup(true);
   };
 
   // Close config dropdown on click outside or scroll/resize
   useEffect(() => {
     if (!showConfigPopup) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (configDropdownRef.current && !configDropdownRef.current.contains(e.target as Node)) {
-        const anyBtnClicked = Array.from(configBtnRefs.current.values()).some(
-          (btn) => btn && btn.contains(e.target as Node)
-        );
-        if (!anyBtnClicked) {
-          setShowConfigPopup(false);
-        }
-      }
-    };
     const handleScroll = () => setShowConfigPopup(false);
     const handleResize = () => setShowConfigPopup(false);
-    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", handleResize);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("scroll", handleScroll, true);
       window.removeEventListener("resize", handleResize);
     };
@@ -1098,7 +1212,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         {/* Per-Window Header */}
                         <div className="flex items-center gap-2 mb-2 px-1">
                           <button
-                            ref={(el) => { if (el) configBtnRefs.current.set(idx, el); }}
                             onClick={() => openConfigForWindow(idx)}
                             className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
                             title="Configurare canaturi"
@@ -1160,46 +1273,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                           hardwareBrand={hardwareBrand ?? undefined}
                           onComponentClick={handleComponentClick}
-                          onDimensionChange={(newWidth, newHeight) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, width: newWidth, height: newHeight } : w
-                            ));
-                          }}
-                          onSashRoleChange={(sashId, role) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, sashRoles: { ...w.sashRoles, [sashId]: role } } : w
-                            ));
-                          }}
-                          onOpeningTypeChange={(sashId, type) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, sashOpeningTypes: { ...w.sashOpeningTypes, [sashId]: type } } : w
-                            ));
-                          }}
-                          onSashConfigurationChange={(config) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, sashConfiguration: config } : w
-                            ));
-                          }}
-                          onShowThresholdChange={(show) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, showThreshold: show } : w
-                            ));
-                          }}
-                          onHorizontalMuntinChange={(show) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, horizontalMuntin: show } : w
-                            ));
-                          }}
-                          onHandleHeightChange={(height) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, handleHeight: height } : w
-                            ));
-                          }}
-                          onProductTypeChange={(type) => {
-                            setWindows(prev => prev.map((w, i) => 
-                              i === idx ? { ...w, productType: type, name: getProductDisplayName(type) + " #" + (i + 1) } : w
-                            ));
-                          }}
                         />
                         </div>
                         {/* Quantity Controls */}
