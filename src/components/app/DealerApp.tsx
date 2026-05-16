@@ -157,8 +157,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview] = useState(true);
   const [showConfigPopup, setShowConfigPopup] = useState(false);
-  const configBtnRef = useRef<HTMLButtonElement>(null);
   const [configPopupPos, setConfigPopupPos] = useState<{top: number; right: number} | null>(null);
+  const configBtnRefs = useRef<Map<number, HTMLButtonElement>>(new Map());
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -509,58 +509,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     ],
   };
 
-  const windowControls = (
-    <div className="flex items-center gap-2">
-      <button
-        ref={configBtnRef}
-        onClick={() => {
-          if (!showConfigPopup && configBtnRef.current) {
-            const rect = configBtnRef.current.getBoundingClientRect();
-            setConfigPopupPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
-          }
-          setShowConfigPopup(!showConfigPopup);
-        }}
-        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
-        title="Configurare fereastră"
-      >
-        <Settings className="w-4 h-4 text-slate-600" />
-      </button>
-
-      <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
-        <input
-          type="number"
-          value={activeWindow.width}
-          onChange={(e) => {
-            const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || activeWindow.width));
-            updateActiveWindow("width", newWidth);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-          className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-        />
-        <span className="text-slate-400">×</span>
-        <input
-          type="number"
-          value={activeWindow.height}
-          onChange={(e) => {
-            const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || activeWindow.height));
-            updateActiveWindow("height", newHeight);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-          className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-        />
-        <span className="text-[10px] text-slate-400">mm</span>
-      </div>
-
-      <button
-        onClick={() => setShowInfoPopup(activeWindowIndex)}
-        className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
-        title="Informații produs"
-      >
-        <Info className="w-4 h-4 text-blue-600" />
-      </button>
-    </div>
-  );
-
   // Config dropdown rendered at root level with fixed position
   const configDropdown = showConfigPopup && configPopupPos && (
     <div 
@@ -635,17 +583,27 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     </div>
   );
 
+  const openConfigForWindow = (idx: number) => {
+    setActiveWindowIndex(idx);
+    const btn = configBtnRefs.current.get(idx);
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      setConfigPopupPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
+    }
+    setShowConfigPopup(true);
+  };
+
   // Close config dropdown on click outside or scroll/resize
   useEffect(() => {
     if (!showConfigPopup) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        configDropdownRef.current &&
-        !configDropdownRef.current.contains(e.target as Node) &&
-        configBtnRef.current &&
-        !configBtnRef.current.contains(e.target as Node)
-      ) {
-        setShowConfigPopup(false);
+      if (configDropdownRef.current && !configDropdownRef.current.contains(e.target as Node)) {
+        const anyBtnClicked = Array.from(configBtnRefs.current.values()).some(
+          (btn) => btn && btn.contains(e.target as Node)
+        );
+        if (!anyBtnClicked) {
+          setShowConfigPopup(false);
+        }
       }
     };
     const handleScroll = () => setShowConfigPopup(false);
@@ -1017,7 +975,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onToggleFilter={() => setShowFilters(true)}
-        windowControls={windowControls}
       >
         <div className="flex h-full">
           {/* Left Sidebar - Configurare Proiect */}
@@ -1138,6 +1095,51 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
+                        {/* Per-Window Header */}
+                        <div className="flex items-center gap-2 mb-2 px-1">
+                          <button
+                            ref={(el) => { if (el) configBtnRefs.current.set(idx, el); }}
+                            onClick={() => openConfigForWindow(idx)}
+                            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+                            title="Configurare canaturi"
+                          >
+                            <Settings className="w-4 h-4 text-slate-600" />
+                          </button>
+
+                          <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
+                            <input
+                              type="number"
+                              value={win.width}
+                              onChange={(e) => {
+                                const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.width));
+                                setWindows(prev => prev.map((w, i) => i === idx ? { ...w, width: newWidth } : w));
+                              }}
+                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                            />
+                            <span className="text-slate-400">×</span>
+                            <input
+                              type="number"
+                              value={win.height}
+                              onChange={(e) => {
+                                const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.height));
+                                setWindows(prev => prev.map((w, i) => i === idx ? { ...w, height: newHeight } : w));
+                              }}
+                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                            />
+                            <span className="text-[10px] text-slate-400">mm</span>
+                          </div>
+
+                          <button
+                            onClick={() => setShowInfoPopup(idx)}
+                            className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center transition-colors"
+                            title="Informații produs"
+                          >
+                            <Info className="w-4 h-4 text-blue-600" />
+                          </button>
+                        </div>
+
                         <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
@@ -1304,6 +1306,45 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               <span className="font-medium text-slate-800">{windows[showInfoPopup]?.quantity || 1}</span>
             </div>
           </div>
+
+          {/* Price Calculation */}
+          {(() => {
+            const infoWin = windows[showInfoPopup];
+            if (!infoWin || !glassType || !interiorColor || !exteriorColor) return null;
+            const price = calculatePrice({
+              productType: infoWin.productType,
+              width: infoWin.width,
+              height: infoWin.height,
+              profileSeries: profileSeries || "premium_82",
+              glassType,
+              interiorColor,
+              exteriorColor,
+              hardwareBrand: hardwareBrand || "siegenia",
+              hardwareLevel: hardwareLevel || "standard",
+              accessories,
+              userRole,
+              distance,
+              includeMontaj,
+            });
+            const unitPrice = price.total;
+            const qty = infoWin.quantity || 1;
+            const totalPrice = unitPrice * qty;
+            return (
+              <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-slate-600">Preț unitar</span>
+                  <span className="text-lg font-bold text-slate-800">{formatPrice(unitPrice)}</span>
+                </div>
+                {qty > 1 && (
+                  <div className="flex justify-between items-center pt-2 border-t border-blue-200">
+                    <span className="text-sm font-medium text-slate-600">Total ({qty} buc)</span>
+                    <span className="text-xl font-bold text-blue-700">{formatPrice(totalPrice)}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           <div className="flex gap-3 mt-6">
             <button onClick={() => setShowInfoPopup(null)} className="flex-1 py-2 px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50">
               Închide

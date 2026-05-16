@@ -25,7 +25,6 @@ interface AppLayoutProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onToggleFilter?: () => void;
-  windowControls?: React.ReactNode;
 }
 
 export default function AppLayout({
@@ -37,7 +36,6 @@ export default function AppLayout({
   searchQuery = "",
   onSearchChange,
   onToggleFilter,
-  windowControls,
 }: AppLayoutProps) {
   const [windowFocused, setWindowFocused] = useState(true);
   const { user } = useAuth();
@@ -146,12 +144,11 @@ export default function AppLayout({
           </button>
         </div>
 
-        {/* Window Controls */}
-        {windowControls && (
-          <div className="hidden md:flex items-center">
-            {windowControls}
-          </div>
-        )}
+        {/* Website Link */}
+        <a href="https://core829.net" target="_blank" rel="noopener noreferrer" className="hidden md:flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap">
+          <span className="w-2 h-2 rounded-full bg-blue-500" />
+          core829.net
+        </a>
 
         {/* Search - Hidden on small mobile */}
         <div className="relative hidden sm:block">
