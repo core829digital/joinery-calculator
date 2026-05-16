@@ -70,7 +70,7 @@ export default function DealerLanding({ onLoginClick }: DealerLandingProps) {
   ];
 
   const testDealer = {
-    email: "dealer@termoplast.ro",
+    email: "dealer@core829.ro",
     password: "dealer123",
   };
 
@@ -80,7 +80,7 @@ export default function DealerLanding({ onLoginClick }: DealerLandingProps) {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo size={40} className="rounded-xl" />
-            <span className="font-semibold text-slate-900 text-lg">TERMOPLAST</span>
+            <span className="font-semibold text-slate-900 text-lg">Core829 SRL</span>
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -116,7 +116,7 @@ export default function DealerLanding({ onLoginClick }: DealerLandingProps) {
               <span className="text-blue-600"> Autorizat</span>
             </h1>
             <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Alătură-te rețelei de dealeri TERMOPLAST și beneficiază de prețuri
+              Alătură-te rețelei de dealeri Core829 și beneficiază de prețuri
               preferentiale, comisioane atractive și suport dedicat.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -249,7 +249,7 @@ export default function DealerLanding({ onLoginClick }: DealerLandingProps) {
               Ai întrebări? Contactează-ne: <a href="tel:+40745700363" className="text-blue-600 font-medium">+40 745 700 363</a>
             </p>
             <p className="text-slate-400 text-sm">
-              TERMOPLAST • termoplast.ro • +40 745 700 363
+              Core829 SRL • contact.core829@gmail.com • +40766668482
             </p>
           </motion.div>
         </div>

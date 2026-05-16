@@ -146,14 +146,16 @@ export function PricingPanel({
           <span className="font-medium text-slate-900">{formatPrice(area > 2 ? 85 : 55)}</span>
         </div>
 
-        {/* Subtotal */}
+        {/* Subtotal - hide discount label for clients */}
         <div className="border-t border-slate-200 pt-2 flex justify-between">
-          <span className="font-medium text-slate-700">Total fără discount</span>
+          <span className="font-medium text-slate-700">
+            {userRole === "client" ? "Total" : "Total fără discount"}
+          </span>
           <span className="font-medium text-slate-900">{formatPrice(price.subtotal)}</span>
         </div>
 
-        {/* Discount */}
-        {price.discount > 0 && (
+        {/* Discount - only show for dealer role */}
+        {price.discount > 0 && userRole === "dealer" && (
           <div className="flex justify-between text-primary-600">
             <span className="font-medium">Discount dealer ({discountPct}%)</span>
             <span className="font-medium">-{formatPrice(price.discount)}</span>

@@ -71,7 +71,7 @@ export default function AppLayout({
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           <Logo size={28} className="rounded-md" />
           <span className="text-white font-semibold text-sm tracking-wide">
-            TERMOPLAST - Calculator Tâmplărie
+            Core829 SRL - Calculator Tâmplărie
           </span>
         </div>
 
@@ -100,7 +100,7 @@ export default function AppLayout({
       <div className="h-14 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
           <Logo size={32} className="rounded-md" />
-          <span className="text-white font-semibold text-base">TERMOPLAST</span>
+          <span className="text-white font-semibold text-base">Core829</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={onSave} className="p-2 bg-white/20 rounded-lg">
@@ -185,11 +185,15 @@ export default function AppLayout({
           <span className="hidden md:inline">|</span>
           <span className="hidden md:inline">{roleDisplay.label}</span>
           <span className="hidden md:inline">|</span>
-          <span className="hidden md:inline">Str. Energiei 470, Dărmănești</span>
-          <span className="hidden md:inline">|</span>
-          <span className="hidden md:inline">+40 745 700 363</span>
+          <span className="hidden md:inline">contact.core829@gmail.com</span>
+          <span className="hidden lg:inline">|</span>
+          <span className="hidden lg:inline">+40766668482</span>
+          <span className="hidden lg:inline">|</span>
+          <span className="hidden lg:inline">+393759468881</span>
+          <span className="hidden lg:inline">|</span>
+          <span className="hidden lg:inline">+40766231632</span>
         </div>
-        <div className="text-blue-400 font-medium">TERMOPLAST</div>
+        <div className="text-blue-400 font-medium">Core829 SRL</div>
       </div>
     </div>
   );

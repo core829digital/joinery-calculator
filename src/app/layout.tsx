@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TERMOPLAST - Calculator Tâmplărie PVC & Aluminiu",
-  description:
-    "Calculator profesional de ferestre și uși din PVC și aluminiu. Oferte instant, transport și montaj inclus. termoplast.ro",
+title: "Core829 SRL - Calculator Tâmplărie PVC & Aluminiu",
+    description:
+      "Calculator profesional de ferestre și uși din PVC și aluminiu. Oferte instant, transport și montaj inclus. Core829 SRL",
 };
 
 export const viewport = {

@@ -17,7 +17,7 @@ export default function Logo({ className = "", size = 40 }: LogoProps) {
         className={`flex items-center justify-center bg-blue-600 text-white font-bold rounded-lg ${className}`}
         style={{ width: size, height: size }}
       >
-        <span style={{ fontSize: size * 0.4 }}>T</span>
+        <span style={{ fontSize: size * 0.4 }}>C8</span>
       </div>
     );
   }
@@ -25,7 +25,7 @@ export default function Logo({ className = "", size = 40 }: LogoProps) {
   return (
     <Image
       src="/logo.png"
-      alt="TERMOPLAST"
+      alt="Core829 SRL"
       width={size}
       height={size}
       className={className}

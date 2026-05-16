@@ -84,7 +84,7 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
   ];
 
   const testAdmin = {
-    email: "admin@termoplast.ro",
+    email: "contact.core829@gmail.com",
     password: "admin123",
   };
 
@@ -94,7 +94,7 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo size={40} className="rounded-xl" />
-            <span className="font-semibold text-slate-900 text-lg">TERMOPLAST</span>
+            <span className="font-semibold text-slate-900 text-lg">Core829 SRL</span>
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -270,7 +270,7 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
               Suport tehnic: <a href="tel:+40745700363" className="text-blue-600 font-medium">+40 745 700 363</a>
             </p>
             <p className="text-slate-400 text-sm">
-              TERMOPLAST • termoplast.ro • +40 745 700 363
+              Core829 SRL • contact.core829@gmail.com • +40766668482
             </p>
           </motion.div>
         </div>

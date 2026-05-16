@@ -58,7 +58,7 @@ export default function ClientLanding({ onLoginClick }: ClientLandingProps) {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo size={40} className="rounded-xl" />
-            <span className="font-semibold text-slate-900 text-lg">TERMOPLAST</span>
+            <span className="font-semibold text-slate-900 text-lg">Core829 SRL</span>
           </div>
           <div className="flex items-center gap-4">
             <button
@@ -145,7 +145,7 @@ export default function ClientLanding({ onLoginClick }: ClientLandingProps) {
           >
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <h2 className="text-3xl font-bold text-white mb-4">De Ce Să Alegi TERMOPLAST?</h2>
+                <h2 className="text-3xl font-bold text-white mb-4">De Ce Să Alegi Core829?</h2>
                 <p className="text-slate-300 mb-6">
                   Cu peste 15 ani de experiență în producția de tâmplărie PVC, oferim
                   produse de calitate superioară la prețuri directe de fabrică.
@@ -192,7 +192,7 @@ export default function ClientLanding({ onLoginClick }: ClientLandingProps) {
               Ai nevoie de ajutor? Sună-ne: <a href="tel:+40745700363" className="text-blue-600 font-medium">+40 745 700 363</a>
             </p>
             <p className="text-slate-400 text-sm">
-              TERMOPLAST • termoplast.ro • +40 745 700 363
+              Core829 SRL • contact.core829@gmail.com • +40766668482
             </p>
           </motion.div>
         </div>

@@ -32,6 +32,7 @@ interface AuthContextType {
   addDealer: (dealer: DealerConfig) => void;
   addClient: (client: ClientConfig) => void;
   updateDealerStatus: (dealerId: string, isActive: boolean) => void;
+  updateDealerMargin: (dealerId: string, margin: number) => void;
   getDealerPrice: (basePrice: number, dealerId: string) => number;
   getClientPrice: (basePrice: number, dealerId?: string) => number;
   // Data isolation methods
@@ -58,9 +59,9 @@ const defaultDealer: DealerConfig = {
   id: "dealer_demo",
   name: "Dealer Test",
   companyName: "SC TermoServ SRL",
-  email: "dealer@termoplast.ro",
-  phone: "+40 721 000 001",
-  address: "Str. Principală Nr. 25, Cluj-Napoca",
+  email: "dealer@core829.ro",
+  phone: "+40766668482",
+  address: "",
   supplierId: "supplier_1",
   accessCode: "DLRDEMO01",
   commissionPercent: 15,
@@ -71,10 +72,10 @@ const defaultDealer: DealerConfig = {
 const defaultSupplier: SupplierConfig = {
   id: "supplier_1",
   name: "Admin Principal",
-  companyName: "TERMOPLAST - Fabrica Termopane",
-  email: "admin@termoplast.ro",
-  phone: "+40 721 234 567",
-  address: "Str. Industriei Nr. 10, Dărmănești",
+  companyName: "SC Core829 SRL",
+  email: "contact.core829@gmail.com",
+  phone: "+40766668482",
+  address: "",
   commissionPercent: 15,
   defaultDiscount: 0,
 };
@@ -119,15 +120,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string, role: UserRole): Promise<boolean> => {
     if (role === "supplier") {
-      const isValid = (email === "admin@termoplast.ro" && password === "admin123") ||
-        (email === "furnizor@termoplast.ro" && password === "furnizor123");
+      const isValid = (email === "contact.core829@gmail.com" && password === "admin123") ||
+        (email === "admin@core829.ro" && password === "admin123");
       if (isValid) {
         setUser({
           id: "supplier_1",
           name: "Admin Furnizor",
           email,
           role: "supplier",
-          companyName: "TERMOPLAST - Fabrica Termopane",
+          companyName: "SC Core829 SRL",
           supplierId: "supplier_1",
         });
         return true;
@@ -235,6 +236,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const updateDealerMargin = useCallback((dealerId: string, margin: number) => {
+    setDealers((prev) =>
+      prev.map((d) => (d.id === dealerId ? { ...d, customMargin: margin } : d))
+    );
+  }, []);
+
   const getDealerPrice = useCallback((basePrice: number, dealerId: string): number => {
     const dealer = dealers.find((d) => d.id === dealerId);
     if (dealer) {
@@ -320,6 +327,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         addDealer,
         addClient,
         updateDealerStatus,
+        updateDealerMargin,
         getDealerPrice,
         getClientPrice,
         getAccessibleDealers,

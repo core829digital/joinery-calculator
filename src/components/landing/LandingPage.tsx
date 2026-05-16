@@ -34,7 +34,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Logo size={40} className="rounded-xl" />
             <span className="font-semibold text-slate-900 text-lg">
-              TERMOPLAST
+              Core829 SRL
             </span>
           </div>
           <div className="flex items-center gap-4">

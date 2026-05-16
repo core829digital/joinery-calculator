@@ -78,9 +78,9 @@ export default function LoginPage() {
   ];
 
   const testCredentials = {
-    supplier: { email: "admin@termoplast.ro", password: "admin123" },
-    dealer: { email: "dealer@termoplast.ro", password: "dealer123" },
-    client: { email: "client@termoplast.ro", password: "client123" },
+    supplier: { email: "contact.core829@gmail.com", password: "admin123" },
+    dealer: { email: "dealer@core829.ro", password: "dealer123" },
+    client: { email: "client@core829.ro", password: "client123" },
   };
 
   return (
@@ -94,8 +94,8 @@ export default function LoginPage() {
           <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden border border-white/20">
             <Logo size={64} className="object-contain" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">TERMOPLAST</h1>
-          <p className="text-slate-400">Calculator Tâmplărie PVC & Aluminiu</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Core829 SRL</h1>
+          <p className="text-slate-400">Building Tomorrow's Software Today</p>
         </motion.div>
 
         {!selectedRole ? (
@@ -249,7 +249,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-slate-500 text-sm mt-8">
-          TERMOPLAST • termoplast.ro • +40 745 700 363
+          Core829 SRL • contact.core829@gmail.com • +40766668482
         </p>
       </div>
     </div>

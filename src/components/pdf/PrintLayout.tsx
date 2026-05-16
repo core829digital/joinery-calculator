@@ -107,9 +107,9 @@ export default function PrintLayout({
       {/* Header */}
       <div className="flex justify-between items-start mb-8 border-b-2 border-blue-600 pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-blue-600">TERMOPLAST</h1>
+          <h1 className="text-2xl font-bold text-blue-600">Core829 SRL</h1>
           <p className="text-sm text-slate-600">Calculator Tâmplărie PVC & Aluminiu</p>
-          <p className="text-xs text-slate-500">Str. Industriei, Dărmănești | Tel: +40 745 700 363 | termoplast.ro</p>
+          <p className="text-xs text-slate-500">Tel: +40766668482 | contact.core829@gmail.com</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold">Ofertă Preliminară</p>
@@ -296,7 +296,7 @@ export default function PrintLayout({
       <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-500">
         <p>Oferta este valabilă 30 de zile de la data emiterii.</p>
         <p>Prețurile sunt estimative și pot fi ajustate în funcție de complexitatea execuției.</p>
-        <p className="mt-2">TERMOPLAST - termoplast.ro | Tel: +40 745 700 363</p>
+        <p className="mt-2">Core829 SRL - contact.core829@gmail.com | Tel: +40766668482</p>
       </div>
     </div>
   );
@@ -341,8 +341,8 @@ export function getOfferteEmailBody(
   }
   body += `\nVom reveni cu o ofertă detaliată în cel mai scurt timp.\n\n`;
   body += `Cu stimă,\n`;
-  body += `Echipa TERMOPLAST\n`;
-  body += `termoplast.ro\n`;
+  body += `Echipa Core829 SRL\n`;
+  body += `contact.core829@gmail.com\n`;
   body += `Tel: +40 745 700 363`;
 
   return body;
