@@ -176,7 +176,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   
   // Window Info Popup
   const [showInfoPopup, setShowInfoPopup] = useState<number | null>(null);
-  const [editingDimensions, setEditingDimensions] = useState<{width: number, height: number} | null>(null);
   
   // Print/Export state
   const [showPrintView, setShowPrintView] = useState(false);
@@ -511,44 +510,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   };
 
   const windowControls = (
-    <div className="flex items-center gap-1">
-      <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
-        <span className="text-[10px] font-medium text-slate-500 mr-1">Deschidere:</span>
-        <button onClick={() => updateActiveWindow("openingSide", "left")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "left" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Stânga">← St</button>
-        <button onClick={() => updateActiveWindow("openingSide", "right")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingSide === "right" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Dreapta">Dr →</button>
-      </div>
-      <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
-        <span className="text-[10px] font-medium text-slate-500 mr-1">Direcție:</span>
-        <button onClick={() => updateActiveWindow("openingDirection", "inward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "inward" ? "bg-green-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Interior">Int</button>
-        <button onClick={() => updateActiveWindow("openingDirection", "outward")} className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", activeWindow.openingDirection === "outward" ? "bg-orange-600 text-white" : "bg-white text-slate-600 hover:bg-slate-200")} title="Exterior">Ext</button>
-      </div>
-
-      {/* Sash role toggles in header */}
-      {productType && (productType === "window_2_canate" || productType === "window_3_canate" || productType === "usa_balcon_2") && (
-        <div className="flex items-center gap-0.5 bg-slate-100 rounded-lg px-1.5 py-1">
-          <span className="text-[10px] font-medium text-slate-500 mr-1">Canat:</span>
-          {["left", "right"].map((sashId) => {
-            const role = activeWindow.sashRoles[sashId] || "active";
-            const nextMap: Record<string, string> = { active: "inactive", inactive: "fixed", fixed: "active" };
-            const roleClass = role === "active" ? "bg-green-600 text-white" : role === "inactive" ? "bg-amber-500 text-white" : "bg-slate-500 text-white";
-            const label = sashId === "left" ? "St" : "Dr";
-            return (
-              <button
-                key={sashId}
-                onClick={() => {
-                  const roles = { left: activeWindow.sashRoles.left || "active", right: activeWindow.sashRoles.right || "inactive" };
-                  updateActiveWindow("sashRoles", { ...roles, [sashId]: nextMap[role] });
-                }}
-                className={cn("h-5 px-1.5 rounded text-[10px] font-medium transition-colors", roleClass)}
-                title={role === "active" ? "Canat activ (se deschide)" : role === "inactive" ? "Canat inactiv (nu se deschide)" : "Canat fix"}
-              >
-                {label}: {role === "active" ? "Activ" : role === "inactive" ? "Inact" : "Fix"}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
+    <div className="flex items-center gap-2">
       <button
         ref={configBtnRef}
         onClick={() => {
@@ -558,9 +520,43 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           }
           setShowConfigPopup(!showConfigPopup);
         }}
-        className={cn("px-2 py-1 rounded-lg text-[10px] font-medium border", showConfigPopup ? "bg-purple-600 text-white border-purple-600" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50")}
+        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center"
+        title="Configurare fereastră"
       >
-        Fereastră
+        <Settings className="w-4 h-4 text-slate-600" />
+      </button>
+
+      <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
+        <input
+          type="number"
+          value={activeWindow.width}
+          onChange={(e) => {
+            const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || activeWindow.width));
+            updateActiveWindow("width", newWidth);
+          }}
+          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+          className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+        />
+        <span className="text-slate-400">×</span>
+        <input
+          type="number"
+          value={activeWindow.height}
+          onChange={(e) => {
+            const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || activeWindow.height));
+            updateActiveWindow("height", newHeight);
+          }}
+          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+          className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+        />
+        <span className="text-[10px] text-slate-400">mm</span>
+      </div>
+
+      <button
+        onClick={() => setShowInfoPopup(activeWindowIndex)}
+        className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
+        title="Informații produs"
+      >
+        <Info className="w-4 h-4 text-blue-600" />
       </button>
     </div>
   );
@@ -1142,70 +1138,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                        {/* Simplified Header */}
-                        <div className="flex items-center gap-2 mb-2">
-                          <button
-                            onClick={() => {
-                              setActiveMenu("produse");
-                              setSelectedComponent(null);
-                              setShowPanelPopup(true);
-                            }}
-                            className="w-7 h-7 rounded-lg bg-slate-200 hover:bg-slate-300 flex items-center justify-center"
-                            title="Configurare"
-                          >
-                            <Settings className="w-4 h-4 text-slate-600" />
-                          </button>
-                          
-                          <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
-                            <input
-                              type="number"
-                              value={editingDimensions?.width ?? win.width}
-                              onChange={(e) => {
-                                const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.width));
-                                setEditingDimensions(prev => prev ? { ...prev, width: newWidth } : { width: newWidth, height: win.height });
-                              }}
-                              onBlur={() => {
-                                if (editingDimensions) {
-                                  setWindows(prev => prev.map((w, i) => 
-                                    i === idx ? { ...w, width: editingDimensions.width } : w
-                                  ));
-                                  setEditingDimensions(null);
-                                }
-                              }}
-                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-                            />
-                            <span className="text-slate-400">×</span>
-                            <input
-                              type="number"
-                              value={editingDimensions?.height ?? win.height}
-                              onChange={(e) => {
-                                const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.height));
-                                setEditingDimensions(prev => prev ? { ...prev, height: newHeight } : { width: win.width, height: newHeight });
-                              }}
-                              onBlur={() => {
-                                if (editingDimensions) {
-                                  setWindows(prev => prev.map((w, i) => 
-                                    i === idx ? { ...w, height: editingDimensions.height } : w
-                                  ));
-                                  setEditingDimensions(null);
-                                }
-                              }}
-                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-                            />
-                            <span className="text-[10px] text-slate-400">mm</span>
-                          </div>
-                          
-                          <button
-                            onClick={() => setShowInfoPopup(idx)}
-                            className="w-7 h-7 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center"
-                            title="Informații produs"
-                          >
-                            <Info className="w-4 h-4 text-blue-600" />
-                          </button>
-                        </div>
-                        
                         <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
