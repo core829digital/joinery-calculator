@@ -1165,12 +1165,25 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
-                    {windows.map((win, idx) => (
+                    {windows.map((win, idx) => {
+                      const maxWidth = 350;
+                      const maxHeight = 400;
+                      const aspectRatio = win.width / win.height;
+                      let displayWidth = Math.min(win.width, maxWidth);
+                      let displayHeight = displayWidth / aspectRatio;
+                      if (displayHeight > maxHeight) {
+                        displayHeight = maxHeight;
+                        displayWidth = displayHeight * aspectRatio;
+                      }
+                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.3 : 0.4);
+                      
+                      return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                         <div className="text-[10px] text-center text-slate-500 mb-1">
                           {win.name} <span className="opacity-75">({win.width}x{win.height})</span>
                           {win.quantity > 1 && <span className="ml-1 text-green-600 font-bold">×{win.quantity}</span>}
                         </div>
+                        <div className="w-full max-w-[350px] h-[400px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
                           width={win.width}
@@ -1186,7 +1199,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           showThreshold={win.showThreshold}
                           horizontalMuntin={win.horizontalMuntin}
                           showDimensions={true}
-                          scale={isMobile ? 0.3 : 0.4}
+                          scale={calculatedScale}
                           glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                           hardwareBrand={hardwareBrand ?? undefined}
                           onComponentClick={handleComponentClick}
@@ -1231,6 +1244,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             ));
                           }}
                         />
+                        </div>
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-1 mt-1">
                           <button 
@@ -1256,7 +1270,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>

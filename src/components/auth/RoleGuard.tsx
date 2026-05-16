@@ -15,7 +15,7 @@ export default function RoleGuard({
 }: RoleGuardProps) {
   const { user, isAuthenticated } = useAuth();
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouter(); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -57,7 +57,6 @@ export default function RoleGuard({
 
 export function useRouteProtection() {
   const { user, isAuthenticated } = useAuth();
-  const router = useRouter();
 
   const protect = (allowedRoles: Array<"client" | "dealer" | "supplier" | "admin">) => {
     if (!isAuthenticated || !user) {

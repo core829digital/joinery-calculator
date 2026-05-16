@@ -40,7 +40,7 @@ export interface DealerStats {
 }
 
 export function useDealerData() {
-  const { user, clients, orders, dealers, commissions, getClientPrice, getDealerPrice, updateDealerMargin } = useAuth();
+  const { user, clients, orders, dealers, commissions, getClientPrice, updateDealerMargin } = useAuth();
 
   if (user?.role !== "dealer" || !user.dealerId) {
     return {
@@ -98,7 +98,7 @@ export function useDealerData() {
 }
 
 export function useSupplierData() {
-  const { user, dealers, clients, orders, commissions, suppliers, updateDealerMargin: updateMarginContext, updateDealerStatus } = useAuth();
+  const { user, dealers, clients, orders, commissions, updateDealerMargin: updateMarginContext, updateDealerStatus } = useAuth();
 
   if (user?.role !== "supplier") {
     return {

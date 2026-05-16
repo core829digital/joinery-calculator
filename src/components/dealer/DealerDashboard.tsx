@@ -22,7 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 type DealerTab = "configurator" | "clients" | "orders" | "pricing" | "stats";
 
 export default function DealerDashboard() {
-  const { isAuthorized, dealer, clients, orders, stats, getDealerBasePrice, getClientPrice, updateMargin, addClient } = useDealerData();
+  const { isAuthorized, dealer, clients, orders, stats, getDealerBasePrice, getClientPrice, updateMargin } = useDealerData();
   const { addClient: addClientToContext, user } = useAuth();
   const [activeTab, setActiveTab] = useState<DealerTab>("configurator");
   const [editingMargin, setEditingMargin] = useState<number>(dealer?.customMargin || 0);
