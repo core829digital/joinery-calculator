@@ -1193,18 +1193,17 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   </div>
 
                   {/* Multiple Windows */}
-                  <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
+                  <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
                     {windows.map((win, idx) => {
-                      const maxWidth = 450;
-                      const maxHeight = 500;
-                      const aspectRatio = win.width / win.height;
-                      let displayWidth = Math.min(win.width, maxWidth);
-                      let displayHeight = displayWidth / aspectRatio;
-                      if (displayHeight > maxHeight) {
-                        displayHeight = maxHeight;
-                        displayWidth = displayHeight * aspectRatio;
-                      }
-                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.85 : 1.3);
+                      // Container size for the SVG
+                      const containerW = 550;
+                      const containerH = 600;
+                      // SVG margin overhead (from Window2D: margin = Math.max(8, 20*scale))
+                      // We need: width*scale + 2*margin <= containerW
+                      // Approximate: scale * (width + 40) <= containerW
+                      const scaleX = containerW / (win.width + 40);
+                      const scaleY = containerH / (win.height + 40);
+                      const calculatedScale = Math.min(scaleX, scaleY) * (isMobile ? 0.85 : 1.0);
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
@@ -1252,7 +1251,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
 
-                        <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
+                        <div className="w-full max-w-[550px] h-[600px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
                           width={win.width}
