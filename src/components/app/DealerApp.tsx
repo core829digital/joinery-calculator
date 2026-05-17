@@ -1195,31 +1195,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
                     {windows.map((win, idx) => {
-                      // Dynamic container sizing based on window aspect ratio
-                      // Preserves realistic proportions without stretching
-                      const maxContainerW = 600;
-                      const maxContainerH = 550;
-                      const aspectRatio = win.width / win.height;
-                      const containerAspect = maxContainerW / maxContainerH;
+                      // FIXED container size - never changes, prevents layout shift and overflow
+                      const containerW = 500;
+                      const containerH = 500;
                       
-                      let containerW: number;
-                      let containerH: number;
-                      
-                      if (aspectRatio >= containerAspect) {
-                        // Window is wider: width-limited
-                        containerW = maxContainerW;
-                        containerH = Math.round(maxContainerW / aspectRatio);
-                      } else {
-                        // Window is taller: height-limited
-                        containerH = maxContainerH;
-                        containerW = Math.round(maxContainerH * aspectRatio);
-                      }
-                      
-                      // Enforce minimum container size
-                      containerW = Math.max(containerW, 250);
-                      containerH = Math.max(containerH, 250);
-                      
-                      // Calculate scale so SVG viewBox fits within container
+                      // Calculate scale so SVG viewBox fits within fixed container
                       // SVG viewBox = (width + 28)*scale x (height + 28)*scale
                       // (28 accounts for 2 * margin where margin ≈ 14*scale)
                       const scaleX = (containerW - 20) / (win.width + 28);
@@ -1272,7 +1252,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
 
-                        <div className="flex items-center justify-center" style={{ width: `${containerW}px`, height: `${containerH}px` }}>
+                        <div className="w-[500px] h-[500px] flex items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-white">
                         <Window2D
                           productType={win.productType}
                           width={win.width}
