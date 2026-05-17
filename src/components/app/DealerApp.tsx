@@ -512,15 +512,12 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setWindows(prev => prev.map((w, i) => i === idx ? { ...w, [key]: value } : w));
   };
 
-  // Close config dropdown on scroll/resize
+  // Close config dropdown on resize only (not scroll - popup has its own scroll)
   useEffect(() => {
     if (!showConfigPopup) return;
-    const handleScroll = () => setShowConfigPopup(false);
     const handleResize = () => setShowConfigPopup(false);
-    window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
       window.removeEventListener("resize", handleResize);
     };
   }, [showConfigPopup]);
