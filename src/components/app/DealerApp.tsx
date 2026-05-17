@@ -150,7 +150,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedComponent, setSelectedComponent] = useState<WindowComponent | null>(null);
   const [showPreview] = useState(true);
-  const [showConfigPopup, setShowConfigPopup] = useState(false);
   
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -494,232 +493,26 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     ],
   };
 
-  // Full Interactive Sash Configuration Popup
-  const configDropdown = showConfigPopup && activeWindow && (() => {
-    const win = windows[activeWindowIndex];
-    const winProductType = win.productType;
-    const sashConfig = win.sashConfiguration;
-    const sashRoles: Record<string, SashRole> = win.sashRoles;
-    const sashOpeningTypes: Record<string, OpeningType> = win.sashOpeningTypes;
-    const showThreshold = win.showThreshold;
-    const horizontalMuntin = win.horizontalMuntin;
-    const handleHeight = win.handleHeight;
-
-    const sashes: { side: string }[] = winProductType === "window_1_canat" || winProductType === "usa_balcon_1"
-      ? [{ side: "center" }]
-      : winProductType === "window_fix"
-      ? []
-      : winProductType === "window_3_canate"
-      ? [{ side: "left" }, { side: "center" }, { side: "right" }]
-      : [{ side: "left" }, { side: "right" }];
-
-    const updateWin = <K extends keyof WindowConfig>(key: K, value: WindowConfig[K]) => {
-      setWindows(prev => prev.map((w, i) => i === activeWindowIndex ? { ...w, [key]: value } : w));
-    };
-
-    return (
-      <div 
-        className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
-        onClick={(e) => { if (e.target === e.currentTarget) setShowConfigPopup(false); }}
-      >
-        <div 
-          ref={configDropdownRef}
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white rounded-t-2xl z-10">
-            <h3 className="text-lg font-semibold text-slate-800">Configurare Canaturi</h3>
-            <button onClick={() => setShowConfigPopup(false)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
-              <X className="w-5 h-5 text-slate-500" />
-            </button>
-          </div>
-
-          {/* Product Type Selector */}
-          <div className="p-4 border-b border-slate-100 bg-slate-50">
-            <label className="block text-sm font-medium text-slate-700 mb-2">Tip Produs</label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { type: "window_1_canat" as ProductType, label: "1 Canat" },
-                { type: "window_2_canate" as ProductType, label: "2 Canate" },
-                { type: "window_3_canate" as ProductType, label: "3 Canate" },
-                { type: "window_fix" as ProductType, label: "Fix" },
-                { type: "usa_balcon_1" as ProductType, label: "Ușă 1C" },
-                { type: "usa_balcon_2" as ProductType, label: "Ușă 2C" },
-              ].map((opt) => (
-                <button
-                  key={opt.type}
-                  onClick={() => {
-                    updateWin("productType", opt.type);
-                    updateWin("name", getProductDisplayName(opt.type) + " #" + (activeWindowIndex + 1));
-                  }}
-                  className={cn(
-                    "p-2 rounded-lg border text-xs font-medium transition-all",
-                    winProductType === opt.type
-                      ? "border-primary-500 bg-primary-50 text-primary-700"
-                      : "border-slate-200 hover:border-primary-300 text-slate-600"
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Visual Sash Selection */}
-          {sashes.length > 0 && (
-            <div className="p-4 border-b border-slate-100">
-              <label className="block text-sm font-medium text-slate-700 mb-3">Selectează canatul:</label>
-              <div className="flex justify-center gap-2">
-                {sashes.map((sash, idx) => {
-                  const sashId = sash.side || String(idx);
-                  const role = sashRoles[sashId] || "active";
-                  const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
-                  return (
-                    <button
-                      key={sashId}
-                      onClick={() => {}}
-                      className={cn(
-                        "p-4 rounded-xl border-2 transition-all hover:scale-105 min-w-[120px]",
-                        "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-16 h-20 rounded-lg border-2 mx-auto mb-2",
-                        role === "active" ? "border-green-500 bg-green-50" : 
-                        role === "inactive" ? "border-amber-500 bg-amber-50" : 
-                        "border-slate-400 bg-slate-100"
-                      )}>
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-xs font-bold text-slate-600">{sash.side === "left" ? "←" : sash.side === "right" ? "→" : "○"}</span>
-                        </div>
-                      </div>
-                      <div className="text-sm font-medium text-slate-800">{label}</div>
-                      <div className={cn(
-                        "text-xs mt-1",
-                        role === "active" ? "text-green-600" : 
-                        role === "inactive" ? "text-amber-600" : 
-                        "text-slate-500"
-                      )}>
-                        {role === "active" ? "Activ" : role === "inactive" ? "Inactiv" : "Fix"}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Window Options */}
-          <div className="p-4 space-y-4 border-b border-slate-100">
-            <label className="block text-sm font-medium text-slate-700">Opțiuni Fereastră</label>
-            
-            {/* Stulp / Montant */}
-            <div>
-              <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
-              <div className="flex gap-2">
-                <button onClick={() => updateWin("sashConfiguration", "stulp")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", sashConfig === "stulp" ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-200 hover:border-purple-300")}>Stulp</button>
-                <button onClick={() => updateWin("sashConfiguration", "montant")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", sashConfig === "montant" ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-300")}>Montant</button>
-                <button onClick={() => updateWin("sashConfiguration", null)} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", !sashConfig ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200 hover:border-slate-400")}>Niciunul</button>
-              </div>
-            </div>
-
-            {/* Prag */}
-            <div className="flex items-center justify-between">
-              <label className="text-xs text-slate-500">Prag</label>
-              <button onClick={() => updateWin("showThreshold", !showThreshold)} className={cn("w-12 h-6 rounded-full transition-colors", showThreshold ? "bg-primary-600" : "bg-slate-300")}>
-                <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", showThreshold ? "translate-x-6" : "translate-x-0.5")} />
-              </button>
-            </div>
-
-            {/* Montant Orizontal */}
-            <div className="flex items-center justify-between">
-              <label className="text-xs text-slate-500">Montant Orizontal</label>
-              <button onClick={() => updateWin("horizontalMuntin", !horizontalMuntin)} className={cn("w-12 h-6 rounded-full transition-colors", horizontalMuntin ? "bg-primary-600" : "bg-slate-300")}>
-                <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", horizontalMuntin ? "translate-x-6" : "translate-x-0.5")} />
-              </button>
-            </div>
-
-            {/* Handle Height */}
-            <div>
-              <div className="text-xs text-slate-500 mb-1">Înălțime mâner: {handleHeight}mm</div>
-              <input type="range" min="30" max="200" value={handleHeight} onChange={(e) => updateWin("handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
-            </div>
-          </div>
-
-          {/* Per-Sash Configuration */}
-          {sashes.length > 0 && (
-            <div className="p-4 space-y-4">
-              {sashes.map((sash, idx) => {
-                const sashId = sash.side || String(idx);
-                const role = sashRoles[sashId] || "active";
-                const openingType = sashOpeningTypes[sashId] || "normal";
-                const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
-                const openingOptions = role === "inactive"
-                  ? [{ id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false }]
-                  : [
-                      { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
-                      { id: "oscilobatant", label: "Oscilobatant", desc: "Deschidere completă + aerisire", disabled: false },
-                      { id: "batant", label: "Batant", desc: "Doar deschidere completă", disabled: false },
-                    ];
-
-                return (
-                  <div key={sashId} className="p-3 bg-slate-50 rounded-xl space-y-3">
-                    <div className="text-sm font-semibold text-slate-700">{label}</div>
-                    
-                    {/* Rol Canat */}
-                    <div>
-                      <label className="block text-xs text-slate-500 mb-1">Rol Canat</label>
-                      <div className="flex gap-2">
-                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "active" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "active" ? "border-green-500 bg-green-50 text-green-700" : "border-slate-200")}>Activ</button>
-                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "inactive" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "inactive" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200")}>Inactiv<div className="text-[9px] text-amber-600">Deschidere limitată</div></button>
-                        <button onClick={() => { const r: Record<string, SashRole> = { ...sashRoles, [sashId]: "fixed" }; updateWin("sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "fixed" ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200")}>Fix</button>
-                      </div>
-                    </div>
-
-                    {/* Tip Deschidere */}
-                    {role !== "fixed" && (
-                      <div>
-                        <label className="block text-xs text-slate-500 mb-1">Tip Deschidere</label>
-                        <div className="flex gap-1.5">
-                          {openingOptions.map((opt) => (
-                            <button
-                              key={opt.id}
-                              onClick={() => { const o: Record<string, OpeningType> = { ...sashOpeningTypes, [sashId]: opt.id as OpeningType }; updateWin("sashOpeningTypes", o); }}
-                              className={cn("flex-1 p-1.5 rounded-lg border text-center text-[10px] transition-all", openingType === opt.id && !opt.disabled ? "border-primary-500 bg-primary-50 text-primary-700" : "border-slate-200 text-slate-500", opt.disabled && "opacity-40 cursor-not-allowed")}
-                              disabled={opt.disabled}
-                            >
-                              <div className="font-medium">{opt.label}</div>
-                              <div className="text-[9px] text-slate-400">{opt.desc}</div>
-                            </button>
-                          ))}
-                        </div>
-                        {role === "inactive" && <div className="text-[10px] text-amber-600 mt-1">Canatul inactiv are deschidere limitată</div>}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Close Button */}
-          <div className="p-4 border-t border-slate-100">
-            <button onClick={() => setShowConfigPopup(false)} className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
-              Închide
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  })();
+  // Config popup handlers
+  const [showConfigPopup, setShowConfigPopup] = useState(false);
+  const [configPopupWindowIdx, setConfigPopupWindowIdx] = useState<number | null>(null);
 
   const openConfigForWindow = (idx: number) => {
     setActiveWindowIndex(idx);
+    setConfigPopupWindowIdx(idx);
     setShowConfigPopup(true);
   };
 
-  // Close config dropdown on click outside or scroll/resize
+  const closeConfigPopup = () => {
+    setShowConfigPopup(false);
+    setConfigPopupWindowIdx(null);
+  };
+
+  const updateWindowField = (idx: number, key: string, value: unknown) => {
+    setWindows(prev => prev.map((w, i) => i === idx ? { ...w, [key]: value } : w));
+  };
+
+  // Close config dropdown on scroll/resize
   useEffect(() => {
     if (!showConfigPopup) return;
     const handleScroll = () => setShowConfigPopup(false);
@@ -731,6 +524,215 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       window.removeEventListener("resize", handleResize);
     };
   }, [showConfigPopup]);
+
+  // Config popup rendered inline - not an IIFE
+  const configPopupWin = configPopupWindowIdx !== null ? windows[configPopupWindowIdx] : null;
+  const configSashes = configPopupWin
+    ? (configPopupWin.productType === "window_1_canat" || configPopupWin.productType === "usa_balcon_1"
+      ? [{ side: "center" }]
+      : configPopupWin.productType === "window_fix"
+      ? []
+      : configPopupWin.productType === "window_3_canate"
+      ? [{ side: "left" }, { side: "center" }, { side: "right" }]
+      : [{ side: "left" }, { side: "right" }])
+    : [];
+
+  const configDropdown = showConfigPopup && configPopupWin && configPopupWindowIdx !== null && (
+    <div 
+      className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) closeConfigPopup(); }}
+    >
+      <div 
+        ref={configDropdownRef}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white rounded-t-2xl z-10">
+          <h3 className="text-lg font-semibold text-slate-800">Configurare Canaturi</h3>
+          <button onClick={closeConfigPopup} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
+            <X className="w-5 h-5 text-slate-500" />
+          </button>
+        </div>
+
+        {/* Product Type Selector */}
+        <div className="p-4 border-b border-slate-100 bg-slate-50">
+          <label className="block text-sm font-medium text-slate-700 mb-2">Tip Produs</label>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { type: "window_1_canat" as ProductType, label: "1 Canat" },
+              { type: "window_2_canate" as ProductType, label: "2 Canate" },
+              { type: "window_3_canate" as ProductType, label: "3 Canate" },
+              { type: "window_fix" as ProductType, label: "Fix" },
+              { type: "usa_balcon_1" as ProductType, label: "Ușă 1C" },
+              { type: "usa_balcon_2" as ProductType, label: "Ușă 2C" },
+            ].map((opt) => (
+              <button
+                key={opt.type}
+                onClick={() => {
+                  updateWindowField(configPopupWindowIdx, "productType", opt.type);
+                  updateWindowField(configPopupWindowIdx, "name", getProductDisplayName(opt.type) + " #" + (configPopupWindowIdx + 1));
+                }}
+                className={cn(
+                  "p-2 rounded-lg border text-xs font-medium transition-all",
+                  configPopupWin.productType === opt.type
+                    ? "border-primary-500 bg-primary-50 text-primary-700"
+                    : "border-slate-200 hover:border-primary-300 text-slate-600"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Visual Sash Selection */}
+        {configSashes.length > 0 && (
+          <div className="p-4 border-b border-slate-100">
+            <label className="block text-sm font-medium text-slate-700 mb-3">Selectează canatul:</label>
+            <div className="flex justify-center gap-2">
+              {configSashes.map((sash, idx) => {
+                const sashId = sash.side || String(idx);
+                const role = configPopupWin.sashRoles[sashId] || "active";
+                const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+                return (
+                  <div
+                    key={sashId}
+                    className={cn(
+                      "p-4 rounded-xl border-2 min-w-[120px]",
+                      "border-primary-500 bg-primary-50 ring-2 ring-primary-500"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-16 h-20 rounded-lg border-2 mx-auto mb-2",
+                      role === "active" ? "border-green-500 bg-green-50" : 
+                      role === "inactive" ? "border-amber-500 bg-amber-50" : 
+                      "border-slate-400 bg-slate-100"
+                    )}>
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-xs font-bold text-slate-600">{sash.side === "left" ? "←" : sash.side === "right" ? "→" : "○"}</span>
+                      </div>
+                    </div>
+                    <div className="text-sm font-medium text-slate-800">{label}</div>
+                    <div className={cn(
+                      "text-xs mt-1",
+                      role === "active" ? "text-green-600" : 
+                      role === "inactive" ? "text-amber-600" : 
+                      "text-slate-500"
+                    )}>
+                      {role === "active" ? "Activ" : role === "inactive" ? "Inactiv" : "Fix"}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Window Options */}
+        <div className="p-4 space-y-4 border-b border-slate-100">
+          <label className="block text-sm font-medium text-slate-700">Opțiuni Fereastră</label>
+          
+          {/* Stulp / Montant */}
+          <div>
+            <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
+            <div className="flex gap-2">
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "stulp")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "stulp" ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-200 hover:border-purple-300")}>Stulp</button>
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "montant")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "montant" ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-300")}>Montant</button>
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", null)} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", !configPopupWin.sashConfiguration ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200 hover:border-slate-400")}>Niciunul</button>
+            </div>
+          </div>
+
+          {/* Prag */}
+          <div className="flex items-center justify-between">
+            <label className="text-xs text-slate-500">Prag</label>
+            <button onClick={() => updateWindowField(configPopupWindowIdx, "showThreshold", !configPopupWin.showThreshold)} className={cn("w-12 h-6 rounded-full transition-colors", configPopupWin.showThreshold ? "bg-primary-600" : "bg-slate-300")}>
+              <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", configPopupWin.showThreshold ? "translate-x-6" : "translate-x-0.5")} />
+            </button>
+          </div>
+
+          {/* Montant Orizontal */}
+          <div className="flex items-center justify-between">
+            <label className="text-xs text-slate-500">Montant Orizontal</label>
+            <button onClick={() => updateWindowField(configPopupWindowIdx, "horizontalMuntin", !configPopupWin.horizontalMuntin)} className={cn("w-12 h-6 rounded-full transition-colors", configPopupWin.horizontalMuntin ? "bg-primary-600" : "bg-slate-300")}>
+              <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", configPopupWin.horizontalMuntin ? "translate-x-6" : "translate-x-0.5")} />
+            </button>
+          </div>
+
+          {/* Handle Height */}
+          <div>
+            <div className="text-xs text-slate-500 mb-1">Înălțime mâner: {configPopupWin.handleHeight}mm</div>
+            <input type="range" min="30" max="200" value={configPopupWin.handleHeight} onChange={(e) => updateWindowField(configPopupWindowIdx, "handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
+          </div>
+        </div>
+
+        {/* Per-Sash Configuration */}
+        {configSashes.length > 0 && (
+          <div className="p-4 space-y-4">
+            {configSashes.map((sash, idx) => {
+              const sashId = sash.side || String(idx);
+              const role = configPopupWin.sashRoles[sashId] || "active";
+              const openingType = configPopupWin.sashOpeningTypes[sashId] || "normal";
+              const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+              const openingOptions = role === "inactive"
+                ? [{ id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false }]
+                : [
+                    { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
+                    { id: "oscilobatant", label: "Oscilobatant", desc: "Deschidere completă + aerisire", disabled: false },
+                    { id: "batant", label: "Batant", desc: "Doar deschidere completă", disabled: false },
+                  ];
+
+              return (
+                <div key={sashId} className="p-3 bg-slate-50 rounded-xl space-y-3">
+                  <div className="text-sm font-semibold text-slate-700">{label}</div>
+                  
+                  {/* Rol Canat */}
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-1">Rol Canat</label>
+                    <div className="flex gap-2">
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "active" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "active" ? "border-green-500 bg-green-50 text-green-700" : "border-slate-200")}>Activ</button>
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "inactive" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "inactive" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200")}>Inactiv<div className="text-[9px] text-amber-600">Deschidere limitată</div></button>
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "fixed" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "fixed" ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200")}>Fix</button>
+                    </div>
+                  </div>
+
+                  {/* Tip Deschidere */}
+                  {role !== "fixed" && (
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">Tip Deschidere</label>
+                      <div className="flex gap-1.5">
+                        {openingOptions.map((opt) => (
+                          <button
+                            key={opt.id}
+                            onClick={() => { const o: Record<string, OpeningType> = { ...configPopupWin.sashOpeningTypes, [sashId]: opt.id as OpeningType }; updateWindowField(configPopupWindowIdx, "sashOpeningTypes", o); }}
+                            className={cn("flex-1 p-1.5 rounded-lg border text-center text-[10px] transition-all", openingType === opt.id && !opt.disabled ? "border-primary-500 bg-primary-50 text-primary-700" : "border-slate-200 text-slate-500", opt.disabled && "opacity-40 cursor-not-allowed")}
+                            disabled={opt.disabled}
+                          >
+                            <div className="font-medium">{opt.label}</div>
+                            <div className="text-[9px] text-slate-400">{opt.desc}</div>
+                          </button>
+                        ))}
+                      </div>
+                      {role === "inactive" && <div className="text-[10px] text-amber-600 mt-1">Canatul inactiv are deschidere limitată</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Close Button */}
+        <div className="p-4 border-t border-slate-100">
+          <button onClick={closeConfigPopup} className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+            Închide
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Close config dropdown on scroll/resize
 
   // Popup renderer for configuration panels - NO auto-close, user saves manually
   const renderPopupContent = () => {
