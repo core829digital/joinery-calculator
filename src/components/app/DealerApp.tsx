@@ -1193,10 +1193,10 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   </div>
 
                   {/* Multiple Windows */}
-                  <div className="flex-1 flex items-center justify-start gap-10 min-w-0 overflow-x-auto px-8 py-4">
+                  <div className="flex-1 flex items-center justify-start gap-4 min-w-0 overflow-x-auto px-4 py-2">
                     {windows.map((win, idx) => {
-                      const maxWidth = 700;
-                      const maxHeight = 700;
+                      const maxWidth = 450;
+                      const maxHeight = 500;
                       const aspectRatio = win.width / win.height;
                       let displayWidth = Math.min(win.width, maxWidth);
                       let displayHeight = displayWidth / aspectRatio;
@@ -1204,7 +1204,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         displayHeight = maxHeight;
                         displayWidth = displayHeight * aspectRatio;
                       }
-                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.65 : 0.95);
+                      const calculatedScale = (displayWidth / win.width) * (isMobile ? 0.85 : 1.3);
                       
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
@@ -1252,7 +1252,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
 
-                        <div className="w-full max-w-[700px] h-[700px] flex items-center justify-center">
+                        <div className="w-full max-w-[450px] h-[500px] flex items-center justify-center">
                         <Window2D
                           productType={win.productType}
                           width={win.width}

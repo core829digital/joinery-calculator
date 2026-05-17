@@ -200,7 +200,7 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const margin = Math.max(8, 24 * scale);
+  const margin = Math.max(8, 20 * scale);
   const svgWidth = w + margin * 2;
   const svgHeight = h + margin * 2;
 
