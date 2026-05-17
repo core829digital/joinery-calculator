@@ -1195,14 +1195,35 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
                     {windows.map((win, idx) => {
-                      // Container size for the SVG - maximized with 10px padding top/bottom
-                      const containerW = 650;
-                      const containerH = 750;
-                      // SVG margin overhead (from Window2D: margin = Math.max(6, 14*scale))
-                      // We need: width*scale + 2*margin <= containerW
-                      // Approximate: scale * (width + 28) <= containerW
-                      const scaleX = containerW / (win.width + 28);
-                      const scaleY = containerH / (win.height + 28);
+                      // Dynamic container sizing based on window aspect ratio
+                      // Preserves realistic proportions without stretching
+                      const maxContainerW = 600;
+                      const maxContainerH = 550;
+                      const aspectRatio = win.width / win.height;
+                      const containerAspect = maxContainerW / maxContainerH;
+                      
+                      let containerW: number;
+                      let containerH: number;
+                      
+                      if (aspectRatio >= containerAspect) {
+                        // Window is wider: width-limited
+                        containerW = maxContainerW;
+                        containerH = Math.round(maxContainerW / aspectRatio);
+                      } else {
+                        // Window is taller: height-limited
+                        containerH = maxContainerH;
+                        containerW = Math.round(maxContainerH * aspectRatio);
+                      }
+                      
+                      // Enforce minimum container size
+                      containerW = Math.max(containerW, 250);
+                      containerH = Math.max(containerH, 250);
+                      
+                      // Calculate scale so SVG viewBox fits within container
+                      // SVG viewBox = (width + 28)*scale x (height + 28)*scale
+                      // (28 accounts for 2 * margin where margin ≈ 14*scale)
+                      const scaleX = (containerW - 20) / (win.width + 28);
+                      const scaleY = (containerH - 20) / (win.height + 28);
                       const calculatedScale = Math.min(scaleX, scaleY) * (isMobile ? 0.85 : 1.0);
                       
                       return (
@@ -1251,7 +1272,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
 
-                        <div className="w-full max-w-[650px] h-[750px] flex items-center justify-center px-[10px] py-[10px]">
+                        <div className="flex items-center justify-center" style={{ width: `${containerW}px`, height: `${containerH}px` }}>
                         <Window2D
                           productType={win.productType}
                           width={win.width}
