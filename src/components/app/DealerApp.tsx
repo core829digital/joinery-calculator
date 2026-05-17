@@ -1195,14 +1195,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
                     {windows.map((win, idx) => {
-                      // Container size for the SVG
-                      const containerW = 550;
-                      const containerH = 600;
-                      // SVG margin overhead (from Window2D: margin = Math.max(8, 20*scale))
+                      // Container size for the SVG - maximized with 10px padding top/bottom
+                      const containerW = 650;
+                      const containerH = 750;
+                      // SVG margin overhead (from Window2D: margin = Math.max(6, 14*scale))
                       // We need: width*scale + 2*margin <= containerW
-                      // Approximate: scale * (width + 40) <= containerW
-                      const scaleX = containerW / (win.width + 40);
-                      const scaleY = containerH / (win.height + 40);
+                      // Approximate: scale * (width + 28) <= containerW
+                      const scaleX = containerW / (win.width + 28);
+                      const scaleY = containerH / (win.height + 28);
                       const calculatedScale = Math.min(scaleX, scaleY) * (isMobile ? 0.85 : 1.0);
                       
                       return (
@@ -1251,7 +1251,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         </div>
 
-                        <div className="w-full max-w-[550px] h-[600px] flex items-center justify-center">
+                        <div className="w-full max-w-[650px] h-[750px] flex items-center justify-center px-[10px] py-[10px]">
                         <Window2D
                           productType={win.productType}
                           width={win.width}
