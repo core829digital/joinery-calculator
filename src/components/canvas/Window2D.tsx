@@ -200,7 +200,7 @@ export default function Window2D({
     }
   }, [productType, w, h, scale, tocThickness, openingSide]);
 
-  const margin = Math.max(20, 35 * scale);
+  const margin = Math.max(8, 24 * scale);
   const svgWidth = w + margin * 2;
   const svgHeight = h + margin * 2;
 
@@ -659,20 +659,20 @@ export default function Window2D({
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-18 * scale} x2={w} y2={-18 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={0} y1={-24 * scale} x2={0} y2={-12 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={w} y1={-24 * scale} x2={w} y2={-12 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <polygon points={`${-7 * scale},${-18 * scale} ${7 * scale},${-18 * scale} ${0},${-26 * scale}`} fill="#1e293b" />
-                <polygon points={`${w - 7 * scale},${-18 * scale} ${w + 7 * scale},${-18 * scale} ${w},${-26 * scale}`} fill="#1e293b" />
-                <text x={w / 2} y={-30 * scale} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700">{width} mm</text>
+                <line x1={0} y1={-12 * scale} x2={w} y2={-12 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={0} y1={-16 * scale} x2={0} y2={-8 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={w} y1={-16 * scale} x2={w} y2={-8 * scale} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-5 * scale},${-12 * scale} ${5 * scale},${-12 * scale} ${0},${-18 * scale}`} fill="#1e293b" />
+                <polygon points={`${w - 5 * scale},${-12 * scale} ${w + 5 * scale},${-12 * scale} ${w},${-18 * scale}`} fill="#1e293b" />
+                <text x={w / 2} y={-22 * scale} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-18 * scale} y1={0} x2={-18 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={-24 * scale} y1={0} x2={-12 * scale} y2={0} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <line x1={-24 * scale} y1={h} x2={-12 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
-                <polygon points={`${-18 * scale},${-7 * scale} ${-18 * scale},${7 * scale} ${-26 * scale},${0}`} fill="#1e293b" />
-                <polygon points={`${-18 * scale},${h - 7 * scale} ${-18 * scale},${h + 7 * scale} ${-26 * scale},${h}`} fill="#1e293b" />
-                <text x={-32 * scale} y={h / 2} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-32 * scale}, ${h / 2})`}>{height} mm</text>
+                <line x1={-12 * scale} y1={0} x2={-12 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-16 * scale} y1={0} x2={-8 * scale} y2={0} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <line x1={-16 * scale} y1={h} x2={-8 * scale} y2={h} stroke="#1e293b" strokeWidth={2 * scale} strokeLinecap="round" />
+                <polygon points={`${-12 * scale},${-5 * scale} ${-12 * scale},${5 * scale} ${-18 * scale},${0}`} fill="#1e293b" />
+                <polygon points={`${-12 * scale},${h - 5 * scale} ${-12 * scale},${h + 5 * scale} ${-18 * scale},${h}`} fill="#1e293b" />
+                <text x={-22 * scale} y={h / 2} textAnchor="middle" fontSize={12 * scale} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-22 * scale}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>
