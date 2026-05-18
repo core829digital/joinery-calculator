@@ -218,17 +218,25 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   };
 
   const removeWindow = (index: number) => {
-    if (windows.length === 1) return;
+    if (windows.length <= 1) return;
     const newWindows = windows.filter((_, i) => i !== index);
     setWindows(newWindows);
+    // Clean up draft dimensions for removed window
+    const removedWin = windows[index];
+    setDraftDimensions(prev => {
+      const next = { ...prev };
+      delete next[removedWin.id];
+      return next;
+    });
     if (activeWindowIndex >= newWindows.length) {
       setActiveWindowIndex(newWindows.length - 1);
     }
   };
 
   const duplicateWindow = (index: number) => {
+    if (windows.length === 0) return;
     const winToClone = windows[index];
-    const newId = Math.max(...windows.map(w => w.id)) + 1;
+    const newId = windows.length > 0 ? Math.max(...windows.map(w => w.id)) + 1 : 1;
     const newWindow = { ...winToClone, id: newId, name: getProductDisplayName(productType) + " #" + newId };
     setWindows([...windows, newWindow]);
     setActiveWindowIndex(windows.length);

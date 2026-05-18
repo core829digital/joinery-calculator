@@ -127,16 +127,19 @@ export default function Window2D({
   const handleColor = getHandleColor();
   const handleAccentColor = getHandleAccentColor();
 
-  // FIXED s - all internal proportions use this constant
-  // Container CSS controls visual size, not this s
-  const s = 1.0;
+  // DYNAMIC scale — invers proporțional cu dimensiunile ferestrei
+  // Astfel toate ferestrele au aceeași dimensiune vizuală în container
+  // preserveAspectRatio="xMidYMid meet" nu mai distorsionează
+  const targetDisplaySize = 500;
+  const maxDim = Math.max(width, height, 1); // evită div by zero
+  const s = targetDisplaySize / maxDim;
 
   const w = width * s;
   const h = height * s;
 
   // GROSIME MĂRITĂ pentru toc și cercevea - stil CAD foarte pronunțat
-  const tocThickness = 55 * s;  // foarte gros - stil CAD, ușor de clic
-  const sashThickness = 28 * s; // foarte gros - stil CAD
+  const tocThickness = 55 * s;  // grosime proporțională cu fereastra
+  const sashThickness = 28 * s; // grosime proporțională cu fereastra
   const glassGap = 6 * s; // spațiu mai mare pentru sticlă
 
   const handleComponentHover = (component: WindowComponent | null) => {
