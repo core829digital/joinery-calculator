@@ -224,7 +224,7 @@ export default function Window2D({
   };
 
   const renderOpeningLines = (sash: typeof config.sashes[0], idx: number) => {
-    if (sash.side === "none" || sash.side === "center") return null;
+    if (sash.side === "none") return null;
 
     const sashKey = sash.side || String(idx);
     const sashRole = sashRoles[sashKey] || 
@@ -233,22 +233,46 @@ export default function Window2D({
     const sashOpeningType = sashOpeningTypes[sashKey] || "normal";
     const isOscilobatant = sashOpeningType === "oscilobatant";
 
-    const isLeft = sash.side === "left";
-    const isInward = openingDirection === "inward";
-    
-    const lineColor = isInward ? "#1E40AF" : "#EA580C";
-    const secondaryColor = isInward ? "#3B82F6" : "#F97316";
-
     const topY = sash.y;
     const bottomY = sash.y + sash.h;
     const leftX = sash.x;
     const rightX = sash.x + sash.w;
     const centerX = sash.x + sash.w / 2;
     const centerY = sash.y + sash.h / 2;
-    
-    const hingeX = isLeft ? leftX : rightX;
-    const farX = isLeft ? rightX : leftX;
-    const handleXPos = isLeft ? rightX : leftX;
+
+    const isInward = openingDirection === "inward";
+    const lineColor = isInward ? "#1E40AF" : "#EA580C";
+    const secondaryColor = isInward ? "#3B82F6" : "#F97316";
+
+    // For center sash: determine hinge side based on adjacent inactive sash
+    // If right sash is inactive (opens toward center), center hinge is on LEFT
+    // If left sash is inactive (opens toward center), center hinge is on RIGHT
+    // If both active, default hinge on LEFT
+    let isLeft: boolean;
+    let hingeX: number;
+    let farX: number;
+    let handleXPos: number;
+
+    if (sash.side === "center") {
+      const rightSashRole = sashRoles["right"] || "active";
+      const leftSashRole = sashRoles["left"] || "active";
+      // Hinge on the side opposite to the inactive sash
+      if (rightSashRole === "inactive") {
+        isLeft = true; // hinge on left, handle on right
+      } else if (leftSashRole === "inactive") {
+        isLeft = false; // hinge on right, handle on left
+      } else {
+        isLeft = true; // default: hinge on left
+      }
+      hingeX = isLeft ? leftX : rightX;
+      farX = isLeft ? rightX : leftX;
+      handleXPos = isLeft ? rightX : leftX;
+    } else {
+      isLeft = sash.side === "left";
+      hingeX = isLeft ? leftX : rightX;
+      farX = isLeft ? rightX : leftX;
+      handleXPos = isLeft ? rightX : leftX;
+    }
 
     if (sashRole === "fixed") {
       return (
@@ -311,16 +335,29 @@ export default function Window2D({
   };
 
   const renderBolts = (sash: typeof config.sashes[0], idx: number) => {
-    if (sash.side === "none" || sash.side === "center") return null;
+    if (sash.side === "none") return null;
     if (sashConfiguration !== "stulp") return null;
     
-    const isLeftSash = sash.side === "left";
-    const isRightSash = sash.side === "right";
-    const isActiveSash = (isLeftSash && openingSide === "left") || (isRightSash && openingSide === "right");
-    
-    if (isActiveSash) return null;
+    const sashKey = sash.side || String(idx);
+    const sashRole = sashRoles[sashKey] || "active";
+    if (sashRole !== "inactive") return null;
 
-    const boltX = isLeftSash ? sash.x + sash.w - 5 * s : sash.x + 3 * s;
+    // For center sash: bolts on the side where it meets the inactive sash
+    let boltX: number;
+    if (sash.side === "center") {
+      const rightSashRole = sashRoles["right"] || "active";
+      const leftSashRole = sashRoles["left"] || "active";
+      if (rightSashRole === "inactive") {
+        boltX = sash.x + sash.w - 5 * s; // bolts on right
+      } else if (leftSashRole === "inactive") {
+        boltX = sash.x + 3 * s; // bolts on left
+      } else {
+        boltX = sash.x + sash.w - 5 * s; // default: bolts on right
+      }
+    } else {
+      const isLeftSash = sash.side === "left";
+      boltX = isLeftSash ? sash.x + sash.w - 5 * s : sash.x + 3 * s;
+    }
     
     return (
       <g key={`bolts-${idx}`} opacity={0.7}>
@@ -331,14 +368,11 @@ export default function Window2D({
   };
 
   const renderHandle = (sash: typeof config.sashes[0], idx: number) => {
-    if (sash.side === "none" || sash.side === "center") return null;
+    if (sash.side === "none") return null;
 
     const isSingleSash = config.sashes.length === 1;
-    const isLeftSash = sash.side === "left";
-    const isRightSash = sash.side === "right";
-    
     const sashKey = sash.side || String(idx);
-    const sashRole = sashRoles[sashKey] || (isSingleSash ? "active" : (isLeftSash && openingSide === "left") || (isRightSash && openingSide === "right") ? "active" : "inactive");
+    const sashRole = sashRoles[sashKey] || (isSingleSash ? "active" : (sash.side === openingSide) ? "active" : "inactive");
     const isActiveSash = sashRole === "active";
     
     const shouldShowHandle = isSingleSash || sashConfiguration === "montant" || (sashConfiguration === "stulp" && isActiveSash);
@@ -346,7 +380,23 @@ export default function Window2D({
     if (!shouldShowHandle) return null;
     if (sashRole === "inactive") return null;
 
-    const hx = handleX(sash);
+    // For center sash: handle position depends on which adjacent sash is inactive
+    let hx: number;
+    if (sash.side === "center") {
+      const rightSashRole = sashRoles["right"] || "active";
+      const leftSashRole = sashRoles["left"] || "active";
+      // Handle on the side opposite to the inactive sash
+      if (rightSashRole === "inactive") {
+        hx = sash.x + sash.w - 8 * s; // handle on right
+      } else if (leftSashRole === "inactive") {
+        hx = sash.x + 8 * s; // handle on left
+      } else {
+        hx = sash.x + sash.w - 8 * s; // default: handle on right
+      }
+    } else {
+      hx = handleX(sash);
+    }
+    
     const hy = handleYFromBottom(sash);
     const handleW = 8 * s;
     const handleH = 16 * s;
@@ -621,31 +671,55 @@ export default function Window2D({
             {config.sashes.map((sash, idx) => renderOpeningLines(sash, idx))}
 
             {/* STULP / MONTANT */}
-            {config.sashes.length === 2 && sashConfiguration && (
+            {sashConfiguration && config.sashes.length >= 2 && (
               <g>
-                {sashConfiguration === "stulp" ? (
-                  <g 
-                    onClick={(e) => { e.stopPropagation(); onComponentClick?.("stulp"); }} 
-                    onMouseEnter={() => handleComponentHover("stulp")}
-                    onMouseLeave={() => handleComponentHover(null)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <rect x={w / 2 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                    <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
-                    <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "stulp" ? "#60A5FA" : "#9CA3AF"} />
-                  </g>
+                {config.sashes.length === 2 ? (
+                  /* 2 sashes: single bar at center */
+                  sashConfiguration === "stulp" ? (
+                    <g 
+                      onClick={(e) => { e.stopPropagation(); onComponentClick?.("stulp"); }} 
+                      onMouseEnter={() => handleComponentHover("stulp")}
+                      onMouseLeave={() => handleComponentHover(null)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <rect x={w / 2 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                      <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
+                      <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "stulp" ? "#60A5FA" : "#9CA3AF"} />
+                    </g>
+                  ) : (
+                    <g 
+                      onClick={(e) => { e.stopPropagation(); onComponentClick?.("montant"); }} 
+                      onMouseEnter={() => handleComponentHover("montant")}
+                      onMouseLeave={() => handleComponentHover(null)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <rect x={w / 2 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                      <rect x={w / 2 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                      <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
+                      <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#9CA3AF"} />
+                    </g>
+                  )
                 ) : (
-                  <g 
-                    onClick={(e) => { e.stopPropagation(); onComponentClick?.("montant"); }} 
-                    onMouseEnter={() => handleComponentHover("montant")}
-                    onMouseLeave={() => handleComponentHover(null)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <rect x={w / 2 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
-                    <rect x={w / 2 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                    <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
-                    <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#9CA3AF"} />
-                  </g>
+                  /* 3 sashes: two bars at 1/3 and 2/3 positions */
+                  <>
+                    {sashConfiguration === "stulp" ? (
+                      <>
+                        <rect x={w / 3 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                        <rect x={w * 2 / 3 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                        <text x={w / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
+                      </>
+                    ) : (
+                      <>
+                        <rect x={w / 3 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                        <rect x={w / 3 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                        <rect x={w * 2 / 3 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                        <rect x={w * 2 / 3 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                        <text x={w / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
+                      </>
+                    )}
+                  </>
                 )}
               </g>
             )}

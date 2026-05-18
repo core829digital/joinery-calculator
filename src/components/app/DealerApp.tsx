@@ -1253,13 +1253,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     </div>
                   ) : (
                     /* Multiple Windows */
-                    <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-1">
+                    <div className="flex-1 flex items-stretch justify-start gap-6 min-w-0 overflow-x-auto px-6 py-1">
                       {windows.map((win, idx) => {
                         const draft = draftDimensions[win.id] || { w: String(win.width), h: String(win.height) };
                         const hasInvalidDims = win.width <= 0 || win.height <= 0;
 
                         return (
-                        <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center w-full max-w-[600px]", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
+                        <div key={win.id} className={cn("flex-shrink flex flex-col items-center w-full max-w-[600px] min-h-0", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                           {/* Per-Window Header */}
                           <div className="flex items-center gap-2 mb-[5px] px-1">
                             <button
