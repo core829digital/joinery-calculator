@@ -129,7 +129,7 @@ export default function Window2D({
 
   // FIXED s - all internal proportions use this constant
   // Container CSS controls visual size, not this s
-  const s = 0.5;
+  const s = 1.0;
 
   const w = width * s;
   const h = height * s;

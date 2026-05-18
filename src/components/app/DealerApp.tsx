@@ -50,6 +50,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Info,
+  AlertTriangle,
+  Ruler,
 } from "lucide-react";
 
 const MENU_ICONS: Record<string, React.ReactNode> = {
@@ -182,14 +184,15 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Mobile state
   const [isMobile, setIsMobile] = useState(false);
 
-  // Multi-window state
-  const [windows, setWindows] = useState<WindowConfig[]>([
-    { id: 1, name: getProductDisplayName(productType) + " #1", productType: productType || "window_2_canate", quantity: 1, ...defaultWindowConfig }
-  ]);
+  // Multi-window state — starts empty, user adds first product
+  const [windows, setWindows] = useState<WindowConfig[]>([]);
   const [activeWindowIndex, setActiveWindowIndex] = useState(0);
   const [showAddWindowMenu, setShowAddWindowMenu] = useState(false);
   
-  const activeWindow = windows[activeWindowIndex];
+  // Draft dimensions for live editing without instant validation
+  const [draftDimensions, setDraftDimensions] = useState<Record<number, { w: string; h: string }>>({});
+  
+  const activeWindow = windows[activeWindowIndex] ?? null;
 
   // Update window names when productType changes - only for NEW default
   useEffect(() => {
@@ -230,6 +233,35 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     setWindows([...windows, newWindow]);
     setActiveWindowIndex(windows.length);
   };
+
+  // Commit draft dimensions to window state with validation
+  const commitDimension = (winId: number, field: "width" | "height", rawValue: string | undefined) => {
+    if (!rawValue || rawValue.trim() === "") return; // Keep current value if empty
+    const num = parseInt(rawValue, 10);
+    if (isNaN(num) || num < 0) return; // Reject invalid
+    const clamped = Math.min(num, 5000); // Cap at 5000mm
+    setWindows(prev => prev.map(w => w.id === winId ? { ...w, [field]: clamped } : w));
+    // Clear draft
+    setDraftDimensions(prev => {
+      const current = prev[winId];
+      if (!current) return prev;
+      const next = { ...current, [field === "width" ? "w" : "h"]: String(clamped) };
+      return { ...prev, [winId]: next };
+    });
+  };
+
+  // Initialize draft dimensions when window is added
+  useEffect(() => {
+    setDraftDimensions(prev => {
+      const next = { ...prev };
+      windows.forEach(win => {
+        if (!next[win.id]) {
+          next[win.id] = { w: String(win.width), h: String(win.height) };
+        }
+      });
+      return next;
+    });
+  }, [windows]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -1151,7 +1183,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           {(showPreview || isMobile) && (
             <div className="flex-1 flex flex-col min-h-0 p-2">
               <div className="flex-1 flex flex-col min-h-0">
-                {/* Window 2D with Side Controls - centered */}
                 <div className="flex-1 flex flex-col min-h-0">
                   {/* Window Tabs */}
                   <div className="flex items-center gap-1 mb-2 overflow-x-auto">
@@ -1173,7 +1204,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         >
                           ⧉
                         </span>
-{windows.length > 1 && (
+                        {windows.length > 1 && (
                           <span onClick={(e) => { e.stopPropagation(); removeWindow(idx); }} className="ml-0.5 text-[10px] hover:text-red-500">×</span>
                         )}
                       </button>
@@ -1192,104 +1223,137 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     </div>
                   </div>
 
-                  {/* Multiple Windows */}
-                  <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
-                    {windows.map((win, idx) => {
-                      return (
-                      <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                        {/* Per-Window Header */}
-                        <div className="flex items-center gap-2 mb-2 px-1">
-                          <button
-                            onClick={() => openConfigForWindow(idx)}
-                            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
-                            title="Configurare canaturi"
-                          >
-                            <Settings className="w-4 h-4 text-slate-600" />
-                          </button>
+                  {/* Empty State */}
+                  {windows.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center min-h-0">
+                      <div className="text-center max-w-md">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center">
+                          <Ruler className="w-8 h-8 text-slate-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-slate-700 mb-2">Niciun produs adăugat</h3>
+                        <p className="text-sm text-slate-500 mb-6">
+                          Începe configurarea adăugând primul produs. Poți alege din ferestre, uși de balcon sau uși de intrare.
+                        </p>
+                        <button
+                          onClick={() => setShowAddWindowMenu(true)}
+                          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20"
+                        >
+                          <PlusSquare className="w-5 h-5" />
+                          Adaugă Produs
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Multiple Windows */
+                    <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-1">
+                      {windows.map((win, idx) => {
+                        const draft = draftDimensions[win.id] || { w: String(win.width), h: String(win.height) };
+                        const hasInvalidDims = win.width <= 0 || win.height <= 0;
 
-                          <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
-                            <input
-                              type="number"
-                              value={win.width}
-                              onChange={(e) => {
-                                const newWidth = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.width));
-                                setWindows(prev => prev.map((w, i) => i === idx ? { ...w, width: newWidth } : w));
-                              }}
-                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-                            />
-                            <span className="text-slate-400">×</span>
-                            <input
-                              type="number"
-                              value={win.height}
-                              onChange={(e) => {
-                                const newHeight = Math.max(300, Math.min(3000, parseInt(e.target.value) || win.height));
-                                setWindows(prev => prev.map((w, i) => i === idx ? { ...w, height: newHeight } : w));
-                              }}
-                              onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
-                              className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
-                            />
-                            <span className="text-[10px] text-slate-400">mm</span>
+                        return (
+                        <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center w-full max-w-[600px]", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
+                          {/* Per-Window Header */}
+                          <div className="flex items-center gap-2 mb-[5px] px-1">
+                            <button
+                              onClick={() => openConfigForWindow(idx)}
+                              className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+                              title="Configurare canaturi"
+                            >
+                              <Settings className="w-4 h-4 text-slate-600" />
+                            </button>
+
+                            <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">
+                              <input
+                                type="number"
+                                value={draft.w}
+                                onChange={(e) => setDraftDimensions(prev => ({ ...prev, [win.id]: { ...prev[win.id], w: e.target.value } }))}
+                                onBlur={() => commitDimension(win.id, "width", draft.w)}
+                                onKeyDown={(e) => { if (e.key === "Enter") { commitDimension(win.id, "width", draft.w); e.currentTarget.blur(); } }}
+                                className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                              />
+                              <span className="text-slate-400">×</span>
+                              <input
+                                type="number"
+                                value={draft.h}
+                                onChange={(e) => setDraftDimensions(prev => ({ ...prev, [win.id]: { ...prev[win.id], h: e.target.value } }))}
+                                onBlur={() => commitDimension(win.id, "height", draft.h)}
+                                onKeyDown={(e) => { if (e.key === "Enter") { commitDimension(win.id, "height", draft.h); e.currentTarget.blur(); } }}
+                                className="w-16 text-center text-xs font-medium text-slate-700 border-none outline-none"
+                              />
+                              <span className="text-[10px] text-slate-400">mm</span>
+                            </div>
+
+                            <button
+                              onClick={() => setShowInfoPopup(idx)}
+                              className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center transition-colors"
+                              title="Informații produs"
+                            >
+                              <Info className="w-4 h-4 text-blue-600" />
+                            </button>
                           </div>
 
-                          <button
-                            onClick={() => setShowInfoPopup(idx)}
-                            className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center transition-colors"
-                            title="Informații produs"
-                          >
-                            <Info className="w-4 h-4 text-blue-600" />
-                          </button>
-                        </div>
+                          {/* SVG Container - fills available space with 5px margins */}
+                          <div className="flex-1 w-full mx-2 my-[5px] flex items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-white min-h-0">
+                            {hasInvalidDims ? (
+                              <div className="flex flex-col items-center justify-center text-center p-6">
+                                <AlertTriangle className="w-10 h-10 text-amber-500 mb-3" />
+                                <p className="text-sm font-semibold text-slate-700 mb-1">Dimensiuni non-valide</p>
+                                <p className="text-xs text-slate-500 max-w-[200px]">
+                                  Vă rugăm introduceți dimensiuni corecte pentru a vizualiza produsul.
+                                </p>
+                              </div>
+                            ) : (
+                              <Window2D
+                                productType={win.productType}
+                                width={win.width}
+                                height={win.height}
+                                interiorColor={interiorColor ?? "alb_ral9003"}
+                                exteriorColor={exteriorColor ?? "antracit_ral7016"}
+                                openingSide={win.openingSide}
+                                openingDirection={win.openingDirection}
+                                sashConfiguration={win.sashConfiguration ?? undefined}
+                                sashRoles={win.sashRoles}
+                                sashOpeningTypes={win.sashOpeningTypes}
+                                handleHeight={win.handleHeight}
+                                showThreshold={win.showThreshold}
+                                horizontalMuntin={win.horizontalMuntin}
+                                showDimensions={true}
+                                glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
+                                hardwareBrand={hardwareBrand ?? undefined}
+                                onComponentClick={handleComponentClick}
+                              />
+                            )}
+                          </div>
 
-                        <div className="w-[500px] h-[500px] flex items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-white">
-                        <Window2D
-                          productType={win.productType}
-                          width={win.width}
-                          height={win.height}
-                          interiorColor={interiorColor ?? "alb_ral9003"}
-                          exteriorColor={exteriorColor ?? "antracit_ral7016"}
-                          openingSide={win.openingSide}
-                          openingDirection={win.openingDirection}
-                          sashConfiguration={win.sashConfiguration ?? undefined}
-                          sashRoles={win.sashRoles}
-                          sashOpeningTypes={win.sashOpeningTypes}
-                          handleHeight={win.handleHeight}
-                          showThreshold={win.showThreshold}
-                          horizontalMuntin={win.horizontalMuntin}
-                          showDimensions={true}
-                          glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
-                          hardwareBrand={hardwareBrand ?? undefined}
-                          onComponentClick={handleComponentClick}
-                        />
+                          {/* Quantity Controls */}
+                          <div className="flex items-center gap-1 mt-[5px]">
+                            <button 
+                              onClick={() => {
+                                setWindows(prev => prev.map((w, i) => 
+                                  i === idx ? { ...w, quantity: Math.max(1, w.quantity - 1) } : w
+                                ));
+                              }}
+                              className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                            >
+                              -
+                            </button>
+                            <span className="text-[10px] font-medium text-slate-600 w-8 text-center">{win.quantity}</span>
+                            <button 
+                              onClick={() => {
+                                setWindows(prev => prev.map((w, i) => 
+                                  i === idx ? { ...w, quantity: w.quantity + 1 } : w
+                                ));
+                              }}
+                              className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-1 mt-1">
-                          <button 
-                            onClick={() => {
-                              setWindows(prev => prev.map((w, i) => 
-                                i === idx ? { ...w, quantity: Math.max(1, w.quantity - 1) } : w
-                              ));
-                            }}
-                            className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
-                          >
-                            -
-                          </button>
-                          <span className="text-[10px] font-medium text-slate-600 w-8 text-center">{win.quantity}</span>
-                          <button 
-                            onClick={() => {
-                              setWindows(prev => prev.map((w, i) => 
-                                i === idx ? { ...w, quantity: w.quantity + 1 } : w
-                              ));
-                            }}
-                            className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  )}
 
                   {/* Bottom Status - Compact */}
                   <div className="h-10 border-t border-slate-200 bg-white flex items-center justify-between px-4 text-xs">
