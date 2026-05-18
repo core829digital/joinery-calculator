@@ -1195,17 +1195,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Multiple Windows */}
                   <div className="flex-1 flex items-center justify-start gap-6 min-w-0 overflow-x-auto px-6 py-3">
                     {windows.map((win, idx) => {
-                      // FIXED container size - never changes, prevents layout shift and overflow
-                      const containerW = 500;
-                      const containerH = 500;
-                      
-                      // Calculate scale so SVG viewBox fits within fixed container
-                      // SVG viewBox = (width + 28)*scale x (height + 28)*scale
-                      // (28 accounts for 2 * margin where margin ≈ 14*scale)
-                      const scaleX = (containerW - 20) / (win.width + 28);
-                      const scaleY = (containerH - 20) / (win.height + 28);
-                      const calculatedScale = Math.min(scaleX, scaleY) * (isMobile ? 0.85 : 1.0);
-                      
                       return (
                       <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                         {/* Per-Window Header */}
@@ -1268,7 +1257,6 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           showThreshold={win.showThreshold}
                           horizontalMuntin={win.horizontalMuntin}
                           showDimensions={true}
-                          scale={calculatedScale}
                           glassType={glassType?.includes("4-") ? glassType.replace("tripan_", "4/").replace(/_/g, "-") : undefined}
                           hardwareBrand={hardwareBrand ?? undefined}
                           onComponentClick={handleComponentClick}
