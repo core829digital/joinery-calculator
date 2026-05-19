@@ -34,7 +34,8 @@
     "ml": "ml",
     "piece": "pcs",
     "lei": "RON",
-    "comeSoon": "Bientôt disponible"
+    "comeSoon": "Bientôt disponible",
+    "saved": "Enregistré"
   },
   "layout": {
     "title": "Core829 SRL - Calculateur Menuiseries",
@@ -68,6 +69,7 @@
     },
     "addWindow": "Ajouter",
     "addNewProduct": "Ajouter un nouveau produit",
+    "configure": "Configurer",
     "sections": {
       "windows": "Fenêtres",
       "doors": "Portes"
@@ -97,6 +99,7 @@
       "inactive": "Inactif",
       "inactiveDesc": "Ouverture limitée",
       "fixed": "Fixe",
+      "sashN": "Vantail",
       "windowOptions": "Options Fenêtre",
       "stulp": "Montant Vertical",
       "montant": "Traverse",
@@ -113,6 +116,20 @@
       "oscilobatantDesc": "Ouverture complète + ventilation",
       "batantDesc": "Ouverture complète uniquement",
       "inactiveWarning": "Le vantail inactif a une ouverture limitée"
+    },
+    "filters": {
+      "windows": "Fenêtres",
+      "doors": "Portes",
+      "balcony": "Balcon",
+      "harmonic": "Harmonique",
+      "premium82": "Premium 82",
+      "premium70": "Premium 70",
+      "standard60": "Standard 60",
+      "tripan": "Triple vitrage",
+      "monopane": "Simple vitrage",
+      "siegenia": "Siegenia",
+      "roto": "Roto",
+      "gu": "GU"
     },
     "pricing": {
       "unitPrice": "Prix unitaire",
@@ -200,11 +217,18 @@
     "oscilo": "OSCILLO",
     "handle": "POIGNÉE",
     "hinge": "CHARNIÈRE",
+    "balama": "Charnière",
     "clickElements": "Cliquez sur les éléments",
     "selected": "sélectionné",
     "glassType": "Type de vitrage",
     "width": "Largeur",
-    "height": "Hauteur"
+    "height": "Hauteur",
+    "type1Sash": "1 vantail",
+    "type2Sashes": "2 vantaux",
+    "type3Sashes": "3 vantaux",
+    "typeFixed": "Fixe",
+    "typeDoor1": "Porte 1 vantail",
+    "typeDoor2": "Porte 2 vantaux"
   },
   "panels": {
     "productType": {
@@ -259,7 +283,9 @@
       "interior": "Intérieur",
       "exterior": "Extérieur",
       "chooseColor": "Choisir la Couleur",
+      "select": "Sélectionner la couleur",
       "availableColors": "couleurs disponibles",
+      "availableCount": "couleurs disponibles",
       "standard": "Standard",
       "standardFree": "Standard (gratuit)",
       "premium": "Premium",
@@ -336,23 +362,353 @@
   },
   "email": {
     "subject": "Demande de Devis",
+    "subjectWithProduct": "Demande de Devis - {{product}}",
     "greeting": "Bonjour",
+    "bodyIntro": "Nous avons demandé un devis pour la configuration suivante",
     "requestText": "Nous avons demandé un devis pour la configuration suivante",
     "product": "PRODUIT",
+    "productLabel": "Produit",
     "dimensions": "DIMENSIONS",
+    "dimensionsLabel": "Dimensions",
     "profile": "PROFILÉ",
+    "profileLabel": "Profilé",
     "colors": "COULEURS",
+    "colorsLabel": "Couleurs",
     "interior": "Intérieur",
     "exterior": "Extérieur",
     "glass": "VITRAGE",
+    "glassLabel": "Vitrage",
     "hardware": "QUINCAILLERIE",
+    "hardwareLabel": "Quincaillerie",
     "estimatedPrice": "PRIX ESTIMÉ",
+    "estimatedPriceLabel": "Prix estimé",
     "inclVat": "TTC",
     "clientData": "DONNÉES CLIENT",
+    "clientDataLabel": "Données client",
     "name": "Nom",
     "email": "Email",
+    "emailLabel": "Email",
     "phone": "Téléphone",
+    "phoneLabel": "Téléphone",
     "regards": "Cordialement",
+    "signature": "Équipe Core829 SRL",
     "team": "Équipe Core829 SRL"
+  },
+  "dealer": {
+    "unauthorized": {
+      "title": "Accès Restreint",
+      "desc": "Vous devez être connecté en tant que revendeur pour accéder à cette page."
+    },
+    "tabs": {
+      "clients": "Clients",
+      "pricing": "Tarifs"
+    },
+    "dashboard": {
+      "title": "Tableau de Bord Revendeur"
+    },
+    "pricing": {
+      "currentMargin": "Marge Actuelle",
+      "customMargin": "Marge Personnalisée",
+      "marginDesc": "Pourcentage ajouté au prix de base pour calculer le prix client",
+      "basePrice": "Prix de Base",
+      "basePriceDesc": "Prix standard fixé par le fournisseur pour ce produit",
+      "yourPrice": "Votre Prix",
+      "yourPriceDesc": "Prix après application de votre marge revendeur",
+      "clientPrice": "Prix Client",
+      "clientPriceDesc": "Prix final affiché au client dans le devis PDF",
+      "isolatedInfo": "Données Isolées",
+      "isolatedInfoDesc": "Vos prix et marges sont visibles uniquement par vous et le fournisseur. Les autres revendeurs n'ont pas accès à vos données."
+    },
+    "isolation": {
+      "title": "Isolation des Données",
+      "dataIsolated": "Vos données sont complètement isolées",
+      "noOtherDealers": "Les autres revendeurs ne peuvent pas voir vos prix ou marges",
+      "noSupplierPrices": "Vous ne pouvez pas voir les prix des autres revendeurs ou les marges du fournisseur"
+    },
+    "configurator": {
+      "title": "Configurateur",
+      "desc": "Ouvrez le configurateur pour créer des devis",
+      "openButton": "Ouvrir le Configurateur"
+    },
+    "clients": {
+      "title": "Mes Clients",
+      "addClient": "Ajouter Client",
+      "empty": "Vous n'avez pas encore de clients. Ajoutez votre premier client pour commencer."
+    },
+    "orders": {
+      "title": "Mes Commandes",
+      "empty": "Vous n'avez pas encore de commandes."
+    },
+    "stats": {
+      "title": "Statistiques",
+      "totalClients": "Total Clients",
+      "totalOrders": "Total Commandes",
+      "revenue": "Revenus",
+      "pendingOrders": "Commandes en Attente",
+      "commissions": "Commissions",
+      "activeClients": "Clients Actifs"
+    },
+    "addClient": {
+      "title": "Ajouter un Nouveau Client",
+      "name": "Nom du Client",
+      "namePlaceholder": "Entrez le nom du client"
+    }
+  },
+  "supplier": {
+    "unauthorized": {
+      "title": "Accès Restreint",
+      "desc": "Vous devez être connecté en tant que fournisseur pour accéder à cette page."
+    },
+    "tabs": {
+      "dealers": "Revendeurs",
+      "clients": "Clients",
+      "orders": "Commandes",
+      "commissions": "Commissions",
+      "pricing": "Tarifs",
+      "settings": "Paramètres"
+    },
+    "admin": {
+      "title": "Panneau d'Administration",
+      "badge": "ADMIN"
+    },
+    "access": {
+      "title": "Accès Fournisseur",
+      "seeDealers": "Voir tous les revendeurs et leurs performances",
+      "managePrices": "Gérer les prix et marges pour tous les revendeurs",
+      "approvedCommissions": "Commissions approuvées et paiement"
+    },
+    "dealers": {
+      "title": "Revendeurs",
+      "addDealer": "Ajouter Revendeur",
+      "name": "Nom",
+      "email": "Email",
+      "accessCode": "Code d'Accès",
+      "margin": "Marge",
+      "status": "Statut",
+      "actions": "Actions",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "viewDetails": "Voir Détails",
+      "edit": "Modifier",
+      "sendEmail": "Envoyer Email",
+      "deactivate": "Désactiver",
+      "activate": "Activer"
+    },
+    "clients": {
+      "title": "Tous les Clients",
+      "name": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "dealer": "Revendeur",
+      "code": "Code",
+      "direct": "Direct"
+    },
+    "orders": {
+      "title": "Toutes les Commandes"
+    },
+    "commissions": {
+      "title": "Commissions",
+      "order": "Commande"
+    },
+    "pricing": {
+      "title": "Prix des Produits",
+      "window1": "Fenêtre 1 vantail",
+      "window2": "Fenêtre 2 vantaux",
+      "balconyDoor": "Porte balcon",
+      "entryPvc": "Porte entrée PVC",
+      "entryAlu": "Porte entrée Aluminium",
+      "profile": "Profilé",
+      "controlTitle": "Contrôle des Prix",
+      "controlDesc": "Définir les prix de base pour tous les produits"
+    },
+    "settings": {
+      "title": "Paramètres Système",
+      "profileSeries": "Séries de Profilés",
+      "profileSeriesDesc": "Configurer les séries de profilés disponibles",
+      "configure": "Configurer",
+      "glassTypes": "Types de Vitrage",
+      "glassTypesDesc": "Gérer les types de vitrage et leurs propriétés",
+      "colorPalette": "Palette de Couleurs",
+      "colorPaletteDesc": "Administrer les couleurs disponibles pour intérieur/extérieur"
+    }
+  },
+  "print": {
+    "subtitle": "Devis Menuiseries",
+    "offerTitle": "Devis",
+    "clientInfo": "Informations Client",
+    "dealerLabel": "Revendeur",
+    "clientLabel": "Client",
+    "emailLabel": "Email",
+    "phoneLabel": "Téléphone",
+    "productsList": "Liste des Produits",
+    "colNr": "N°",
+    "colType": "Type",
+    "colDims": "Dimensions",
+    "colQty": "Qté",
+    "colArea": "Surface",
+    "total": "Total",
+    "configSummary": "Résumé de la Configuration",
+    "profileSeries": "Série de Profilé",
+    "glass": "Vitrage",
+    "interiorColor": "Couleur Intérieure",
+    "exteriorColor": "Couleur Extérieure",
+    "hardware": "Quincaillerie",
+    "selectedAccessories": "Accessoires Sélectionnés",
+    "additionalServices": "Services Additionnels",
+    "transport": "Transport",
+    "installIncluded": "Installation Incluse",
+    "notes": "Remarques",
+    "priceSummary": "Résumé du Prix",
+    "colProduct": "Produit",
+    "colUnitPrice": "Prix Unitaire",
+    "colTotal": "Total",
+    "install": "Installation",
+    "discount": "Remise",
+    "vat": "TVA",
+    "grandTotal": "TOTAL FINAL",
+    "footer": {
+      "validity": "Ce devis est valable 30 jours à compter de la date d'émission.",
+      "estimate": "Les prix sont estimatifs et peuvent varier en fonction des dimensions exactes et des spécifications techniques finales."
+    },
+    "productNames": {
+      "window_1_canat": "Fenêtre 1 vantail",
+      "window_2_canate": "Fenêtre 2 vantaux",
+      "window_3_canate": "Fenêtre 3 vantaux",
+      "window_fix": "Fenêtre Fixe",
+      "usa_balcon_1": "Porte balcon 1 vantail",
+      "usa_balcon_2": "Porte balcon 2 vantaux",
+      "usa_intrare_pvc": "Porte entrée PVC",
+      "usa_intrare_aluminiu": "Porte entrée Aluminium"
+    }
+  },
+  "landing": {
+    "authButton": "Connexion",
+    "h1Part1": "Calculateur",
+    "h1Part2": "Menuiseries",
+    "subtitle": "Configurez fenêtres et portes, obtenez des prix instantanés et des devis PDF professionnels.",
+    "clientTitle": "Client",
+    "clientDesc": "Configurez des produits et recevez des devis instantanés",
+    "seeMore": "Voir plus",
+    "dealerTitle": "Revendeur",
+    "dealerDesc": "Tableau de bord complet avec commissions et tarifs personnalisés",
+    "adminTitle": "Fournisseur",
+    "adminDesc": "Administration complète du système",
+    "featureInstant": "Prix Instantané",
+    "featureTransparent": "Prix Transparents",
+    "featurePdf": "Devis PDF"
+  },
+  "clientLanding": {
+    "authButton": "Connexion Client",
+    "startNow": "Commencer",
+    "badge": "Calculateur Menuiseries",
+    "h1": "Configurez Vos Menuiseries en Minutes",
+    "subtitle": "Choisissez fenêtres et portes, personnalisez couleurs et matériaux, et recevez un devis PDF instantané.",
+    "calcPrice": "Calculer le Prix",
+    "partnerCode": "Code Partenaire (optionnel)",
+    "features": {
+      "calcInstant": "Calcul Instantané",
+      "calcDesc": "Prix estimatif en temps réel, basé sur les dimensions et options",
+      "colors": "Couleurs Bicolores",
+      "colorsDesc": "Combinaisons intérieur/extérieur pour un design personnalisé",
+      "pdf": "Devis PDF",
+      "pdfDesc": "Téléchargez le devis professionnel avec tous les détails",
+      "transport": "Transport et Installation",
+      "transportDesc": "Services complets de livraison et d'installation"
+    },
+    "benefits": ["Prix transparents", "Configuration visuelle", "Devis PDF instantané", "Support dédié"],
+    "whyTitle": "Pourquoi nous choisir ?",
+    "whyDesc": "Plus de 15 ans d'expérience dans l'industrie des menuiseries, produits certifiés et garantie étendue.",
+    "warrantyTitle": "Garantie Étendue",
+    "warrantyDesc": "Tous les produits bénéficient d'une garantie allant jusqu'à 10 ans.",
+    "deliveryTitle": "Livraison Rapide",
+    "deliveryDesc": "Délai de livraison de 14 à 21 jours ouvrables après confirmation de commande."
+  },
+  "dealerLanding": {
+    "home": "Accueil",
+    "portalTitle": "Portail Revendeur",
+    "programTitle": "Programme de Partenariat",
+    "heroTitle": "Devenez Notre Partenaire",
+    "heroDesc": "Accédez à des prix spéciaux, des commissions automatiques et un tableau de bord complet pour votre activité.",
+    "accessPortal": "Accéder au Portail",
+    "seeAsClient": "Voir en tant que Client",
+    "discountBadge": "Remise Revendeur",
+    "discountDesc": "Accédez à des prix préférentiels et des marges personnalisées pour chaque client.",
+    "customMargin": "Marge Personnalisée",
+    "customMarginDesc": "Définissez votre marge pour chaque produit et contrôlez votre profit.",
+    "dashboardCommissions": "Tableau de Bord Commissions",
+    "brandedPdf": "Devis PDF Marqués",
+    "clientCodes": "Codes Client Uniques",
+    "autoCommissions": "Commissions Automatiques",
+    "prioritySupport": "Support Prioritaire",
+    "trainingIncluded": "Formation Incluse",
+    "allYouNeed": "Tout ce dont vous avez besoin pour vendre",
+    "createAccount": "Créer un Compte",
+    "createDesc": "Remplissez le formulaire pour recevoir l'accès au portail revendeur.",
+    "registerTitle": "Inscription Revendeur",
+    "testData": "Données Test",
+    "emailLabel": "Email",
+    "passwordLabel": "Mot de passe",
+    "contactQuestion": "Des questions ? Contactez-nous."
+  },
+  "supplierLanding": {
+    "home": "Accueil",
+    "adminPanel": "Panneau Admin",
+    "controlPanel": "Panneau de Contrôle",
+    "adminTitle": "Panneau Fournisseur",
+    "adminDesc": "Administration complète des revendeurs, prix, commandes et commissions.",
+    "accessAdmin": "Accéder Admin",
+    "seeAsDealer": "Voir en tant que Revendeur",
+    "manageDealers": "Gérer les Revendeurs",
+    "manageDealersDesc": "Ajoutez, modifiez et surveillez tous les revendeurs du réseau.",
+    "commissions": "Commissions",
+    "commissionsDesc": "Suivez et approuvez les commissions pour chaque commande.",
+    "productsPrices": "Produits et Prix",
+    "productsPricesDesc": "Configurez les prix de base pour tous les produits.",
+    "reports": "Rapports",
+    "reportsDesc": "Visualisez des rapports détaillés de ventes et de performance.",
+    "notifications": "Notifications",
+    "notificationsDesc": "Recevez des alertes pour les nouvelles commandes et l'activité des revendeurs.",
+    "dataBackup": "Sauvegarde des Données",
+    "dataBackupDesc": "Sauvegarde automatique et sécurisée de toutes les données.",
+    "accessLevels": "Niveaux d'Accès",
+    "adminMain": "Administrateur Principal",
+    "adminMainDesc": "Accès complet à toutes les fonctionnalités du système.",
+    "salesManager": "Responsable Commercial",
+    "techSupport": "Support Technique",
+    "liveView": "Vue en Direct",
+    "liveViewDesc": "Surveillez l'activité en temps réel de tous les revendeurs.",
+    "realtimeUpdates": "Mises à Jour en Temps Réel",
+    "totalControl": "Contrôle Total",
+    "totalControlDesc": "Gérez chaque aspect de votre activité depuis un seul endroit.",
+    "maxSecurity": "Sécurité Maximale",
+    "testDataAdmin": "Données Test Admin",
+    "techSupportContact": "Support Technique : contact@core829.ro"
+  },
+  "login": {
+    "invalidCredentials": "Email ou mot de passe incorrect",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "roles": {
+      "supplier": "Fournisseur",
+      "supplierDesc": "Administration complète du système",
+      "dealer": "Revendeur",
+      "dealerDesc": "Tableau de bord des ventes et commissions",
+      "client": "Client",
+      "clientDesc": "Configuration des produits et devis"
+    },
+    "rolesFeatures": {
+      "supplier": ["Gérer les revendeurs", "Contrôle des prix", "Rapports complets", "Sauvegarde des données"],
+      "dealer": ["Prix spéciaux", "Commissions automatiques", "Devis PDF", "Tableau de bord clients"],
+      "client": ["Configuration visuelle", "Prix instantané", "Devis PDF", "Support dédié"]
+    },
+    "selectRole": "Sélectionner le Rôle",
+    "selectRoleDesc": "Choisissez votre rôle pour continuer",
+    "backToSelect": "Retour à la sélection",
+    "authTitle": "Authentification",
+    "authSubtitle": "Entrez vos identifiants de connexion",
+    "emailLabel": "Email",
+    "passwordLabel": "Mot de passe",
+    "submitButton": "Se connecter",
+    "testCredentials": "Identifiants Test",
+    "passwordLabel2": "Confirmer le mot de passe"
   }
 }

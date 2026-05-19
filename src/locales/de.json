@@ -34,7 +34,8 @@
     "ml": "lfm",
     "piece": "Stk",
     "lei": "RON",
-    "comeSoon": "Demnächst"
+    "comeSoon": "Demnächst",
+    "saved": "Gespeichert"
   },
   "layout": {
     "title": "Core829 SRL - Tischlerei-Rechner",
@@ -68,6 +69,7 @@
     },
     "addWindow": "Hinzufügen",
     "addNewProduct": "Neues Produkt hinzufügen",
+    "configure": "Konfigurieren",
     "sections": {
       "windows": "Fenster",
       "doors": "Türen"
@@ -97,6 +99,7 @@
       "inactive": "Inaktiv",
       "inactiveDesc": "Begrenzte Öffnung",
       "fixed": "Fest",
+      "sashN": "Flügel",
       "windowOptions": "Fensteroptionen",
       "stulp": "Pfosten",
       "montant": "Querprofil",
@@ -113,6 +116,20 @@
       "oscilobatantDesc": "Vollöffnung + Belüftung",
       "batantDesc": "Nur Vollöffnung",
       "inactiveWarning": "Der inaktive Flügel hat eine begrenzte Öffnung"
+    },
+    "filters": {
+      "windows": "Fenster",
+      "doors": "Türen",
+      "balcony": "Balkon",
+      "harmonic": "Harmonisch",
+      "premium82": "Premium 82",
+      "premium70": "Premium 70",
+      "standard60": "Standard 60",
+      "tripan": "Dreifachverglasung",
+      "monopane": "Einfachverglasung",
+      "siegenia": "Siegenia",
+      "roto": "Roto",
+      "gu": "GU"
     },
     "pricing": {
       "unitPrice": "Stückpreis",
@@ -200,11 +217,18 @@
     "oscilo": "KIPP",
     "handle": "GRIFF",
     "hinge": "BAND",
+    "balama": "Band",
     "clickElements": "Auf Elemente klicken",
     "selected": "ausgewählt",
     "glassType": "Glastyp",
     "width": "Breite",
-    "height": "Höhe"
+    "height": "Höhe",
+    "type1Sash": "1 Flügel",
+    "type2Sashes": "2 Flügel",
+    "type3Sashes": "3 Flügel",
+    "typeFixed": "Fest",
+    "typeDoor1": "Tür 1 Flügel",
+    "typeDoor2": "Tür 2 Flügel"
   },
   "panels": {
     "productType": {
@@ -259,7 +283,9 @@
       "interior": "Innen",
       "exterior": "Außen",
       "chooseColor": "Farbe Wählen",
+      "select": "Farbe auswählen",
       "availableColors": "verfügbare Farben",
+      "availableCount": "verfügbare Farben",
       "standard": "Standard",
       "standardFree": "Standard (kostenlos)",
       "premium": "Premium",
@@ -336,23 +362,353 @@
   },
   "email": {
     "subject": "Angebotsanfrage",
+    "subjectWithProduct": "Angebotsanfrage - {{product}}",
     "greeting": "Guten Tag",
+    "bodyIntro": "Wir haben ein Angebot für die folgende Konfiguration angefragt",
     "requestText": "Wir haben ein Angebot für die folgende Konfiguration angefragt",
     "product": "PRODUKT",
+    "productLabel": "Produkt",
     "dimensions": "ABMESSUNGEN",
+    "dimensionsLabel": "Abmessungen",
     "profile": "PROFIL",
+    "profileLabel": "Profil",
     "colors": "FARBEN",
+    "colorsLabel": "Farben",
     "interior": "Innen",
     "exterior": "Außen",
     "glass": "VERGLASUNG",
+    "glassLabel": "Verglasung",
     "hardware": "BESCHLÄGE",
+    "hardwareLabel": "Beschläge",
     "estimatedPrice": "GESCHÄTZTER PREIS",
+    "estimatedPriceLabel": "Geschätzter Preis",
     "inclVat": "inkl. MwSt",
     "clientData": "KUNDENDATEN",
+    "clientDataLabel": "Kundendaten",
     "name": "Name",
     "email": "E-Mail",
+    "emailLabel": "E-Mail",
     "phone": "Telefon",
+    "phoneLabel": "Telefon",
     "regards": "Mit freundlichen Grüßen",
+    "signature": "Team Core829 SRL",
     "team": "Team Core829 SRL"
+  },
+  "dealer": {
+    "unauthorized": {
+      "title": "Zugriff Beschränkt",
+      "desc": "Sie müssen als Händler angemeldet sein, um auf diese Seite zuzugreifen."
+    },
+    "tabs": {
+      "clients": "Kunden",
+      "pricing": "Preise"
+    },
+    "dashboard": {
+      "title": "Händler-Dashboard"
+    },
+    "pricing": {
+      "currentMargin": "Aktuelle Marge",
+      "customMargin": "Individuelle Marge",
+      "marginDesc": "Prozentsatz über dem Grundpreis zur Berechnung des Kundenpreises",
+      "basePrice": "Grundpreis",
+      "basePriceDesc": "Standardpreis des Lieferanten für dieses Produkt",
+      "yourPrice": "Ihr Preis",
+      "yourPriceDesc": "Preis nach Anwendung Ihrer Händlermarge",
+      "clientPrice": "Kundenpreis",
+      "clientPriceDesc": "Endpreis, der dem Kunden im PDF-Angebot angezeigt wird",
+      "isolatedInfo": "Isolierte Daten",
+      "isolatedInfoDesc": "Ihre Preise und Margen sind nur für Sie und den Lieferanten sichtbar. Andere Händler haben keinen Zugriff auf Ihre Daten."
+    },
+    "isolation": {
+      "title": "Datenisolierung",
+      "dataIsolated": "Ihre Daten sind vollständig isoliert",
+      "noOtherDealers": "Andere Händler können Ihre Preise oder Margen nicht sehen",
+      "noSupplierPrices": "Sie können nicht die Preise anderer Händler oder die Margen des Lieferanten sehen"
+    },
+    "configurator": {
+      "title": "Konfigurator",
+      "desc": "Öffnen Sie den Konfigurator, um Angebote zu erstellen",
+      "openButton": "Konfigurator Öffnen"
+    },
+    "clients": {
+      "title": "Meine Kunden",
+      "addClient": "Kunde Hinzufügen",
+      "empty": "Sie haben noch keine Kunden. Fügen Sie Ihren ersten Kunden hinzu, um zu beginnen."
+    },
+    "orders": {
+      "title": "Meine Bestellungen",
+      "empty": "Sie haben noch keine Bestellungen."
+    },
+    "stats": {
+      "title": "Statistiken",
+      "totalClients": "Gesamtkunden",
+      "totalOrders": "Gesamtbestellungen",
+      "revenue": "Umsatz",
+      "pendingOrders": "Ausstehende Bestellungen",
+      "commissions": "Provisionen",
+      "activeClients": "Aktive Kunden"
+    },
+    "addClient": {
+      "title": "Neuen Kunden Hinzufügen",
+      "name": "Kundenname",
+      "namePlaceholder": "Kundennamen eingeben"
+    }
+  },
+  "supplier": {
+    "unauthorized": {
+      "title": "Zugriff Beschränkt",
+      "desc": "Sie müssen als Lieferant angemeldet sein, um auf diese Seite zuzugreifen."
+    },
+    "tabs": {
+      "dealers": "Händler",
+      "clients": "Kunden",
+      "orders": "Bestellungen",
+      "commissions": "Provisionen",
+      "pricing": "Preise",
+      "settings": "Einstellungen"
+    },
+    "admin": {
+      "title": "Admin-Panel",
+      "badge": "ADMIN"
+    },
+    "access": {
+      "title": "Lieferantenzugriff",
+      "seeDealers": "Alle Händler und deren Leistung einsehen",
+      "managePrices": "Preise und Margen für alle Händler verwalten",
+      "approvedCommissions": "Genehmigte Provisionen und Zahlung"
+    },
+    "dealers": {
+      "title": "Händler",
+      "addDealer": "Händler Hinzufügen",
+      "name": "Name",
+      "email": "E-Mail",
+      "accessCode": "Zugangscode",
+      "margin": "Marge",
+      "status": "Status",
+      "actions": "Aktionen",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "viewDetails": "Details Anzeigen",
+      "edit": "Bearbeiten",
+      "sendEmail": "E-Mail Senden",
+      "deactivate": "Deaktivieren",
+      "activate": "Aktivieren"
+    },
+    "clients": {
+      "title": "Alle Kunden",
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "dealer": "Händler",
+      "code": "Code",
+      "direct": "Direkt"
+    },
+    "orders": {
+      "title": "Alle Bestellungen"
+    },
+    "commissions": {
+      "title": "Provisionen",
+      "order": "Bestellung"
+    },
+    "pricing": {
+      "title": "Produktpreise",
+      "window1": "Fenster 1 Flügel",
+      "window2": "Fenster 2 Flügel",
+      "balconyDoor": "Balkontür",
+      "entryPvc": "Eingangstür PVC",
+      "entryAlu": "Eingangstür Aluminium",
+      "profile": "Profil",
+      "controlTitle": "Preiskontrolle",
+      "controlDesc": "Grundpreise für alle Produkte festlegen"
+    },
+    "settings": {
+      "title": "Systemeinstellungen",
+      "profileSeries": "Profilserien",
+      "profileSeriesDesc": "Verfügbare Profilserien konfigurieren",
+      "configure": "Konfigurieren",
+      "glassTypes": "Glastypen",
+      "glassTypesDesc": "Glastypen und Eigenschaften verwalten",
+      "colorPalette": "Farbpalette",
+      "colorPaletteDesc": "Verfügbare Innen-/Außenfarben verwalten"
+    }
+  },
+  "print": {
+    "subtitle": "Tischlerei-Angebot",
+    "offerTitle": "Angebot",
+    "clientInfo": "Kundeninformationen",
+    "dealerLabel": "Händler",
+    "clientLabel": "Kunde",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefon",
+    "productsList": "Produktliste",
+    "colNr": "Nr.",
+    "colType": "Typ",
+    "colDims": "Abmessungen",
+    "colQty": "Menge",
+    "colArea": "Fläche",
+    "total": "Gesamt",
+    "configSummary": "Konfigurationsübersicht",
+    "profileSeries": "Profilserie",
+    "glass": "Verglasung",
+    "interiorColor": "Farbe Innen",
+    "exteriorColor": "Farbe Außen",
+    "hardware": "Beschläge",
+    "selectedAccessories": "Ausgewähltes Zubehör",
+    "additionalServices": "Zusätzliche Dienstleistungen",
+    "transport": "Transport",
+    "installIncluded": "Montage Inklusive",
+    "notes": "Bemerkungen",
+    "priceSummary": "Preisübersicht",
+    "colProduct": "Produkt",
+    "colUnitPrice": "Stückpreis",
+    "colTotal": "Gesamt",
+    "install": "Montage",
+    "discount": "Rabatt",
+    "vat": "MwSt",
+    "grandTotal": "GESAMTPREIS",
+    "footer": {
+      "validity": "Dieses Angebot ist 30 Tage ab Ausstellungsdatum gültig.",
+      "estimate": "Die Preise sind Schätzungen und können je nach genauen Abmessungen und endgültigen technischen Spezifikationen variieren."
+    },
+    "productNames": {
+      "window_1_canat": "Fenster 1 Flügel",
+      "window_2_canate": "Fenster 2 Flügel",
+      "window_3_canate": "Fenster 3 Flügel",
+      "window_fix": "Festverglastes Fenster",
+      "usa_balcon_1": "Balkontür 1 Flügel",
+      "usa_balcon_2": "Balkontür 2 Flügel",
+      "usa_intrare_pvc": "Eingangstür PVC",
+      "usa_intrare_aluminiu": "Eingangstür Aluminium"
+    }
+  },
+  "landing": {
+    "authButton": "Anmelden",
+    "h1Part1": "Tischlerei",
+    "h1Part2": "Rechner",
+    "subtitle": "Konfigurieren Sie Fenster und Türen, erhalten Sie sofort Preise und professionelle PDF-Angebote.",
+    "clientTitle": "Kunde",
+    "clientDesc": "Produkte konfigurieren und sofort Angebote erhalten",
+    "seeMore": "Mehr erfahren",
+    "dealerTitle": "Händler",
+    "dealerDesc": "Vollständiges Dashboard mit Provisionen und individuellen Preisen",
+    "adminTitle": "Lieferant",
+    "adminDesc": "Komplette Systemverwaltung",
+    "featureInstant": "Sofortpreis",
+    "featureTransparent": "Transparente Preise",
+    "featurePdf": "PDF-Angebot"
+  },
+  "clientLanding": {
+    "authButton": "Kundenanmeldung",
+    "startNow": "Jetzt Starten",
+    "badge": "Tischlerei-Rechner",
+    "h1": "Konfigurieren Sie Ihre Tischlerei in Minuten",
+    "subtitle": "Wählen Sie Fenster und Türen, personalisieren Sie Farben und Materialien und erhalten Sie sofort ein PDF-Angebot.",
+    "calcPrice": "Preis Berechnen",
+    "partnerCode": "Partner-Code (optional)",
+    "features": {
+      "calcInstant": "Sofortberechnung",
+      "calcDesc": "Geschätzter Preis in Echtzeit, basierend auf Abmessungen und Optionen",
+      "colors": "Bicolor-Farben",
+      "colorsDesc": "Innen-/Außenkombinationen für individuelles Design",
+      "pdf": "PDF-Angebot",
+      "pdfDesc": "Professionelles Angebot mit allen Details herunterladen",
+      "transport": "Transport & Montage",
+      "transportDesc": "Komplette Liefer- und Installationsservices"
+    },
+    "benefits": ["Transparente Preise", "Visuelle Konfiguration", "Sofortiges PDF-Angebot", "Dedizierter Support"],
+    "whyTitle": "Warum uns wählen?",
+    "whyDesc": "Über 15 Jahre Erfahrung in der Tischlereibranche, zertifizierte Produkte und erweiterte Garantie.",
+    "warrantyTitle": "Erweiterte Garantie",
+    "warrantyDesc": "Alle Produkte haben bis zu 10 Jahre Garantie.",
+    "deliveryTitle": "Schnelle Lieferung",
+    "deliveryDesc": "Lieferzeit von 14-21 Werktagen nach Bestellbestätigung."
+  },
+  "dealerLanding": {
+    "home": "Startseite",
+    "portalTitle": "Händlerportal",
+    "programTitle": "Partnerprogramm",
+    "heroTitle": "Werden Sie Unser Partner",
+    "heroDesc": "Zugang zu Sonderpreisen, automatischen Provisionen und einem vollständigen Dashboard für Ihr Geschäft.",
+    "accessPortal": "Portal Zugreifen",
+    "seeAsClient": "Als Kunde ansehen",
+    "discountBadge": "Händlerrabatt",
+    "discountDesc": "Zugang zu Vorzugspreisen und individuellen Margen für jeden Kunden.",
+    "customMargin": "Individuelle Marge",
+    "customMarginDesc": "Legen Sie Ihre Marge für jedes Produkt fest und kontrollieren Sie Ihren Gewinn.",
+    "dashboardCommissions": "Provisions-Dashboard",
+    "brandedPdf": "Branded PDF-Angebote",
+    "clientCodes": "Einzigartige Kundencodes",
+    "autoCommissions": "Automatische Provisionen",
+    "prioritySupport": "Prioritäts-Support",
+    "trainingIncluded": "Schulung Inklusive",
+    "allYouNeed": "Alles was Sie zum Verkaufen brauchen",
+    "createAccount": "Konto Erstellen",
+    "createDesc": "Füllen Sie das Formular aus, um Zugang zum Händlerportal zu erhalten.",
+    "registerTitle": "Händlerregistrierung",
+    "testData": "Testdaten",
+    "emailLabel": "E-Mail",
+    "passwordLabel": "Passwort",
+    "contactQuestion": "Haben Sie Fragen? Kontaktieren Sie uns."
+  },
+  "supplierLanding": {
+    "home": "Startseite",
+    "adminPanel": "Admin-Panel",
+    "controlPanel": "Kontrollpanel",
+    "adminTitle": "Lieferanten-Panel",
+    "adminDesc": "Vollständige Verwaltung von Händlern, Preisen, Bestellungen und Provisionen.",
+    "accessAdmin": "Admin Zugreifen",
+    "seeAsDealer": "Als Händler ansehen",
+    "manageDealers": "Händler Verwalten",
+    "manageDealersDesc": "Alle Händler im Netzwerk hinzufügen, bearbeiten und überwachen.",
+    "commissions": "Provisionen",
+    "commissionsDesc": "Provisionen für jede Bestellung verfolgen und genehmigen.",
+    "productsPrices": "Produkte & Preise",
+    "productsPricesDesc": "Grundpreise für alle Produkte konfigurieren.",
+    "reports": "Berichte",
+    "reportsDesc": "Detaillierte Verkaufs- und Leistungsberichte anzeigen.",
+    "notifications": "Benachrichtigungen",
+    "notificationsDesc": "Benachrichtigungen für neue Bestellungen und Händleraktivitäten erhalten.",
+    "dataBackup": "Daten-Backup",
+    "dataBackupDesc": "Automatisches und sicheres Backup aller Daten.",
+    "accessLevels": "Zugriffsebenen",
+    "adminMain": "Hauptadministrator",
+    "adminMainDesc": "Vollzugriff auf alle Systemfunktionen.",
+    "salesManager": "Vertriebsleiter",
+    "techSupport": "Technischer Support",
+    "liveView": "Live-Ansicht",
+    "liveViewDesc": "Echtzeitaktivität aller Händler überwachen.",
+    "realtimeUpdates": "Echtzeit-Updates",
+    "totalControl": "Totale Kontrolle",
+    "totalControlDesc": "Jeden Aspekt Ihres Geschäfts von einem Ort aus verwalten.",
+    "maxSecurity": "Maximale Sicherheit",
+    "testDataAdmin": "Admin-Testdaten",
+    "techSupportContact": "Technischer Support: contact@core829.ro"
+  },
+  "login": {
+    "invalidCredentials": "Falsche E-Mail oder Passwort",
+    "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "roles": {
+      "supplier": "Lieferant",
+      "supplierDesc": "Komplette Systemverwaltung",
+      "dealer": "Händler",
+      "dealerDesc": "Vertriebs-Dashboard und Provisionen",
+      "client": "Kunde",
+      "clientDesc": "Produktkonfiguration und Angebote"
+    },
+    "rolesFeatures": {
+      "supplier": ["Händler verwalten", "Preiskontrolle", "Vollständige Berichte", "Daten-Backup"],
+      "dealer": ["Sonderpreise", "Auto-Provisionen", "PDF-Angebote", "Kunden-Dashboard"],
+      "client": ["Visuelle Konfiguration", "Sofortpreis", "PDF-Angebot", "Dedizierter Support"]
+    },
+    "selectRole": "Rolle Auswählen",
+    "selectRoleDesc": "Wählen Sie Ihre Rolle, um fortzufahren",
+    "backToSelect": "Zurück zur Auswahl",
+    "authTitle": "Authentifizierung",
+    "authSubtitle": "Geben Sie Ihre Zugangsdaten ein",
+    "emailLabel": "E-Mail",
+    "passwordLabel": "Passwort",
+    "submitButton": "Anmelden",
+    "testCredentials": "Test-Zugangsdaten",
+    "passwordLabel2": "Passwort Bestätigen"
   }
 }

@@ -34,7 +34,8 @@
     "ml": "ml",
     "piece": "pz",
     "lei": "RON",
-    "comeSoon": "Prossimamente"
+    "comeSoon": "Prossimamente",
+    "saved": "Salvato"
   },
   "layout": {
     "title": "Core829 SRL - Calcolatore Serramenti",
@@ -68,6 +69,7 @@
     },
     "addWindow": "Aggiungi",
     "addNewProduct": "Aggiungi nuovo prodotto",
+    "configure": "Configura",
     "sections": {
       "windows": "Finestre",
       "doors": "Porte"
@@ -97,6 +99,7 @@
       "inactive": "Inattiva",
       "inactiveDesc": "Apertura limitata",
       "fixed": "Fissa",
+      "sashN": "Anta",
       "windowOptions": "Opzioni Finestra",
       "stulp": "Montante Verticale",
       "montant": "Traverso",
@@ -113,6 +116,20 @@
       "oscilobatantDesc": "Apertura completa + ventilazione",
       "batantDesc": "Solo apertura completa",
       "inactiveWarning": "L'anta inattiva ha apertura limitata"
+    },
+    "filters": {
+      "windows": "Finestre",
+      "doors": "Porte",
+      "balcony": "Balcone",
+      "harmonic": "Armonica",
+      "premium82": "Premium 82",
+      "premium70": "Premium 70",
+      "standard60": "Standard 60",
+      "tripan": "Triplo vetro",
+      "monopane": "Singolo vetro",
+      "siegenia": "Siegenia",
+      "roto": "Roto",
+      "gu": "GU"
     },
     "pricing": {
       "unitPrice": "Prezzo unitario",
@@ -200,11 +217,18 @@
     "oscilo": "VASISTAS",
     "handle": "MANIGLIA",
     "hinge": "CERNIERA",
+    "balama": "Cerniera",
     "clickElements": "Clicca sugli elementi",
     "selected": "selezionato",
     "glassType": "Tipo vetro",
     "width": "Larghezza",
-    "height": "Altezza"
+    "height": "Altezza",
+    "type1Sash": "1 anta",
+    "type2Sashes": "2 ante",
+    "type3Sashes": "3 ante",
+    "typeFixed": "Fisso",
+    "typeDoor1": "Porta 1 anta",
+    "typeDoor2": "Porta 2 ante"
   },
   "panels": {
     "productType": {
@@ -259,7 +283,9 @@
       "interior": "Interno",
       "exterior": "Esterno",
       "chooseColor": "Scegli Colore",
+      "select": "Seleziona colore",
       "availableColors": "colori disponibili",
+      "availableCount": "colori disponibili",
       "standard": "Standard",
       "standardFree": "Standard (gratuito)",
       "premium": "Premium",
@@ -336,23 +362,353 @@
   },
   "email": {
     "subject": "Richiesta Preventivo",
+    "subjectWithProduct": "Richiesta Preventivo - {{product}}",
     "greeting": "Buongiorno",
+    "bodyIntro": "Abbiamo richiesto un preventivo per la seguente configurazione",
     "requestText": "Abbiamo richiesto un preventivo per la seguente configurazione",
     "product": "PRODOTTO",
+    "productLabel": "Prodotto",
     "dimensions": "DIMENSIONI",
+    "dimensionsLabel": "Dimensioni",
     "profile": "PROFILO",
+    "profileLabel": "Profilo",
     "colors": "COLORI",
+    "colorsLabel": "Colori",
     "interior": "Interno",
     "exterior": "Esterno",
     "glass": "VETRO",
+    "glassLabel": "Vetro",
     "hardware": "FERRAMENTA",
+    "hardwareLabel": "Ferramenta",
     "estimatedPrice": "PREZZO STIMATO",
+    "estimatedPriceLabel": "Prezzo stimato",
     "inclVat": "IVA incl.",
     "clientData": "DATI CLIENTE",
+    "clientDataLabel": "Dati cliente",
     "name": "Nome",
     "email": "Email",
+    "emailLabel": "Email",
     "phone": "Telefono",
+    "phoneLabel": "Telefono",
     "regards": "Cordiali saluti",
+    "signature": "Team Core829 SRL",
     "team": "Team Core829 SRL"
+  },
+  "dealer": {
+    "unauthorized": {
+      "title": "Accesso Limitato",
+      "desc": "Devi accedere come rivenditore per visualizzare questa pagina."
+    },
+    "tabs": {
+      "clients": "Clienti",
+      "pricing": "Prezzi"
+    },
+    "dashboard": {
+      "title": "Pannello Rivenditore"
+    },
+    "pricing": {
+      "currentMargin": "Margine Attuale",
+      "customMargin": "Margine Personalizzato",
+      "marginDesc": "Percentuale aggiunta al prezzo base per calcolare il prezzo cliente",
+      "basePrice": "Prezzo Base",
+      "basePriceDesc": "Prezzo standard stabilito dal fornitore per questo prodotto",
+      "yourPrice": "Il Tuo Prezzo",
+      "yourPriceDesc": "Prezzo dopo l'applicazione del tuo margine rivenditore",
+      "clientPrice": "Prezzo Cliente",
+      "clientPriceDesc": "Prezzo finale mostrato al cliente nel preventivo PDF",
+      "isolatedInfo": "Dati Isolati",
+      "isolatedInfoDesc": "I tuoi prezzi e margini sono visibili solo a te e al fornitore. Altri rivenditori non possono accedere ai tuoi dati."
+    },
+    "isolation": {
+      "title": "Isolamento Dati",
+      "dataIsolated": "I tuoi dati sono completamente isolati",
+      "noOtherDealers": "Altri rivenditori non possono vedere i tuoi prezzi o margini",
+      "noSupplierPrices": "Non puoi vedere i prezzi di altri rivenditori o i margini del fornitore"
+    },
+    "configurator": {
+      "title": "Configuratore",
+      "desc": "Apri il configuratore per creare preventivi",
+      "openButton": "Apri Configuratore"
+    },
+    "clients": {
+      "title": "I Miei Clienti",
+      "addClient": "Aggiungi Cliente",
+      "empty": "Non hai ancora clienti. Aggiungi il primo cliente per iniziare."
+    },
+    "orders": {
+      "title": "I Miei Ordini",
+      "empty": "Non hai ancora ordini."
+    },
+    "stats": {
+      "title": "Statistiche",
+      "totalClients": "Totale Clienti",
+      "totalOrders": "Totale Ordini",
+      "revenue": "Ricavi",
+      "pendingOrders": "Ordini in Attesa",
+      "commissions": "Commissioni",
+      "activeClients": "Clienti Attivi"
+    },
+    "addClient": {
+      "title": "Aggiungi Nuovo Cliente",
+      "name": "Nome Cliente",
+      "namePlaceholder": "Inserisci il nome del cliente"
+    }
+  },
+  "supplier": {
+    "unauthorized": {
+      "title": "Accesso Limitato",
+      "desc": "Devi accedere come fornitore per visualizzare questa pagina."
+    },
+    "tabs": {
+      "dealers": "Rivenditori",
+      "clients": "Clienti",
+      "orders": "Ordini",
+      "commissions": "Commissioni",
+      "pricing": "Prezzi",
+      "settings": "Impostazioni"
+    },
+    "admin": {
+      "title": "Pannello Amministrazione",
+      "badge": "ADMIN"
+    },
+    "access": {
+      "title": "Accesso Fornitore",
+      "seeDealers": "Visualizza tutti i rivenditori e le loro performance",
+      "managePrices": "Gestisci prezzi e margini per tutti i rivenditori",
+      "approvedCommissions": "Commissioni approvate e pagamento"
+    },
+    "dealers": {
+      "title": "Rivenditori",
+      "addDealer": "Aggiungi Rivenditore",
+      "name": "Nome",
+      "email": "Email",
+      "accessCode": "Codice Accesso",
+      "margin": "Margine",
+      "status": "Stato",
+      "actions": "Azioni",
+      "active": "Attivo",
+      "inactive": "Inattivo",
+      "viewDetails": "Vedi Dettagli",
+      "edit": "Modifica",
+      "sendEmail": "Invia Email",
+      "deactivate": "Disattiva",
+      "activate": "Attiva"
+    },
+    "clients": {
+      "title": "Tutti i Clienti",
+      "name": "Nome",
+      "email": "Email",
+      "phone": "Telefono",
+      "dealer": "Rivenditore",
+      "code": "Codice",
+      "direct": "Diretto"
+    },
+    "orders": {
+      "title": "Tutti gli Ordini"
+    },
+    "commissions": {
+      "title": "Commissioni",
+      "order": "Ordine"
+    },
+    "pricing": {
+      "title": "Prezzi Prodotti",
+      "window1": "Finestra 1 anta",
+      "window2": "Finestra 2 ante",
+      "balconyDoor": "Porta balcone",
+      "entryPvc": "Porta ingresso PVC",
+      "entryAlu": "Porta ingresso Alluminio",
+      "profile": "Profilo",
+      "controlTitle": "Controllo Prezzi",
+      "controlDesc": "Stabilisci i prezzi base per tutti i prodotti"
+    },
+    "settings": {
+      "title": "Impostazioni Sistema",
+      "profileSeries": "Serie Profili",
+      "profileSeriesDesc": "Configura le serie di profili disponibili",
+      "configure": "Configura",
+      "glassTypes": "Tipi Vetro",
+      "glassTypesDesc": "Gestisci i tipi di vetro e le proprietà",
+      "colorPalette": "Tavolozza Colori",
+      "colorPaletteDesc": "Amministra i colori disponibili per interno/esterno"
+    }
+  },
+  "print": {
+    "subtitle": "Preventivo Serramenti",
+    "offerTitle": "Preventivo",
+    "clientInfo": "Informazioni Cliente",
+    "dealerLabel": "Rivenditore",
+    "clientLabel": "Cliente",
+    "emailLabel": "Email",
+    "phoneLabel": "Telefono",
+    "productsList": "Lista Prodotti",
+    "colNr": "Nr.",
+    "colType": "Tipo",
+    "colDims": "Dimensioni",
+    "colQty": "Qtà",
+    "colArea": "Superficie",
+    "total": "Totale",
+    "configSummary": "Riepilogo Configurazione",
+    "profileSeries": "Serie Profilo",
+    "glass": "Vetro",
+    "interiorColor": "Colore Interno",
+    "exteriorColor": "Colore Esterno",
+    "hardware": "Ferramenta",
+    "selectedAccessories": "Accessori Selezionati",
+    "additionalServices": "Servizi Aggiuntivi",
+    "transport": "Trasporto",
+    "installIncluded": "Installazione Inclusa",
+    "notes": "Note",
+    "priceSummary": "Riepilogo Prezzo",
+    "colProduct": "Prodotto",
+    "colUnitPrice": "Prezzo Unitario",
+    "colTotal": "Totale",
+    "install": "Installazione",
+    "discount": "Sconto",
+    "vat": "IVA",
+    "grandTotal": "TOTALE FINALE",
+    "footer": {
+      "validity": "Il preventivo è valido per 30 giorni dalla data di emissione.",
+      "estimate": "I prezzi sono stimati e possono variare in base alle dimensioni esatte e alle specifiche tecniche finali."
+    },
+    "productNames": {
+      "window_1_canat": "Finestra 1 anta",
+      "window_2_canate": "Finestra 2 ante",
+      "window_3_canate": "Finestra 3 ante",
+      "window_fix": "Finestra Fissa",
+      "usa_balcon_1": "Porta balcone 1 anta",
+      "usa_balcon_2": "Porta balcone 2 ante",
+      "usa_intrare_pvc": "Porta ingresso PVC",
+      "usa_intrare_aluminiu": "Porta ingresso Alluminio"
+    }
+  },
+  "landing": {
+    "authButton": "Accedi",
+    "h1Part1": "Calcolatore",
+    "h1Part2": "Serramenti",
+    "subtitle": "Configura finestre e porte, ottieni prezzi istantanei e preventivi PDF professionali.",
+    "clientTitle": "Cliente",
+    "clientDesc": "Configura prodotti e ricevi preventivi istantanei",
+    "seeMore": "Scopri di più",
+    "dealerTitle": "Rivenditore",
+    "dealerDesc": "Pannello completo con commissioni e prezzi personalizzati",
+    "adminTitle": "Fornitore",
+    "adminDesc": "Amministrazione completa del sistema",
+    "featureInstant": "Prezzo Istantaneo",
+    "featureTransparent": "Prezzi Trasparenti",
+    "featurePdf": "Preventivo PDF"
+  },
+  "clientLanding": {
+    "authButton": "Accesso Cliente",
+    "startNow": "Inizia Ora",
+    "badge": "Calcolatore Serramenti",
+    "h1": "Configura i Tuoi Serramenti in Minuti",
+    "subtitle": "Scegli finestre e porte, personalizza colori e materiali, e ricevi un preventivo PDF istantaneo.",
+    "calcPrice": "Calcola Prezzo",
+    "partnerCode": "Codice Partner (opzionale)",
+    "features": {
+      "calcInstant": "Calcolo Istantaneo",
+      "calcDesc": "Prezzo stimato in tempo reale, basato su dimensioni e opzioni",
+      "colors": "Colori Bicolore",
+      "colorsDesc": "Combinazioni interno/esterno per design personalizzato",
+      "pdf": "Preventivo PDF",
+      "pdfDesc": "Scarica il preventivo professionale con tutti i dettagli",
+      "transport": "Trasporto e Installazione",
+      "transportDesc": "Servizi completi di consegna e installazione"
+    },
+    "benefits": ["Prezzi trasparenti", "Configurazione visiva", "Preventivo PDF istantaneo", "Supporto dedicato"],
+    "whyTitle": "Perché scegliere noi?",
+    "whyDesc": "Oltre 15 anni di esperienza nel settore serramenti, prodotti certificati e garanzia estesa.",
+    "warrantyTitle": "Garanzia Estesa",
+    "warrantyDesc": "Tutti i prodotti beneficiano di garanzia fino a 10 anni.",
+    "deliveryTitle": "Consegna Rapida",
+    "deliveryDesc": "Termine di consegna di 14-21 giorni lavorativi dalla conferma dell'ordine."
+  },
+  "dealerLanding": {
+    "home": "Home",
+    "portalTitle": "Portale Rivenditore",
+    "programTitle": "Programma di Partnership",
+    "heroTitle": "Diventa Nostro Partner",
+    "heroDesc": "Accedi a prezzi speciali, commissioni automatiche e un pannello di controllo completo per la tua attività.",
+    "accessPortal": "Accedi al Portale",
+    "seeAsClient": "Vedi come Cliente",
+    "discountBadge": "Sconto Rivenditore",
+    "discountDesc": "Accedi a prezzi preferenziali e margini personalizzati per ogni cliente.",
+    "customMargin": "Margine Personalizzato",
+    "customMarginDesc": "Imposta il tuo margine per ogni prodotto e controlla il profitto.",
+    "dashboardCommissions": "Pannello Commissioni",
+    "brandedPdf": "Preventivi PDF Brandizzati",
+    "clientCodes": "Codici Cliente Unici",
+    "autoCommissions": "Commissioni Automatiche",
+    "prioritySupport": "Supporto Prioritario",
+    "trainingIncluded": "Formazione Inclusa",
+    "allYouNeed": "Tutto ciò che ti serve per vendere",
+    "createAccount": "Crea Account",
+    "createDesc": "Compila il modulo per ricevere l'accesso al portale rivenditore.",
+    "registerTitle": "Registrazione Rivenditore",
+    "testData": "Dati Test",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "contactQuestion": "Hai domande? Contattaci."
+  },
+  "supplierLanding": {
+    "home": "Home",
+    "adminPanel": "Pannello Admin",
+    "controlPanel": "Pannello di Controllo",
+    "adminTitle": "Pannello Fornitore",
+    "adminDesc": "Amministrazione completa di rivenditori, prezzi, ordini e commissioni.",
+    "accessAdmin": "Accedi Admin",
+    "seeAsDealer": "Vedi come Rivenditore",
+    "manageDealers": "Gestisci Rivenditori",
+    "manageDealersDesc": "Aggiungi, modifica e monitora tutti i rivenditori nella rete.",
+    "commissions": "Commissioni",
+    "commissionsDesc": "Monitora e approva le commissioni per ogni ordine.",
+    "productsPrices": "Prodotti e Prezzi",
+    "productsPricesDesc": "Configura i prezzi base per tutti i prodotti.",
+    "reports": "Rapporti",
+    "reportsDesc": "Visualizza rapporti dettagliati di vendite e performance.",
+    "notifications": "Notifiche",
+    "notificationsDesc": "Ricevi avvisi per nuovi ordini e attività dei rivenditori.",
+    "dataBackup": "Backup Dati",
+    "dataBackupDesc": "Backup automatico e sicuro di tutti i dati.",
+    "accessLevels": "Livelli di Accesso",
+    "adminMain": "Amministratore Principale",
+    "adminMainDesc": "Accesso completo a tutte le funzionalità del sistema.",
+    "salesManager": "Responsabile Vendite",
+    "techSupport": "Supporto Tecnico",
+    "liveView": "Vista Live",
+    "liveViewDesc": "Monitora l'attività in tempo reale di tutti i rivenditori.",
+    "realtimeUpdates": "Aggiornamenti in Tempo Reale",
+    "totalControl": "Controllo Totale",
+    "totalControlDesc": "Gestisci ogni aspetto della tua attività da un unico posto.",
+    "maxSecurity": "Sicurezza Massima",
+    "testDataAdmin": "Dati Test Admin",
+    "techSupportContact": "Supporto Tecnico: contact@core829.ro"
+  },
+  "login": {
+    "invalidCredentials": "Email o password errati",
+    "error": "Si è verificato un errore. Riprova.",
+    "roles": {
+      "supplier": "Fornitore",
+      "supplierDesc": "Amministrazione completa del sistema",
+      "dealer": "Rivenditore",
+      "dealerDesc": "Pannello vendite e commissioni",
+      "client": "Cliente",
+      "clientDesc": "Configurazione prodotti e preventivi"
+    },
+    "rolesFeatures": {
+      "supplier": ["Gestisci rivenditori", "Controllo prezzi", "Rapporti completi", "Backup dati"],
+      "dealer": ["Prezzi speciali", "Commissioni automatiche", "Preventivi PDF", "Pannello clienti"],
+      "client": ["Configurazione visiva", "Prezzo istantaneo", "Preventivo PDF", "Supporto dedicato"]
+    },
+    "selectRole": "Seleziona Ruolo",
+    "selectRoleDesc": "Scegli il tuo ruolo per continuare",
+    "backToSelect": "Torna alla selezione",
+    "authTitle": "Autenticazione",
+    "authSubtitle": "Inserisci le tue credenziali di accesso",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submitButton": "Accedi",
+    "testCredentials": "Credenziali Test",
+    "passwordLabel2": "Conferma Password"
   }
 }

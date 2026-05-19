@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { ProfileSeries, GlassType, Color } from "@/types";
 import { PROFILE_SERIES, GLASS_TYPES, COLORS, HARDWARE_BRANDS, HARDWARE_LEVELS, ACCESSORIES } from "@/data/joinery";
@@ -163,6 +164,7 @@ export function ColorsPanel({
   onInteriorChange,
   onExteriorChange,
 }: ColorsPanelProps) {
+  const { t } = useTranslation();
   const [colorFilter, setColorFilter] = useState<"all" | "standard" | "folie" | "vopsit">("all");
   const [showModal, setShowModal] = useState(false);
   const [modalSide, setModalSide] = useState<"interior" | "exterior">("interior");
@@ -252,7 +254,7 @@ export function ColorsPanel({
               style={{ backgroundColor: getCurrentColor("interior")?.hex || "#F5F5F0" }}
             />
             <div className="flex-1 text-left">
-              <div className="text-sm font-medium text-slate-700">{getCurrentColor("interior")?.name || "Selectează"}</div>
+              <div className="text-sm font-medium text-slate-700">{getCurrentColor("interior")?.name || t("panels.colors.select")}</div>
               <div className="text-xs text-slate-500">{getCurrentColor("interior")?.ral || "—"}</div>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -271,7 +273,7 @@ export function ColorsPanel({
               style={{ backgroundColor: getCurrentColor("exterior")?.hex || "#383E42" }}
             />
             <div className="flex-1 text-left">
-              <div className="text-sm font-medium text-slate-700">{getCurrentColor("exterior")?.name || "Selectează"}</div>
+              <div className="text-sm font-medium text-slate-700">{getCurrentColor("exterior")?.name || t("panels.colors.select")}</div>
               <div className="text-xs text-slate-500">{getCurrentColor("exterior")?.ral || "—"}</div>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -305,7 +307,7 @@ export function ColorsPanel({
                 <h3 className="text-lg font-semibold text-slate-800">
                   Alege Culoarea {modalSide === "interior" ? "Interior" : "Exterior"}
                 </h3>
-                <p className="text-sm text-slate-500">Selectează din {COLORS.length}+ culori disponibile</p>
+                <p className="text-sm text-slate-500">{t("panels.colors.availableCount", { count: COLORS.length })}</p>
               </div>
               <button
                 onClick={() => setShowModal(false)}

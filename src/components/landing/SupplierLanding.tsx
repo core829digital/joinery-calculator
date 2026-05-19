@@ -17,6 +17,7 @@ import {
   Database,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import Logo from "@/components/Logo";
 
 interface SupplierLandingProps {
@@ -25,60 +26,61 @@ interface SupplierLandingProps {
 
 export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const adminFeatures = [
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Gestionare Dealers",
-      description: "Adaugă, editează și dezactivează conturi de dealeri",
+      title: t("supplierLanding.manageDealers"),
+      description: t("supplierLanding.manageDealersDesc"),
       color: "blue",
     },
     {
       icon: <DollarSign className="w-6 h-6" />,
-      title: "Comisioane",
-      description: "Monitorizează și aprobă comisioanele dealerilor",
+      title: t("supplierLanding.commissions"),
+      description: t("supplierLanding.commissionsDesc"),
       color: "green",
     },
     {
       icon: <Package className="w-6 h-6" />,
-      title: "Produse & Prețuri",
-      description: "Actualizează catalogul și prețurile de bază",
+      title: t("supplierLanding.productsPrices"),
+      description: t("supplierLanding.productsPricesDesc"),
       color: "blue",
     },
     {
       icon: <BarChart3 className="w-6 h-6" />,
-      title: "Rapoarte",
-      description: "Vizualizează statistici și tendințe de vânzări",
+      title: t("supplierLanding.reports"),
+      description: t("supplierLanding.reportsDesc"),
       color: "orange",
     },
     {
       icon: <Bell className="w-6 h-6" />,
-      title: "Notificări",
-      description: "Alerte pentru comenzi noi și acțiuni importante",
+      title: t("supplierLanding.notifications"),
+      description: t("supplierLanding.notificationsDesc"),
       color: "red",
     },
     {
       icon: <Database className="w-6 h-6" />,
-      title: "Backup Date",
-      description: "Export și backup automat al datelor",
+      title: t("supplierLanding.dataBackup"),
+      description: t("supplierLanding.dataBackupDesc"),
       color: "teal",
     },
   ];
 
   const accessLevels = [
     {
-      role: "Admin Principal",
-      description: "Acces complet la toate funcțiile sistemului",
+      role: t("supplierLanding.adminMain"),
+      description: t("supplierLanding.adminMainDesc"),
       color: "from-blue-600 to-indigo-700",
     },
     {
-      role: "Manager Vânzări",
-      description: "Gestionează dealers și rapoarte de vânzări",
+      role: t("supplierLanding.salesManager"),
+      description: t("supplierLanding.salesManager"),
       color: "from-blue-600 to-cyan-700",
     },
     {
-      role: "Suport Tehnic",
-      description: "Asistență și configurări pentru clienți",
+      role: t("supplierLanding.techSupport"),
+      description: t("supplierLanding.techSupport"),
       color: "from-teal-600 to-emerald-700",
     },
   ];
@@ -101,13 +103,13 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
               onClick={() => router.push("/")}
               className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Acasă
+              {t("supplierLanding.home")}
             </button>
             <button
               onClick={onLoginClick}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Panou Administrator
+              {t("supplierLanding.adminPanel")}
             </button>
           </div>
         </div>
@@ -123,29 +125,27 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
               <Settings className="w-4 h-4" />
-              Panou de Control
+              {t("supplierLanding.controlPanel")}
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
-              Administrator
-              <span className="text-blue-600"> System</span>
+              {t("supplierLanding.adminTitle")}
             </h1>
             <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Gestionează dealerii, monitorizează vânzările și controlează
-              întreaga rețea de distribuție din un singur loc.
+              {t("supplierLanding.adminDesc")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={onLoginClick}
                 className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40"
               >
-                Accesează Admin
+                {t("supplierLanding.accessAdmin")}
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button
                 onClick={() => router.push("/dashboard/dealer")}
                 className="px-8 py-4 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl transition-all border border-slate-200 flex items-center justify-center gap-2"
               >
-                Vezi Ca Dealer
+                {t("supplierLanding.seeAsDealer")}
               </button>
             </div>
           </motion.div>
@@ -190,7 +190,7 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
             className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 md:p-12"
           >
             <h2 className="text-2xl font-bold text-white mb-8 text-center">
-              Nivele de Acces
+              {t("supplierLanding.accessLevels")}
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {accessLevels.map((level) => (
@@ -217,29 +217,27 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
                 <Eye className="w-6 h-6 text-blue-600" />
-                <h3 className="font-semibold text-slate-900">Vizualizare Live</h3>
+                <h3 className="font-semibold text-slate-900">{t("supplierLanding.liveView")}</h3>
               </div>
               <p className="text-slate-600 text-sm mb-4">
-                Monitorizează în timp real activitatea dealerilor, comenzile și
-                performanța vânzărilor.
+                {t("supplierLanding.liveViewDesc")}
               </p>
               <div className="flex items-center gap-2 text-blue-600 text-sm font-medium">
                 <TrendingUp className="w-4 h-4" />
-                Actualizări în timp real
+                {t("supplierLanding.realtimeUpdates")}
               </div>
             </div>
             <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
                 <Edit3 className="w-6 h-6 text-blue-600" />
-                <h3 className="font-semibold text-slate-900">Control Total</h3>
+                <h3 className="font-semibold text-slate-900">{t("supplierLanding.totalControl")}</h3>
               </div>
               <p className="text-slate-600 text-sm mb-4">
-                Modifică prețuri, activează/dezactivează dealeri și ajustează
-                comisioane instant.
+                {t("supplierLanding.totalControlDesc")}
               </p>
               <div className="flex items-center gap-2 text-blue-600 text-sm font-medium">
                 <Shield className="w-4 h-4" />
-                Securitate maximă
+                {t("supplierLanding.maxSecurity")}
               </div>
             </div>
           </motion.div>
@@ -252,11 +250,11 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
           >
             <div className="flex items-center gap-2 text-amber-400 mb-3">
               <Shield className="w-4 h-4" />
-              <span className="text-sm font-medium">Date de Test Admin</span>
+              <span className="text-sm font-medium">{t("supplierLanding.testDataAdmin")}</span>
             </div>
             <div className="text-sm text-slate-400 grid md:grid-cols-2 gap-2">
-              <p>Email: <span className="text-slate-200">{testAdmin.email}</span></p>
-              <p>Parolă: <span className="text-slate-200">{testAdmin.password}</span></p>
+              <p>{t("dealerLanding.emailLabel")}: <span className="text-slate-200">{testAdmin.email}</span></p>
+              <p>{t("dealerLanding.passwordLabel")}: <span className="text-slate-200">{testAdmin.password}</span></p>
             </div>
           </motion.div>
 
@@ -267,7 +265,7 @@ export default function SupplierLanding({ onLoginClick }: SupplierLandingProps) 
             className="mt-16 text-center"
           >
             <p className="text-slate-500 text-sm mb-4">
-              Suport tehnic: <a href="tel:+40745700363" className="text-blue-600 font-medium">+40 745 700 363</a>
+              {t("supplierLanding.techSupportContact")} <a href="tel:+40745700363" className="text-blue-600 font-medium">+40 745 700 363</a>
             </p>
             <p className="text-slate-400 text-sm">
               Core829 SRL • contact.core829@gmail.com • +40766668482

@@ -488,17 +488,17 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     
     // Send email if client email provided
     if (orderForm.clientEmail && activeWindow?.productType) {
-      const subject = `Solicitare Ofertă - ${activeWindow.productType.replace(/_/g, " ")} - ${activeWindow.width}x${activeWindow.height}mm`;
-      const body = `Bună ziua,\n\nAm solicitat o ofertă pentru următoarea configurație:\n\n` +
-        `PRODUS: ${activeWindow.productType.replace(/_/g, " ")}\n` +
-        `DIMENSIUNI: ${activeWindow.width} × ${activeWindow.height} mm\n` +
-        `PROFIL: ${profileSeries || "premium_82"}\n` +
-        `CULORI: Interior - ${interiorColor || "alb"}, Exterior - ${exteriorColor || "antracit"}\n` +
-        `STICLĂ: ${glassType || "tripan"}\n` +
-        `FERONERIE: ${hardwareBrand || "siegenia"}\n` +
-        (price ? `PREȚ ESTIMATIV: ${formatPrice(price.total)} (incl. TVA)\n` : "") +
-        `\nDATE CLIENT:\nNume: ${orderForm.clientName || "—"}\nEmail: ${orderForm.clientEmail}\nTelefon: ${orderForm.clientPhone || "—"}\n` +
-        `\nCu stimă,\nEchipa Core829 SRL\ncontact.core829@gmail.com\nTel: +40766668482`;
+      const subject = t("email.subjectWithProduct", { product: getProductDisplayName(activeWindow.productType) });
+      const body = `${t("email.greeting")},\n\n${t("email.bodyIntro")}:\n\n` +
+        `${t("email.productLabel")}: ${getProductDisplayName(activeWindow.productType)}\n` +
+        `${t("email.dimensionsLabel")}: ${activeWindow.width} × ${activeWindow.height} mm\n` +
+        `${t("email.profileLabel")}: ${profileSeries || "premium_82"}\n` +
+        `${t("email.colorsLabel")}: ${t("email.interior")} - ${interiorColor || "alb"}, ${t("email.exterior")} - ${exteriorColor || "antracit"}\n` +
+        `${t("email.glassLabel")}: ${glassType || "tripan"}\n` +
+        `${t("email.hardwareLabel")}: ${hardwareBrand || "siegenia"}\n` +
+        (price ? `${t("email.estimatedPriceLabel")}: ${formatPrice(price.total)} (incl. TVA)\n` : "") +
+        `\n${t("email.clientDataLabel")}:\n${t("email.name")}: ${orderForm.clientName || "—"}\n${t("email.emailLabel")}: ${orderForm.clientEmail}\n${t("email.phoneLabel")}: ${orderForm.clientPhone || "—"}\n` +
+        `\n${t("email.regards")},\n${t("email.signature")}\ncontact.core829@gmail.com\nTel: +40766668482`;
       
       window.location.href = `mailto:contact.core829@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
@@ -514,24 +514,24 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   // Filter items for quick filtering
   const filterOptions = {
     produse: [
-      { id: "window", label: "Ferestre" },
-      { id: "door", label: "Uși" },
-      { id: "balcony", label: "Balcon" },
-      { id: "harmonic", label: "Harmonic" },
+      { id: "window", label: t("configurator.filters.windows") },
+      { id: "door", label: t("configurator.filters.doors") },
+      { id: "balcony", label: t("configurator.filters.balcony") },
+      { id: "harmonic", label: t("configurator.filters.harmonic") },
     ],
     profil: [
-      { id: "premium_82", label: "Premium 82" },
-      { id: "premium_70", label: "Premium 70" },
-      { id: "standard_60", label: "Standard 60" },
+      { id: "premium_82", label: t("configurator.filters.premium82") },
+      { id: "premium_70", label: t("configurator.filters.premium70") },
+      { id: "standard_60", label: t("configurator.filters.standard60") },
     ],
     sticla: [
-      { id: "tripan", label: "Tripan" },
-      { id: "monopane", label: "Monopane" },
+      { id: "tripan", label: t("configurator.filters.tripan") },
+      { id: "monopane", label: t("configurator.filters.monopane") },
     ],
     feronerie: [
-      { id: "siegenia", label: "Siegenia" },
-      { id: "roto", label: "Roto" },
-      { id: "gu", label: "GU" },
+      { id: "siegenia", label: t("configurator.filters.siegenia") },
+      { id: "roto", label: t("configurator.filters.roto") },
+      { id: "gu", label: t("configurator.filters.gu") },
     ],
   };
 
@@ -655,7 +655,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               {configSashes.map((sash, idx) => {
                 const sashId = sash.side || String(idx);
                 const role = configPopupWin.sashRoles[sashId] || "active";
-                const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `Canat ${idx + 1}`;
+                const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `${t("configurator.configPopup.sashN")} ${idx + 1}`;
                 return (
                   <div
                     key={sashId}
@@ -734,7 +734,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               const sashId = sash.side || String(idx);
               const role = configPopupWin.sashRoles[sashId] || "active";
               const openingType = configPopupWin.sashOpeningTypes[sashId] || "normal";
-              const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `Canat ${idx + 1}`;
+              const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `${t("configurator.configPopup.sashN")} ${idx + 1}`;
               const openingOptions = role === "inactive"
                 ? [{ id: "normal", label: t("configurator.configPopup.openingNormal"), desc: t("configurator.configPopup.normalDesc"), disabled: false }]
                 : [
@@ -917,7 +917,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               <div className="flex items-center gap-2">
                 {MENU_ICONS[activeMenu]}
                 <h2 className="text-lg font-semibold text-slate-800">
-                  {MENU_CATEGORIES.find((c) => c.id === activeMenu)?.name || "Configurare"}
+                  {MENU_CATEGORIES.find((c) => c.id === activeMenu)?.name || t("configurator.configure")}
                 </h2>
               </div>
               <button
@@ -1503,7 +1503,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
           <div className="flex gap-3 mt-6">
             <button onClick={() => setShowInfoPopup(null)} className="flex-1 py-2 px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50">
-              Închide
+              {t("common.close")}
             </button>
           </div>
         </div>

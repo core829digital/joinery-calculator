@@ -158,13 +158,13 @@ export default function Window2D({
     switch (productType) {
       case "window_1_canat":
         return {
-          type: "1 canat",
+          type: t("window2d.type1Sash"),
           sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: openingSide as "left" | "right" }],
           isDoor: false,
         };
       case "window_2_canate":
         return {
-          type: "2 canate",
+          type: t("window2d.type2Sashes"),
           sashes: [
             { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "left" as const },
             { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "right" as const },
@@ -173,7 +173,7 @@ export default function Window2D({
         };
       case "window_3_canate":
         return {
-          type: "3 canate",
+          type: t("window2d.type3Sashes"),
           sashes: [
             { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 6 * SCALE) / 3, h: h - tocThickness * 2, side: "left" as const },
             { x: tocThickness + (w - tocThickness * 2) / 3 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 6 * SCALE) / 3, h: h - tocThickness * 2, side: "center" as const },
@@ -183,7 +183,7 @@ export default function Window2D({
         };
       case "window_fix":
         return {
-          type: "fereastră fixă",
+          type: t("window2d.typeFixed"),
           sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: "none" as const }],
           isDoor: false,
         };
@@ -191,13 +191,13 @@ export default function Window2D({
       case "usa_intrare_pvc":
       case "usa_intrare_aluminiu":
         return {
-          type: "ușă 1 canat",
+          type: t("window2d.typeDoor1"),
           sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: openingSide as "left" | "right" }],
           isDoor: true,
         };
       case "usa_balcon_2":
         return {
-          type: "ușă 2 canate",
+          type: t("window2d.typeDoor2"),
           sashes: [
             { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "left" as const },
             { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "right" as const },
@@ -206,12 +206,12 @@ export default function Window2D({
         };
       default:
         return {
-          type: "1 canat",
+          type: t("window2d.type1Sash"),
           sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: openingSide as "left" | "right" }],
           isDoor: false,
         };
     }
-  }, [productType, w, h, SCALE, tocThickness, openingSide]);
+  }, [productType, w, h, SCALE, tocThickness, openingSide, t]);
 
   const margin = Math.max(6, 14 * SCALE);
   const svgWidth = w + margin * 2;

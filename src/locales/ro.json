@@ -34,7 +34,8 @@
     "ml": "ml",
     "piece": "buc",
     "lei": "lei",
-    "comeSoon": "În curând"
+    "comeSoon": "În curând",
+    "saved": "Salvat"
   },
   "layout": {
     "title": "Core829 SRL - Calculator Tâmplărie",
@@ -68,6 +69,7 @@
     },
     "addWindow": "Adaugă",
     "addNewProduct": "Adaugă produs nou",
+    "configure": "Configurează",
     "sections": {
       "windows": "Ferestre",
       "doors": "Uși"
@@ -97,6 +99,7 @@
       "inactive": "Inactiv",
       "inactiveDesc": "Deschidere limitată",
       "fixed": "Fix",
+      "sashN": "Canat",
       "windowOptions": "Opțiuni Fereastră",
       "stulp": "Stulp",
       "montant": "Montant",
@@ -113,6 +116,20 @@
       "oscilobatantDesc": "Deschidere completă + aerisire",
       "batantDesc": "Doar deschidere completă",
       "inactiveWarning": "Canatul inactiv are deschidere limitată"
+    },
+    "filters": {
+      "windows": "Ferestre",
+      "doors": "Uși",
+      "balcony": "Balcon",
+      "harmonic": "Armonică",
+      "premium82": "Premium 82",
+      "premium70": "Premium 70",
+      "standard60": "Standard 60",
+      "tripan": "Tripan",
+      "monopane": "Monopane",
+      "siegenia": "Siegenia",
+      "roto": "Roto",
+      "gu": "GU"
     },
     "pricing": {
       "unitPrice": "Preț unitar",
@@ -200,11 +217,18 @@
     "oscilo": "OSCILO",
     "handle": "MANER",
     "hinge": "BALAMA",
+    "balama": "Balama",
     "clickElements": "Click pe elemente",
     "selected": "selectat",
     "glassType": "Tip sticlă",
     "width": "Lățime",
-    "height": "Înălțime"
+    "height": "Înălțime",
+    "type1Sash": "1 canat",
+    "type2Sashes": "2 canate",
+    "type3Sashes": "3 canate",
+    "typeFixed": "Fix",
+    "typeDoor1": "Ușă 1 canat",
+    "typeDoor2": "Ușă 2 canate"
   },
   "panels": {
     "productType": {
@@ -259,7 +283,9 @@
       "interior": "Interior",
       "exterior": "Exterior",
       "chooseColor": "Alege Culoarea",
+      "select": "Selectează culoarea",
       "availableColors": "culori disponibile",
+      "availableCount": "culori disponibile",
       "standard": "Standard",
       "standardFree": "Standard (gratuit)",
       "premium": "Premium",
@@ -336,23 +362,353 @@
   },
   "email": {
     "subject": "Solicitare Ofertă",
+    "subjectWithProduct": "Solicitare Ofertă - {{product}}",
     "greeting": "Bună ziua",
+    "bodyIntro": "Am solicitat o ofertă pentru următoarea configurație",
     "requestText": "Am solicitat o ofertă pentru următoarea configurație",
     "product": "PRODUS",
+    "productLabel": "Produs",
     "dimensions": "DIMENSIUNI",
+    "dimensionsLabel": "Dimensiuni",
     "profile": "PROFIL",
+    "profileLabel": "Profil",
     "colors": "CULORI",
+    "colorsLabel": "Culori",
     "interior": "Interior",
     "exterior": "Exterior",
     "glass": "STICLĂ",
+    "glassLabel": "Sticlă",
     "hardware": "FERONERIE",
+    "hardwareLabel": "Feronerie",
     "estimatedPrice": "PREȚ ESTIMATIV",
+    "estimatedPriceLabel": "Preț estimativ",
     "inclVat": "incl. TVA",
     "clientData": "DATE CLIENT",
+    "clientDataLabel": "Date client",
     "name": "Nume",
     "email": "Email",
+    "emailLabel": "Email",
     "phone": "Telefon",
+    "phoneLabel": "Telefon",
     "regards": "Cu stimă",
+    "signature": "Echipa Core829 SRL",
     "team": "Echipa Core829 SRL"
+  },
+  "dealer": {
+    "unauthorized": {
+      "title": "Acces Restricționat",
+      "desc": "Trebuie să fiți autentificat ca dealer pentru a accesa această pagină."
+    },
+    "tabs": {
+      "clients": "Clienți",
+      "pricing": "Prețuri"
+    },
+    "dashboard": {
+      "title": "Panou Dealer"
+    },
+    "pricing": {
+      "currentMargin": "Marjă Curentă",
+      "customMargin": "Marjă Personalizată",
+      "marginDesc": "Procentul adăugat peste prețul de bază pentru a calcula prețul clientului",
+      "basePrice": "Preț Bază",
+      "basePriceDesc": "Prețul standard stabilit de furnizor pentru acest produs",
+      "yourPrice": "Prețul Tău",
+      "yourPriceDesc": "Prețul după aplicarea marjei tale de dealer",
+      "clientPrice": "Preț Client",
+      "clientPriceDesc": "Prețul final afișat clientului în oferta PDF",
+      "isolatedInfo": "Date Izolate",
+      "isolatedInfoDesc": "Prețurile și marjele tale sunt vizibile doar de tine și de furnizor. Alți dealeri nu au acces la datele tale."
+    },
+    "isolation": {
+      "title": "Izolare Date",
+      "dataIsolated": "Datele tale sunt complet izolate",
+      "noOtherDealers": "Alți dealeri nu pot vedea prețurile sau marjele tale",
+      "noSupplierPrices": "Nu poți vedea prețurile altor dealeri sau marjele furnizorului"
+    },
+    "configurator": {
+      "title": "Configurator",
+      "desc": "Deschide configuratorul pentru a crea oferte",
+      "openButton": "Deschide Configurator"
+    },
+    "clients": {
+      "title": "Clienții Mei",
+      "addClient": "Adaugă Client",
+      "empty": "Nu ai clienți încă. Adaugă primul client pentru a începe."
+    },
+    "orders": {
+      "title": "Comenzile Mele",
+      "empty": "Nu ai comenzi încă."
+    },
+    "stats": {
+      "title": "Statistici",
+      "totalClients": "Total Clienți",
+      "totalOrders": "Total Comenzi",
+      "revenue": "Venituri",
+      "pendingOrders": "Comenzi în Așteptare",
+      "commissions": "Comisioane",
+      "activeClients": "Clienți Activi"
+    },
+    "addClient": {
+      "title": "Adaugă Client Nou",
+      "name": "Nume Client",
+      "namePlaceholder": "Introdu numele clientului"
+    }
+  },
+  "supplier": {
+    "unauthorized": {
+      "title": "Acces Restricționat",
+      "desc": "Trebuie să fiți autentificat ca furnizor pentru a accesa această pagină."
+    },
+    "tabs": {
+      "dealers": "Dealeri",
+      "clients": "Clienți",
+      "orders": "Comenzi",
+      "commissions": "Comisioane",
+      "pricing": "Prețuri",
+      "settings": "Setări"
+    },
+    "admin": {
+      "title": "Panou Administrare",
+      "badge": "ADMIN"
+    },
+    "access": {
+      "title": "Acces Furnizor",
+      "seeDealers": "Vezi toți dealerii și performanțele lor",
+      "managePrices": "Gestionează prețurile și marjele pentru toți dealerii",
+      "approvedCommissions": "Comisioane aprobate și plată"
+    },
+    "dealers": {
+      "title": "Dealeri",
+      "addDealer": "Adaugă Dealer",
+      "name": "Nume",
+      "email": "Email",
+      "accessCode": "Cod Acces",
+      "margin": "Marjă",
+      "status": "Status",
+      "actions": "Acțiuni",
+      "active": "Activ",
+      "inactive": "Inactiv",
+      "viewDetails": "Vezi Detalii",
+      "edit": "Editează",
+      "sendEmail": "Trimite Email",
+      "deactivate": "Dezactivează",
+      "activate": "Activează"
+    },
+    "clients": {
+      "title": "Toți Clienții",
+      "name": "Nume",
+      "email": "Email",
+      "phone": "Telefon",
+      "dealer": "Dealer",
+      "code": "Cod",
+      "direct": "Direct"
+    },
+    "orders": {
+      "title": "Toate Comenzile"
+    },
+    "commissions": {
+      "title": "Comisioane",
+      "order": "Comandă"
+    },
+    "pricing": {
+      "title": "Prețuri Produse",
+      "window1": "Fereastră 1 canat",
+      "window2": "Fereastră 2 canate",
+      "balconyDoor": "Ușă balcon",
+      "entryPvc": "Ușă intrare PVC",
+      "entryAlu": "Ușă intrare Aluminiu",
+      "profile": "Profil",
+      "controlTitle": "Control Prețuri",
+      "controlDesc": "Stabilește prețurile de bază pentru toate produsele"
+    },
+    "settings": {
+      "title": "Setări Sistem",
+      "profileSeries": "Serii Profile",
+      "profileSeriesDesc": "Configurează seriile de profile disponibile",
+      "configure": "Configurează",
+      "glassTypes": "Tipuri Sticlă",
+      "glassTypesDesc": "Gestionează tipurile de sticlă și proprietățile",
+      "colorPalette": "Paletă Culori",
+      "colorPaletteDesc": "Administrează culorile disponibile pentru interior/exterior"
+    }
+  },
+  "print": {
+    "subtitle": "Ofertă Tâmplărie",
+    "offerTitle": "Ofertă",
+    "clientInfo": "Informații Client",
+    "dealerLabel": "Dealer",
+    "clientLabel": "Client",
+    "emailLabel": "Email",
+    "phoneLabel": "Telefon",
+    "productsList": "Lista Produse",
+    "colNr": "Nr.",
+    "colType": "Tip",
+    "colDims": "Dimensiuni",
+    "colQty": "Cant.",
+    "colArea": "Suprafață",
+    "total": "Total",
+    "configSummary": "Sumar Configurație",
+    "profileSeries": "Serie Profil",
+    "glass": "Sticlă",
+    "interiorColor": "Culoare Interior",
+    "exteriorColor": "Culoare Exterior",
+    "hardware": "Feronerie",
+    "selectedAccessories": "Accesorii Selectate",
+    "additionalServices": "Servicii Suplimentare",
+    "transport": "Transport",
+    "installIncluded": "Montaj Inclus",
+    "notes": "Observații",
+    "priceSummary": "Sumar Preț",
+    "colProduct": "Produs",
+    "colUnitPrice": "Preț Unitar",
+    "colTotal": "Total",
+    "install": "Montaj",
+    "discount": "Discount",
+    "vat": "TVA",
+    "grandTotal": "TOTAL FINAL",
+    "footer": {
+      "validity": "Oferta este valabilă 30 de zile de la data emiterii.",
+      "estimate": "Prețurile sunt estimative și pot varia în funcție de dimensiunile exacte și specificațiile tehnice finale."
+    },
+    "productNames": {
+      "window_1_canat": "Fereastră 1 canat",
+      "window_2_canate": "Fereastră 2 canate",
+      "window_3_canate": "Fereastră 3 canate",
+      "window_fix": "Fereastră Fixă",
+      "usa_balcon_1": "Ușă balcon 1 canat",
+      "usa_balcon_2": "Ușă balcon 2 canate",
+      "usa_intrare_pvc": "Ușă intrare PVC",
+      "usa_intrare_aluminiu": "Ușă intrare Aluminiu"
+    }
+  },
+  "landing": {
+    "authButton": "Autentificare",
+    "h1Part1": "Calculator",
+    "h1Part2": "Tâmplărie",
+    "subtitle": "Configurează ferestre și uși, obține prețuri instant și oferte PDF profesionale.",
+    "clientTitle": "Client",
+    "clientDesc": "Configurează produse și primește oferte instant",
+    "seeMore": "Vezi mai mult",
+    "dealerTitle": "Dealer",
+    "dealerDesc": "Panou complet cu comisioane și prețuri personalizate",
+    "adminTitle": "Furnizor",
+    "adminDesc": "Administrare completă a sistemului",
+    "featureInstant": "Preț Instant",
+    "featureTransparent": "Prețuri Transparente",
+    "featurePdf": "Ofertă PDF"
+  },
+  "clientLanding": {
+    "authButton": "Autentificare Client",
+    "startNow": "Începe Acum",
+    "badge": "Calculator Tâmplărie",
+    "h1": "Configurează Tâmplăria în Minute",
+    "subtitle": "Alege ferestrele și ușile, personalizează culorile și materialele, și primește o ofertă PDF instant.",
+    "calcPrice": "Calculează Preț",
+    "partnerCode": "Cod Partener (opțional)",
+    "features": {
+      "calcInstant": "Calcul Instant",
+      "calcDesc": "Preț estimativ în timp real, bazat pe dimensiuni și opțiuni",
+      "colors": "Culori Bicolore",
+      "colorsDesc": "Combinații interior/exterior pentru design personalizat",
+      "pdf": "Ofertă PDF",
+      "pdfDesc": "Descarcă oferta profesională cu toate detaliile",
+      "transport": "Transport & Montaj",
+      "transportDesc": "Servicii complete de livrare și instalare"
+    },
+    "benefits": ["Prețuri transparente", "Configurare vizuală", "Ofertă PDF instant", "Suport dedicat"],
+    "whyTitle": "De ce să ne alegi?",
+    "whyDesc": "Experiență de peste 15 ani în industria de tâmplărie, produse certificate și garanție extinsă.",
+    "warrantyTitle": "Garanție Extinsă",
+    "warrantyDesc": "Toate produsele beneficiază de garanție de până la 10 ani.",
+    "deliveryTitle": "Livrare Rapidă",
+    "deliveryDesc": "Termen de livrare de 14-21 zile lucrătoare de la confirmarea comenzii."
+  },
+  "dealerLanding": {
+    "home": "Acasă",
+    "portalTitle": "Portal Dealer",
+    "programTitle": "Programul de Parteneriat",
+    "heroTitle": "Devino Partenerul Nostru",
+    "heroDesc": "Accesează prețuri speciale, comisioane automate și un panou de control complet pentru afacerea ta.",
+    "accessPortal": "Accesează Portalul",
+    "seeAsClient": "Vezi ca și Client",
+    "discountBadge": "Discount Dealer",
+    "discountDesc": "Accesează prețuri preferențiale și marje personalizate pentru fiecare client.",
+    "customMargin": "Marjă Personalizată",
+    "customMarginDesc": "Setează marja ta pentru fiecare produs și controlează profitul.",
+    "dashboardCommissions": "Panou Comisioane",
+    "brandedPdf": "Oferte PDF Branduite",
+    "clientCodes": "Coduri Client Unice",
+    "autoCommissions": "Comisioane Automate",
+    "prioritySupport": "Suport Prioritar",
+    "trainingIncluded": "Training Inclus",
+    "allYouNeed": "Tot ce ai nevoie pentru a vinde",
+    "createAccount": "Creează Cont",
+    "createDesc": "Completează formularul pentru a primi acces la portalul de dealer.",
+    "registerTitle": "Înregistrare Dealer",
+    "testData": "Date Test",
+    "emailLabel": "Email",
+    "passwordLabel": "Parolă",
+    "contactQuestion": "Ai întrebări? Contactează-ne."
+  },
+  "supplierLanding": {
+    "home": "Acasă",
+    "adminPanel": "Panou Admin",
+    "controlPanel": "Panou de Control",
+    "adminTitle": "Panou Furnizor",
+    "adminDesc": "Administrare completă a dealerilor, prețurilor, comenzilor și comisioanelor.",
+    "accessAdmin": "Accesează Admin",
+    "seeAsDealer": "Vezi ca și Dealer",
+    "manageDealers": "Gestionează Dealeri",
+    "manageDealersDesc": "Adaugă, editează și monitorizează toți dealerii din rețea.",
+    "commissions": "Comisioane",
+    "commissionsDesc": "Urmărește și aprobă comisioanele pentru fiecare comandă.",
+    "productsPrices": "Produse & Prețuri",
+    "productsPricesDesc": "Configurează prețurile de bază pentru toate produsele.",
+    "reports": "Rapoarte",
+    "reportsDesc": "Vizualizează rapoarte detaliate de vânzări și performanță.",
+    "notifications": "Notificări",
+    "notificationsDesc": "Primește alerte pentru comenzi noi și activitate dealeri.",
+    "dataBackup": "Backup Date",
+    "dataBackupDesc": "Backup automat și securizat al tuturor datelor.",
+    "accessLevels": "Niveluri de Acces",
+    "adminMain": "Administrator Principal",
+    "adminMainDesc": "Acces complet la toate funcțiile sistemului.",
+    "salesManager": "Manager Vânzări",
+    "techSupport": "Suport Tehnic",
+    "liveView": "Vizualizare Live",
+    "liveViewDesc": "Monitorizează activitatea în timp real a tuturor dealerilor.",
+    "realtimeUpdates": "Actualizări în Timp Real",
+    "totalControl": "Control Total",
+    "totalControlDesc": "Gestionează fiecare aspect al afacerii tale dintr-un singur loc.",
+    "maxSecurity": "Securitate Maximă",
+    "testDataAdmin": "Date Test Admin",
+    "techSupportContact": "Suport Tehnic: contact@core829.ro"
+  },
+  "login": {
+    "invalidCredentials": "Email sau parolă incorectă",
+    "error": "A apărut o eroare. Încearcă din nou.",
+    "roles": {
+      "supplier": "Furnizor",
+      "supplierDesc": "Administrare completă a sistemului",
+      "dealer": "Dealer",
+      "dealerDesc": "Panou de vânzări și comisioane",
+      "client": "Client",
+      "clientDesc": "Configurare produse și oferte"
+    },
+    "rolesFeatures": {
+      "supplier": ["Gestionează dealeri", "Control prețuri", "Rapoarte complete", "Backup date"],
+      "dealer": ["Prețuri speciale", "Comisioane automate", "Oferte PDF", "Panou clienți"],
+      "client": ["Configurare vizuală", "Preț instant", "Ofertă PDF", "Suport dedicat"]
+    },
+    "selectRole": "Selectează Rolul",
+    "selectRoleDesc": "Alege rolul tău pentru a continua",
+    "backToSelect": "Înapoi la selecție",
+    "authTitle": "Autentificare",
+    "authSubtitle": "Introdu datele tale de acces",
+    "emailLabel": "Email",
+    "passwordLabel": "Parolă",
+    "submitButton": "Autentificare",
+    "testCredentials": "Date Test",
+    "passwordLabel2": "Confirmă Parola"
   }
 }

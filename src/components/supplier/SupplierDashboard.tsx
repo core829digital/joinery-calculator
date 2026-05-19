@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useSupplierData } from "@/hooks/useDataIsolation";
+import { useTranslation } from "@/lib/i18n";
 import {
   Users,
   Package,
@@ -32,6 +33,7 @@ export default function SupplierDashboard() {
     deactivateDealer,
     updateDealerMargin,
   } = useSupplierData();
+  const { t } = useTranslation();
   
   const [activeTab, setActiveTab] = useState<SupplierTab>("dealers");
 
@@ -39,20 +41,20 @@ export default function SupplierDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-white mb-2">Acces Neautorizat</h2>
-          <p className="text-slate-400">Nu ai permisiunea să accesezi acest panou de admin.</p>
+          <h2 className="text-xl font-semibold text-white mb-2">{t("supplier.unauthorized.title")}</h2>
+          <p className="text-slate-400">{t("supplier.unauthorized.desc")}</p>
         </div>
       </div>
     );
   }
 
   const tabs = [
-    { id: "dealers" as SupplierTab, label: "Dealer Parteneri", icon: Users, count: allDealers.length },
-    { id: "clients" as SupplierTab, label: "Clienți", icon: Package, count: allClients.length },
-    { id: "orders" as SupplierTab, label: "Toate Comenzile", icon: BarChart3, count: allOrders.length },
-    { id: "commissions" as SupplierTab, label: "Comisioane", icon: DollarSign, count: allCommissions.length },
-    { id: "pricing" as SupplierTab, label: "Prețuri Bază", icon: Settings },
-    { id: "settings" as SupplierTab, label: "Setări", icon: TrendingUp },
+    { id: "dealers" as SupplierTab, label: t("supplier.tabs.dealers"), icon: Users, count: allDealers.length },
+    { id: "clients" as SupplierTab, label: t("supplier.tabs.clients"), icon: Package, count: allClients.length },
+    { id: "orders" as SupplierTab, label: t("supplier.tabs.orders"), icon: BarChart3, count: allOrders.length },
+    { id: "commissions" as SupplierTab, label: t("supplier.tabs.commissions"), icon: DollarSign, count: allCommissions.length },
+    { id: "pricing" as SupplierTab, label: t("supplier.tabs.pricing"), icon: Settings },
+    { id: "settings" as SupplierTab, label: t("supplier.tabs.settings"), icon: TrendingUp },
   ];
 
   const formatPrice = (price: number) => {
@@ -73,7 +75,7 @@ export default function SupplierDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">
-                Panou Administrator
+                {t("supplier.admin.title")}
               </h1>
               <p className="text-slate-400 text-sm">
                 SC Core829 SRL • Building Tomorrow's Software Today
@@ -82,7 +84,7 @@ export default function SupplierDashboard() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 rounded-full">
                 <Shield className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-green-400">Acces Admin</span>
+                <span className="text-sm text-green-400">{t("supplier.admin.badge")}</span>
               </div>
             </div>
           </div>
@@ -119,19 +121,19 @@ export default function SupplierDashboard() {
             </div>
 
             <div className="mt-4 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-blue-400 mb-3">Acces Total</h3>
+              <h3 className="text-sm font-medium text-blue-400 mb-3">{t("supplier.access.title")}</h3>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Vezi toți dealerii</span>
+                  <span>{t("supplier.access.seeDealers")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Gestionează prețuri</span>
+                  <span>{t("supplier.access.managePrices")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Comisioane aprobate</span>
+                  <span>{t("supplier.access.approvedCommissions")}</span>
                 </div>
               </div>
             </div>
@@ -145,9 +147,9 @@ export default function SupplierDashboard() {
                 className="bg-slate-800/50 rounded-xl p-6"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">Gestionare Dealeri</h2>
+                  <h2 className="text-xl font-semibold text-white">{t("supplier.dealers.title")}</h2>
                   <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">
-                    + Adaugă Dealer
+                    + {t("supplier.dealers.addDealer")}
                   </button>
                 </div>
 
@@ -155,12 +157,12 @@ export default function SupplierDashboard() {
                   <table className="w-full">
                     <thead>
                       <tr className="text-left text-sm text-slate-400 border-b border-slate-700">
-                        <th className="pb-3 font-medium">Nume</th>
-                        <th className="pb-3 font-medium">Email</th>
-                        <th className="pb-3 font-medium">Cod Acces</th>
-                        <th className="pb-3 font-medium">Marjă</th>
-                        <th className="pb-3 font-medium">Status</th>
-                        <th className="pb-3 font-medium">Acțiuni</th>
+                        <th className="pb-3 font-medium">{t("supplier.dealers.name")}</th>
+                        <th className="pb-3 font-medium">{t("common.email")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.dealers.accessCode")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.dealers.margin")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.dealers.status")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.dealers.actions")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700">
@@ -190,30 +192,30 @@ export default function SupplierDashboard() {
                           <td className="py-4">
                             {dealer.isActive ? (
                               <span className="flex items-center gap-1 text-green-400 text-sm">
-                                <CheckCircle className="w-4 h-4" /> Activ
+                                <CheckCircle className="w-4 h-4" /> {t("supplier.dealers.active")}
                               </span>
                             ) : (
                               <span className="flex items-center gap-1 text-red-400 text-sm">
-                                <XCircle className="w-4 h-4" /> Inactiv
+                                <XCircle className="w-4 h-4" /> {t("supplier.dealers.inactive")}
                               </span>
                             )}
                           </td>
                           <td className="py-4">
                             <div className="flex items-center gap-2">
-                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Vezi Detalii">
+                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title={t("supplier.dealers.viewDetails")}>
                                 <Eye className="w-4 h-4 text-slate-400" />
                               </button>
-                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Editează">
+                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title={t("common.edit")}>
                                 <Edit className="w-4 h-4 text-slate-400" />
                               </button>
-                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title="Trimite Email">
+                              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors" title={t("supplier.dealers.sendEmail")}>
                                 <Mail className="w-4 h-4 text-slate-400" />
                               </button>
                               {dealer.isActive ? (
                                 <button
                                   onClick={() => deactivateDealer(dealer.id)}
                                   className="p-2 hover:bg-red-500/20 rounded-lg transition-colors"
-                                  title="Dezactivează"
+                                  title={t("supplier.dealers.deactivate")}
                                 >
                                   <XCircle className="w-4 h-4 text-red-400" />
                                 </button>
@@ -221,7 +223,7 @@ export default function SupplierDashboard() {
                                 <button
                                   onClick={() => activateDealer(dealer.id)}
                                   className="p-2 hover:bg-green-500/20 rounded-lg transition-colors"
-                                  title="Activează"
+                                  title={t("supplier.dealers.activate")}
                                 >
                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                 </button>
@@ -242,17 +244,17 @@ export default function SupplierDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Toți Clienții</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.clients.title")}</h2>
 
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="text-left text-sm text-slate-400 border-b border-slate-700">
-                        <th className="pb-3 font-medium">Nume</th>
-                        <th className="pb-3 font-medium">Email</th>
-                        <th className="pb-3 font-medium">Telefon</th>
-                        <th className="pb-3 font-medium">Dealer</th>
-                        <th className="pb-3 font-medium">Cod</th>
+                        <th className="pb-3 font-medium">{t("supplier.clients.name")}</th>
+                        <th className="pb-3 font-medium">{t("common.email")}</th>
+                        <th className="pb-3 font-medium">{t("common.phone")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.clients.dealer")}</th>
+                        <th className="pb-3 font-medium">{t("supplier.clients.code")}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-700">
@@ -269,7 +271,7 @@ export default function SupplierDashboard() {
                                   {dealer.companyName || dealer.name}
                                 </span>
                               ) : (
-                                <span className="text-slate-500">Direct</span>
+                                <span className="text-slate-500">{t("supplier.clients.direct")}</span>
                               )}
                             </td>
                             <td className="py-4">
@@ -292,7 +294,7 @@ export default function SupplierDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Toate Comenzile</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.orders.title")}</h2>
 
                 <div className="space-y-3">
                   {allOrders.map((order) => {
@@ -340,7 +342,7 @@ export default function SupplierDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Gestionare Comisioane</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.commissions.title")}</h2>
 
                 <div className="space-y-3">
                   {allCommissions.map((commission) => (
@@ -350,7 +352,7 @@ export default function SupplierDashboard() {
                     >
                       <div>
                         <p className="font-medium text-white">{commission.dealerName}</p>
-                        <p className="text-sm text-slate-400">Comandă: {commission.orderId.slice(0, 8)}...</p>
+                        <p className="text-sm text-slate-400">{t("supplier.commissions.order")}: {commission.orderId.slice(0, 8)}...</p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
@@ -379,20 +381,20 @@ export default function SupplierDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Prețuri Bază (Furnizor)</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.pricing.title")}</h2>
 
                 <div className="grid gap-4">
                   {[
-                    { name: "Fereastră 1 Canat", basePrice: 120 },
-                    { name: "Fereastră 2 Canate", basePrice: 180 },
-                    { name: "Ușă Balcon", basePrice: 250 },
-                    { name: "Ușă Intrare PVC", basePrice: 320 },
-                    { name: "Ușă Intrare Aluminiu", basePrice: 450 },
+                    { name: t("supplier.pricing.window1"), basePrice: 120 },
+                    { name: t("supplier.pricing.window2"), basePrice: 180 },
+                    { name: t("supplier.pricing.balconyDoor"), basePrice: 250 },
+                    { name: t("supplier.pricing.entryPvc"), basePrice: 320 },
+                    { name: t("supplier.pricing.entryAlu"), basePrice: 450 },
                   ].map((product) => (
                     <div key={product.name} className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
                       <div>
                         <p className="font-medium text-white">{product.name}</p>
-                        <p className="text-sm text-slate-400">Profil: Ecoline 70</p>
+                        <p className="text-sm text-slate-400">{t("supplier.pricing.profile")}: Ecoline 70</p>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
@@ -410,9 +412,9 @@ export default function SupplierDashboard() {
                   <div className="flex items-start gap-3">
                     <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-blue-400">Control Total</p>
+                      <p className="font-medium text-blue-400">{t("supplier.pricing.controlTitle")}</p>
                       <p className="text-sm text-slate-400">
-                        Ca furnizor, ai acces la toate prețurile. Dealerii văd doar prețurile lor personalizate.
+                        {t("supplier.pricing.controlDesc")}
                       </p>
                     </div>
                   </div>
@@ -426,17 +428,17 @@ export default function SupplierDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Setări Sistem</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.settings.title")}</h2>
 
                 <div className="grid gap-4">
                   <div className="p-4 bg-slate-700/50 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">Profiluri Serii</p>
-                        <p className="text-sm text-slate-400">Gestionare categorii profil</p>
+                        <p className="font-medium text-white">{t("supplier.settings.profileSeries")}</p>
+                        <p className="text-sm text-slate-400">{t("supplier.settings.profileSeriesDesc")}</p>
                       </div>
                       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">
-                        Configurează
+                        {t("supplier.settings.configure")}
                       </button>
                     </div>
                   </div>
@@ -444,11 +446,11 @@ export default function SupplierDashboard() {
                   <div className="p-4 bg-slate-700/50 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">Sticlă Tipuri</p>
-                        <p className="text-sm text-slate-400">Configurare tipuri geamuri</p>
+                        <p className="font-medium text-white">{t("supplier.settings.glassTypes")}</p>
+                        <p className="text-sm text-slate-400">{t("supplier.settings.glassTypesDesc")}</p>
                       </div>
                       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">
-                        Configurează
+                        {t("supplier.settings.configure")}
                       </button>
                     </div>
                   </div>
@@ -456,11 +458,11 @@ export default function SupplierDashboard() {
                   <div className="p-4 bg-slate-700/50 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">Culori Paletă</p>
-                        <p className="text-sm text-slate-400">Gestionare culori RAL</p>
+                        <p className="font-medium text-white">{t("supplier.settings.colorPalette")}</p>
+                        <p className="text-sm text-slate-400">{t("supplier.settings.colorPaletteDesc")}</p>
                       </div>
                       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">
-                        Configurează
+                        {t("supplier.settings.configure")}
                       </button>
                     </div>
                   </div>

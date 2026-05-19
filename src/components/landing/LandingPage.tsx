@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Users, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import ClientLanding from "./ClientLanding";
 import DealerLanding from "./DealerLanding";
 import SupplierLanding from "./SupplierLanding";
@@ -14,6 +15,7 @@ type LandingView = "main" | "client" | "dealer" | "supplier";
 
 export default function LandingPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [view, setView] = useState<LandingView>("main");
 
   if (view !== "main") {
@@ -42,7 +44,7 @@ export default function LandingPage() {
               onClick={() => router.push("/sign-in")}
               className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
             >
-              Autentificare
+              {t("landing.authButton")}
             </button>
           </div>
         </div>
@@ -56,12 +58,11 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
-              Calculator Tâmplărie
-              <span className="text-primary-600"> Profesional</span>
+              {t("landing.h1Part1")}
+              <span className="text-primary-600"> {t("landing.h1Part2")}</span>
             </h1>
             <p className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Configurator intuitiv pentru ferestre și uși din PVC. Oferte
-              instant, direct din fabrică.
+              {t("landing.subtitle")}
             </p>
           </motion.div>
 
@@ -86,13 +87,13 @@ export default function LandingPage() {
                   <Users className="w-6 h-6 text-slate-600 group-hover:text-emerald-600 transition-colors" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                  Client
+                  {t("landing.clientTitle")}
                 </h3>
                 <p className="text-slate-600 text-sm mb-3">
-                  Prețuri standard, ofertare rapidă.
+                  {t("landing.clientDesc")}
                 </p>
                 <span className="text-emerald-600 font-medium text-sm flex items-center gap-2">
-                  Vezi mai mult
+                  {t("landing.seeMore")}
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -115,13 +116,13 @@ export default function LandingPage() {
                   <Building2 className="w-6 h-6 text-slate-600 group-hover:text-blue-600 transition-colors" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                  Dealer Partener
+                  {t("landing.dealerTitle")}
                 </h3>
                 <p className="text-slate-600 text-sm mb-3">
-                  Discount 15-25%, comisioane.
+                  {t("landing.dealerDesc")}
                 </p>
                 <span className="text-blue-600 font-medium text-sm flex items-center gap-2">
-                  Vezi mai mult
+                  {t("landing.seeMore")}
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -147,13 +148,13 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                  Administrator
+                  {t("landing.adminTitle")}
                 </h3>
                 <p className="text-slate-600 text-sm mb-3">
-                  Control total, rapoarte.
+                  {t("landing.adminDesc")}
                 </p>
                 <span className="text-purple-600 font-medium text-sm flex items-center gap-2">
-                  Vezi mai mult
+                  {t("landing.seeMore")}
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -182,7 +183,7 @@ export default function LandingPage() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Oferte instant
+              {t("landing.featureInstant")}
             </div>
             <div className="flex items-center gap-2">
               <svg
@@ -198,7 +199,7 @@ export default function LandingPage() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Prețuri transparen
+              {t("landing.featureTransparent")}
             </div>
             <div className="flex items-center gap-2">
               <svg
@@ -214,7 +215,7 @@ export default function LandingPage() {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              Export PDF
+              {t("landing.featurePdf")}
             </div>
           </motion.div>
         </div>

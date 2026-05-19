@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useDealerData } from "@/hooks/useDataIsolation";
+import { useTranslation } from "@/lib/i18n";
 import {
   Calculator,
   Users,
@@ -22,6 +23,7 @@ import { useAuth } from "@/context/AuthContext";
 type DealerTab = "configurator" | "clients" | "orders" | "pricing" | "stats";
 
 export default function DealerDashboard() {
+  const { t } = useTranslation();
   const { isAuthorized, dealer, clients, orders, stats, getDealerBasePrice, getClientPrice, updateMargin } = useDealerData();
   const { addClient: addClientToContext, user } = useAuth();
   const [activeTab, setActiveTab] = useState<DealerTab>("configurator");
@@ -34,19 +36,19 @@ export default function DealerDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-white mb-2">Acces Neautorizat</h2>
-          <p className="text-slate-400">Nu ai permisiunea să accesezi acest dashboard.</p>
+          <h2 className="text-xl font-semibold text-white mb-2">{t("dealer.unauthorized.title")}</h2>
+          <p className="text-slate-400">{t("dealer.unauthorized.desc")}</p>
         </div>
       </div>
     );
   }
 
   const tabs = [
-    { id: "configurator" as DealerTab, label: "Configurator", icon: Calculator },
-    { id: "clients" as DealerTab, label: "Clienți", icon: Users, count: clients.length },
-    { id: "orders" as DealerTab, label: "Comenzi", icon: Package, count: orders.length },
-    { id: "pricing" as DealerTab, label: "Prețuri", icon: DollarSign },
-    { id: "stats" as DealerTab, label: "Statistici", icon: TrendingUp },
+    { id: "configurator" as DealerTab, label: t("dealer.configurator.title"), icon: Calculator },
+    { id: "clients" as DealerTab, label: t("dealer.tabs.clients"), icon: Users, count: clients.length },
+    { id: "orders" as DealerTab, label: t("dealer.orders.title"), icon: Package, count: orders.length },
+    { id: "pricing" as DealerTab, label: t("dealer.tabs.pricing"), icon: DollarSign },
+    { id: "stats" as DealerTab, label: t("dealer.stats.title"), icon: TrendingUp },
   ];
 
   const formatPrice = (price: number) => {
@@ -67,7 +69,7 @@ export default function DealerDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">
-                Dashboard Dealer
+                {t("dealer.dashboard.title")}
               </h1>
               <p className="text-slate-400 text-sm">
                 {dealer?.companyName || dealer?.name} • Cod: {dealer?.accessCode}
@@ -75,7 +77,7 @@ export default function DealerDashboard() {
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-sm text-slate-400">Marjă curentă</p>
+                <p className="text-sm text-slate-400">{t("dealer.pricing.currentMargin")}</p>
                 <p className="text-lg font-semibold text-blue-400">{editingMargin}%</p>
               </div>
             </div>
@@ -113,19 +115,19 @@ export default function DealerDashboard() {
             </div>
 
             <div className="mt-4 bg-slate-800/50 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-slate-400 mb-3">Info Izolare</h3>
+              <h3 className="text-sm font-medium text-slate-400 mb-3">{t("dealer.isolation.title")}</h3>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Datele tale sunt izolate</span>
+                  <span>{t("dealer.isolation.dataIsolated")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Nu vezi alți dealeri</span>
+                  <span>{t("dealer.isolation.noOtherDealers")}</span>
                 </div>
                 <div className="flex items-center gap-2 text-green-400">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Nu vezi prețurile furnizorului</span>
+                  <span>{t("dealer.isolation.noSupplierPrices")}</span>
                 </div>
               </div>
             </div>
@@ -138,15 +140,15 @@ export default function DealerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">Configurator Produse</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">{t("dealer.configurator.title")}</h2>
                 <div className="text-center py-12">
                   <Calculator className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-                  <p className="text-slate-400 mb-4">Configurează ferestre și uși pentru clienții tăi</p>
+                  <p className="text-slate-400 mb-4">{t("dealer.configurator.desc")}</p>
                   <button
                     onClick={() => window.location.href = "/configurator?role=dealer"}
                     className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                   >
-                    Deschide Configurator
+                    {t("dealer.configurator.openButton")}
                   </button>
                 </div>
               </motion.div>
@@ -159,19 +161,19 @@ export default function DealerDashboard() {
                 className="bg-slate-800/50 rounded-xl p-6"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">Clienții Mei</h2>
+                  <h2 className="text-xl font-semibold text-white">{t("dealer.clients.title")}</h2>
                   <button 
                     onClick={() => setShowAddClient(true)}
                     className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg"
                   >
-                    + Adaugă Client
+                    + {t("dealer.clients.addClient")}
                   </button>
                 </div>
 
                 {clients.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
                     <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>Nu ai clienți încă.</p>
+                    <p>{t("dealer.clients.empty")}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -201,12 +203,12 @@ export default function DealerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Comenzile Mele</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.orders.title")}</h2>
 
                 {orders.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
                     <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>Nu ai comenzi încă.</p>
+                    <p>{t("dealer.orders.empty")}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -247,14 +249,14 @@ export default function DealerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Configurare Prețuri</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.tabs.pricing")}</h2>
 
                 <div className="bg-slate-700/50 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-slate-300">Marjă Personalizată</span>
+                      <span className="text-slate-300">{t("dealer.pricing.customMargin")}</span>
                       <p className="text-xs text-slate-400 mt-1">
-                        Această marjă se aplică la prețul de bază pentru a calcula prețul tău de vânzare.
+                        {t("dealer.pricing.marginDesc")}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -282,7 +284,7 @@ export default function DealerDashboard() {
                         )}
                       >
                         {marginSaved ? <CheckCircle className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-                        {marginSaved ? "Salvat!" : "Salvează"}
+                        {marginSaved ? t("common.saved") : t("common.save")}
                       </button>
                     </div>
                   </div>
@@ -291,24 +293,24 @@ export default function DealerDashboard() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-white">Preț Bază (Furnizor)</p>
-                      <p className="text-sm text-slate-400">Prețul standard fără marjă</p>
+                      <p className="font-medium text-white">{t("dealer.pricing.basePrice")}</p>
+                      <p className="text-sm text-slate-400">{t("dealer.pricing.basePriceDesc")}</p>
                     </div>
                     <p className="text-lg font-semibold text-green-400">100 EUR/m²</p>
                   </div>
 
                   <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-white">Prețul Tău (Dealer)</p>
-                      <p className="text-sm text-slate-400">Cu marja ta de {editingMargin}%</p>
+                      <p className="font-medium text-white">{t("dealer.pricing.yourPrice")}</p>
+                      <p className="text-sm text-slate-400">{t("dealer.pricing.yourPriceDesc", { margin: editingMargin })}</p>
                     </div>
                     <p className="text-lg font-semibold text-blue-400">{formatPrice(getDealerBasePrice(100))}/m²</p>
                   </div>
 
                   <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-white">Preț Client</p>
-                      <p className="text-sm text-slate-400">Cu discount client</p>
+                      <p className="font-medium text-white">{t("dealer.pricing.clientPrice")}</p>
+                      <p className="text-sm text-slate-400">{t("dealer.pricing.clientPriceDesc")}</p>
                     </div>
                     <p className="text-lg font-semibold text-white">{formatPrice(getClientPrice(100))}/m²</p>
                   </div>
@@ -317,12 +319,12 @@ export default function DealerDashboard() {
                 <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-amber-400">Informație Izolată</p>
-                      <p className="text-sm text-slate-400">
-                        Prețurile furnizorului sunt ascunse. Vezi doar prețul tău de achiziție.
-                      </p>
-                    </div>
+                  <div>
+                    <p className="font-medium text-amber-400">{t("dealer.pricing.isolatedInfo")}</p>
+                    <p className="text-sm text-slate-400">
+                      {t("dealer.pricing.isolatedInfoDesc")}
+                    </p>
+                  </div>
                   </div>
                 </div>
               </motion.div>
@@ -334,13 +336,13 @@ export default function DealerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-slate-800/50 rounded-xl p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">Statistici</h2>
+                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.stats.title")}</h2>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Users className="w-5 h-5 text-blue-400" />
-                      <span className="text-sm text-slate-400">Total Clienți</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.totalClients")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{stats?.totalClients || 0}</p>
                   </div>
@@ -348,7 +350,7 @@ export default function DealerDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Package className="w-5 h-5 text-green-400" />
-                      <span className="text-sm text-slate-400">Total Comenzi</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.totalOrders")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{stats?.totalOrders || 0}</p>
                   </div>
@@ -356,7 +358,7 @@ export default function DealerDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <DollarSign className="w-5 h-5 text-purple-400" />
-                      <span className="text-sm text-slate-400">Venituri</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.revenue")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{formatPrice(stats?.totalRevenue || 0)}</p>
                   </div>
@@ -364,7 +366,7 @@ export default function DealerDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Clock className="w-5 h-5 text-yellow-400" />
-                      <span className="text-sm text-slate-400">Comenzi În Așteptare</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.pendingOrders")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{stats?.pendingOrders || 0}</p>
                   </div>
@@ -372,7 +374,7 @@ export default function DealerDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <TrendingUp className="w-5 h-5 text-emerald-400" />
-                      <span className="text-sm text-slate-400">Comisioane</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.commissions")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{formatPrice(stats?.commissions || 0)}</p>
                   </div>
@@ -380,7 +382,7 @@ export default function DealerDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <CheckCircle className="w-5 h-5 text-cyan-400" />
-                      <span className="text-sm text-slate-400">Clienți Activi</span>
+                      <span className="text-sm text-slate-400">{t("dealer.stats.activeClients")}</span>
                     </div>
                     <p className="text-2xl font-bold text-white">{stats?.activeClients || 0}</p>
                   </div>
@@ -395,7 +397,7 @@ export default function DealerDashboard() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-white">Adaugă Client Nou</h2>
+              <h2 className="text-xl font-bold text-white">{t("dealer.addClient.title")}</h2>
               <button onClick={() => setShowAddClient(false)} className="p-2 hover:bg-slate-700 rounded-lg">
                 <X className="w-5 h-5 text-slate-400" />
               </button>
@@ -403,17 +405,17 @@ export default function DealerDashboard() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Nume Client</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">{t("dealer.addClient.name")}</label>
                 <input
                   type="text"
                   value={newClient.name}
                   onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
                   className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
-                  placeholder="Numele clientului"
+                  placeholder={t("dealer.addClient.namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">{t("email.email")}</label>
                 <input
                   type="email"
                   value={newClient.email}
@@ -423,7 +425,7 @@ export default function DealerDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Telefon</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">{t("email.phone")}</label>
                 <input
                   type="tel"
                   value={newClient.phone}
@@ -439,7 +441,7 @@ export default function DealerDashboard() {
                 onClick={() => setShowAddClient(false)}
                 className="flex-1 py-2 px-4 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-700"
               >
-                Anulează
+                {t("common.cancel")}
               </button>
               <button
                 onClick={() => {
@@ -461,7 +463,7 @@ export default function DealerDashboard() {
                 className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Adaugă
+                {t("common.add")}
               </button>
             </div>
           </div>

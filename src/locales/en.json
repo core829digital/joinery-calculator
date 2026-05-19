@@ -34,7 +34,8 @@
     "ml": "lm",
     "piece": "pcs",
     "lei": "RON",
-    "comeSoon": "Coming soon"
+    "comeSoon": "Coming soon",
+    "saved": "Saved"
   },
   "layout": {
     "title": "Core829 SRL - Joinery Calculator",
@@ -68,6 +69,7 @@
     },
     "addWindow": "Add",
     "addNewProduct": "Add new product",
+    "configure": "Configure",
     "sections": {
       "windows": "Windows",
       "doors": "Doors"
@@ -97,6 +99,7 @@
       "inactive": "Inactive",
       "inactiveDesc": "Limited opening",
       "fixed": "Fixed",
+      "sashN": "Sash",
       "windowOptions": "Window Options",
       "stulp": "Mullion",
       "montant": "Transom",
@@ -113,6 +116,20 @@
       "oscilobatantDesc": "Full opening + ventilation",
       "batantDesc": "Full opening only",
       "inactiveWarning": "Inactive sash has limited opening"
+    },
+    "filters": {
+      "windows": "Windows",
+      "doors": "Doors",
+      "balcony": "Balcony",
+      "harmonic": "Harmonic",
+      "premium82": "Premium 82",
+      "premium70": "Premium 70",
+      "standard60": "Standard 60",
+      "tripan": "Tripane",
+      "monopane": "Monopane",
+      "siegenia": "Siegenia",
+      "roto": "Roto",
+      "gu": "GU"
     },
     "pricing": {
       "unitPrice": "Unit price",
@@ -200,11 +217,18 @@
     "oscilo": "TILT",
     "handle": "HANDLE",
     "hinge": "HINGE",
+    "balama": "Hinge",
     "clickElements": "Click on elements",
     "selected": "selected",
     "glassType": "Glass type",
     "width": "Width",
-    "height": "Height"
+    "height": "Height",
+    "type1Sash": "1 sash",
+    "type2Sashes": "2 sashes",
+    "type3Sashes": "3 sashes",
+    "typeFixed": "Fixed",
+    "typeDoor1": "Door 1 leaf",
+    "typeDoor2": "Door 2 leaves"
   },
   "panels": {
     "productType": {
@@ -259,7 +283,9 @@
       "interior": "Interior",
       "exterior": "Exterior",
       "chooseColor": "Choose Color",
+      "select": "Select color",
       "availableColors": "available colors",
+      "availableCount": "available colors",
       "standard": "Standard",
       "standardFree": "Standard (free)",
       "premium": "Premium",
@@ -336,23 +362,353 @@
   },
   "email": {
     "subject": "Quote Request",
+    "subjectWithProduct": "Quote Request - {{product}}",
     "greeting": "Good day",
+    "bodyIntro": "We have requested a quote for the following configuration",
     "requestText": "We have requested a quote for the following configuration",
     "product": "PRODUCT",
+    "productLabel": "Product",
     "dimensions": "DIMENSIONS",
+    "dimensionsLabel": "Dimensions",
     "profile": "PROFILE",
+    "profileLabel": "Profile",
     "colors": "COLORS",
+    "colorsLabel": "Colors",
     "interior": "Interior",
     "exterior": "Exterior",
     "glass": "GLASS",
+    "glassLabel": "Glass",
     "hardware": "HARDWARE",
+    "hardwareLabel": "Hardware",
     "estimatedPrice": "ESTIMATED PRICE",
+    "estimatedPriceLabel": "Estimated price",
     "inclVat": "incl. VAT",
     "clientData": "CLIENT DATA",
+    "clientDataLabel": "Client data",
     "name": "Name",
     "email": "Email",
+    "emailLabel": "Email",
     "phone": "Phone",
+    "phoneLabel": "Phone",
     "regards": "Best regards",
+    "signature": "Core829 SRL Team",
     "team": "Core829 SRL Team"
+  },
+  "dealer": {
+    "unauthorized": {
+      "title": "Access Restricted",
+      "desc": "You must be logged in as a dealer to access this page."
+    },
+    "tabs": {
+      "clients": "Clients",
+      "pricing": "Pricing"
+    },
+    "dashboard": {
+      "title": "Dealer Dashboard"
+    },
+    "pricing": {
+      "currentMargin": "Current Margin",
+      "customMargin": "Custom Margin",
+      "marginDesc": "Percentage added over base price to calculate client price",
+      "basePrice": "Base Price",
+      "basePriceDesc": "Standard price set by the supplier for this product",
+      "yourPrice": "Your Price",
+      "yourPriceDesc": "Price after applying your dealer margin",
+      "clientPrice": "Client Price",
+      "clientPriceDesc": "Final price shown to the client in the PDF quote",
+      "isolatedInfo": "Isolated Data",
+      "isolatedInfoDesc": "Your prices and margins are visible only to you and the supplier. Other dealers cannot see your data."
+    },
+    "isolation": {
+      "title": "Data Isolation",
+      "dataIsolated": "Your data is completely isolated",
+      "noOtherDealers": "Other dealers cannot see your prices or margins",
+      "noSupplierPrices": "You cannot see other dealers' prices or supplier margins"
+    },
+    "configurator": {
+      "title": "Configurator",
+      "desc": "Open the configurator to create quotes",
+      "openButton": "Open Configurator"
+    },
+    "clients": {
+      "title": "My Clients",
+      "addClient": "Add Client",
+      "empty": "You have no clients yet. Add your first client to get started."
+    },
+    "orders": {
+      "title": "My Orders",
+      "empty": "You have no orders yet."
+    },
+    "stats": {
+      "title": "Statistics",
+      "totalClients": "Total Clients",
+      "totalOrders": "Total Orders",
+      "revenue": "Revenue",
+      "pendingOrders": "Pending Orders",
+      "commissions": "Commissions",
+      "activeClients": "Active Clients"
+    },
+    "addClient": {
+      "title": "Add New Client",
+      "name": "Client Name",
+      "namePlaceholder": "Enter client name"
+    }
+  },
+  "supplier": {
+    "unauthorized": {
+      "title": "Access Restricted",
+      "desc": "You must be logged in as a supplier to access this page."
+    },
+    "tabs": {
+      "dealers": "Dealers",
+      "clients": "Clients",
+      "orders": "Orders",
+      "commissions": "Commissions",
+      "pricing": "Pricing",
+      "settings": "Settings"
+    },
+    "admin": {
+      "title": "Admin Panel",
+      "badge": "ADMIN"
+    },
+    "access": {
+      "title": "Supplier Access",
+      "seeDealers": "View all dealers and their performance",
+      "managePrices": "Manage prices and margins for all dealers",
+      "approvedCommissions": "Approved commissions and payment"
+    },
+    "dealers": {
+      "title": "Dealers",
+      "addDealer": "Add Dealer",
+      "name": "Name",
+      "email": "Email",
+      "accessCode": "Access Code",
+      "margin": "Margin",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "inactive": "Inactive",
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "sendEmail": "Send Email",
+      "deactivate": "Deactivate",
+      "activate": "Activate"
+    },
+    "clients": {
+      "title": "All Clients",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "dealer": "Dealer",
+      "code": "Code",
+      "direct": "Direct"
+    },
+    "orders": {
+      "title": "All Orders"
+    },
+    "commissions": {
+      "title": "Commissions",
+      "order": "Order"
+    },
+    "pricing": {
+      "title": "Product Prices",
+      "window1": "Single Casement Window",
+      "window2": "Double Casement Window",
+      "balconyDoor": "Balcony Door",
+      "entryPvc": "PVC Entry Door",
+      "entryAlu": "Aluminium Entry Door",
+      "profile": "Profile",
+      "controlTitle": "Price Control",
+      "controlDesc": "Set base prices for all products"
+    },
+    "settings": {
+      "title": "System Settings",
+      "profileSeries": "Profile Series",
+      "profileSeriesDesc": "Configure available profile series",
+      "configure": "Configure",
+      "glassTypes": "Glass Types",
+      "glassTypesDesc": "Manage glass types and properties",
+      "colorPalette": "Color Palette",
+      "colorPaletteDesc": "Manage available interior/exterior colors"
+    }
+  },
+  "print": {
+    "subtitle": "Joinery Quote",
+    "offerTitle": "Quote",
+    "clientInfo": "Client Information",
+    "dealerLabel": "Dealer",
+    "clientLabel": "Client",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "productsList": "Products List",
+    "colNr": "No.",
+    "colType": "Type",
+    "colDims": "Dimensions",
+    "colQty": "Qty",
+    "colArea": "Area",
+    "total": "Total",
+    "configSummary": "Configuration Summary",
+    "profileSeries": "Profile Series",
+    "glass": "Glass",
+    "interiorColor": "Interior Color",
+    "exteriorColor": "Exterior Color",
+    "hardware": "Hardware",
+    "selectedAccessories": "Selected Accessories",
+    "additionalServices": "Additional Services",
+    "transport": "Transport",
+    "installIncluded": "Installation Included",
+    "notes": "Notes",
+    "priceSummary": "Price Summary",
+    "colProduct": "Product",
+    "colUnitPrice": "Unit Price",
+    "colTotal": "Total",
+    "install": "Installation",
+    "discount": "Discount",
+    "vat": "VAT",
+    "grandTotal": "GRAND TOTAL",
+    "footer": {
+      "validity": "This quote is valid for 30 days from the date of issue.",
+      "estimate": "Prices are estimates and may vary based on exact dimensions and final technical specifications."
+    },
+    "productNames": {
+      "window_1_canat": "Single Casement Window",
+      "window_2_canate": "Double Casement Window",
+      "window_3_canate": "Triple Casement Window",
+      "window_fix": "Fixed Window",
+      "usa_balcon_1": "Balcony Door Single",
+      "usa_balcon_2": "Balcony Door Double",
+      "usa_intrare_pvc": "PVC Entry Door",
+      "usa_intrare_aluminiu": "Aluminium Entry Door"
+    }
+  },
+  "landing": {
+    "authButton": "Login",
+    "h1Part1": "Joinery",
+    "h1Part2": "Calculator",
+    "subtitle": "Configure windows and doors, get instant prices and professional PDF quotes.",
+    "clientTitle": "Client",
+    "clientDesc": "Configure products and receive instant quotes",
+    "seeMore": "See more",
+    "dealerTitle": "Dealer",
+    "dealerDesc": "Full dashboard with commissions and custom pricing",
+    "adminTitle": "Supplier",
+    "adminDesc": "Complete system administration",
+    "featureInstant": "Instant Pricing",
+    "featureTransparent": "Transparent Pricing",
+    "featurePdf": "PDF Quote"
+  },
+  "clientLanding": {
+    "authButton": "Client Login",
+    "startNow": "Start Now",
+    "badge": "Joinery Calculator",
+    "h1": "Configure Your Joinery in Minutes",
+    "subtitle": "Choose windows and doors, customize colors and materials, and receive an instant PDF quote.",
+    "calcPrice": "Calculate Price",
+    "partnerCode": "Partner Code (optional)",
+    "features": {
+      "calcInstant": "Instant Calculation",
+      "calcDesc": "Real-time estimated price based on dimensions and options",
+      "colors": "Bicolor Options",
+      "colorsDesc": "Interior/exterior combinations for custom design",
+      "pdf": "PDF Quote",
+      "pdfDesc": "Download professional quote with all details",
+      "transport": "Transport & Installation",
+      "transportDesc": "Complete delivery and installation services"
+    },
+    "benefits": ["Transparent pricing", "Visual configuration", "Instant PDF quote", "Dedicated support"],
+    "whyTitle": "Why Choose Us?",
+    "whyDesc": "Over 15 years of experience in the joinery industry, certified products and extended warranty.",
+    "warrantyTitle": "Extended Warranty",
+    "warrantyDesc": "All products come with up to 10 years warranty.",
+    "deliveryTitle": "Fast Delivery",
+    "deliveryDesc": "Delivery time of 14-21 working days from order confirmation."
+  },
+  "dealerLanding": {
+    "home": "Home",
+    "portalTitle": "Dealer Portal",
+    "programTitle": "Partnership Program",
+    "heroTitle": "Become Our Partner",
+    "heroDesc": "Access special prices, automatic commissions and a complete dashboard for your business.",
+    "accessPortal": "Access Portal",
+    "seeAsClient": "View as Client",
+    "discountBadge": "Dealer Discount",
+    "discountDesc": "Access preferential prices and custom margins for each client.",
+    "customMargin": "Custom Margin",
+    "customMarginDesc": "Set your margin for each product and control your profit.",
+    "dashboardCommissions": "Commissions Dashboard",
+    "brandedPdf": "Branded PDF Quotes",
+    "clientCodes": "Unique Client Codes",
+    "autoCommissions": "Automatic Commissions",
+    "prioritySupport": "Priority Support",
+    "trainingIncluded": "Training Included",
+    "allYouNeed": "Everything you need to sell",
+    "createAccount": "Create Account",
+    "createDesc": "Fill in the form to receive access to the dealer portal.",
+    "registerTitle": "Dealer Registration",
+    "testData": "Test Data",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "contactQuestion": "Have questions? Contact us."
+  },
+  "supplierLanding": {
+    "home": "Home",
+    "adminPanel": "Admin Panel",
+    "controlPanel": "Control Panel",
+    "adminTitle": "Supplier Panel",
+    "adminDesc": "Complete administration of dealers, prices, orders and commissions.",
+    "accessAdmin": "Access Admin",
+    "seeAsDealer": "View as Dealer",
+    "manageDealers": "Manage Dealers",
+    "manageDealersDesc": "Add, edit and monitor all dealers in the network.",
+    "commissions": "Commissions",
+    "commissionsDesc": "Track and approve commissions for each order.",
+    "productsPrices": "Products & Prices",
+    "productsPricesDesc": "Configure base prices for all products.",
+    "reports": "Reports",
+    "reportsDesc": "View detailed sales and performance reports.",
+    "notifications": "Notifications",
+    "notificationsDesc": "Receive alerts for new orders and dealer activity.",
+    "dataBackup": "Data Backup",
+    "dataBackupDesc": "Automatic and secure backup of all data.",
+    "accessLevels": "Access Levels",
+    "adminMain": "Main Administrator",
+    "adminMainDesc": "Full access to all system features.",
+    "salesManager": "Sales Manager",
+    "techSupport": "Technical Support",
+    "liveView": "Live View",
+    "liveViewDesc": "Monitor real-time activity of all dealers.",
+    "realtimeUpdates": "Real-time Updates",
+    "totalControl": "Total Control",
+    "totalControlDesc": "Manage every aspect of your business from one place.",
+    "maxSecurity": "Maximum Security",
+    "testDataAdmin": "Admin Test Data",
+    "techSupportContact": "Technical Support: contact@core829.ro"
+  },
+  "login": {
+    "invalidCredentials": "Incorrect email or password",
+    "error": "An error occurred. Please try again.",
+    "roles": {
+      "supplier": "Supplier",
+      "supplierDesc": "Complete system administration",
+      "dealer": "Dealer",
+      "dealerDesc": "Sales dashboard and commissions",
+      "client": "Client",
+      "clientDesc": "Product configuration and quotes"
+    },
+    "rolesFeatures": {
+      "supplier": ["Manage dealers", "Price control", "Complete reports", "Data backup"],
+      "dealer": ["Special prices", "Auto commissions", "PDF quotes", "Client dashboard"],
+      "client": ["Visual configuration", "Instant pricing", "PDF quote", "Dedicated support"]
+    },
+    "selectRole": "Select Role",
+    "selectRoleDesc": "Choose your role to continue",
+    "backToSelect": "Back to selection",
+    "authTitle": "Authentication",
+    "authSubtitle": "Enter your access credentials",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submitButton": "Login",
+    "testCredentials": "Test Credentials",
+    "passwordLabel2": "Confirm Password"
   }
 }

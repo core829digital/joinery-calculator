@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { Building2, Users, ShoppingCart, Lock, ArrowRight, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 import Logo from "@/components/Logo";
 
 type LoginRole = "supplier" | "dealer" | "client";
@@ -13,6 +14,7 @@ type LoginRole = "supplier" | "dealer" | "client";
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const { t } = useTranslation();
   const [selectedRole, setSelectedRole] = useState<LoginRole | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,10 +37,10 @@ export default function LoginPage() {
           router.push("/configurator");
         }
       } else {
-        setError("Credențiale invalide. Încercați din nou.");
+        setError(t("login.invalidCredentials"));
       }
 } catch {
-        setError("A apărut o eroare. Încercați din nou.");
+        setError(t("login.error"));
       } finally {
       setLoading(false);
     }
@@ -47,33 +49,48 @@ export default function LoginPage() {
   const roles = [
     {
       id: "supplier" as LoginRole,
-      name: "Furnizor / Administrator",
-      description: "Gestionează dealeri, prețuri și comenzi",
+      name: t("login.roles.supplier"),
+      description: t("login.roles.supplierDesc"),
       icon: <Building2 className="w-8 h-8" />,
       color: "from-purple-600 to-indigo-700",
       hoverColor: "hover:from-purple-500 hover:to-indigo-600",
       borderColor: "group-hover:border-purple-400",
-      features: ["Dashboard complet", "Gestionare dealeri", "Setare prețuri", "Comenzi și comisioane"],
+      features: [
+        t("login.rolesFeatures.supplier.0"),
+        t("login.rolesFeatures.supplier.1"),
+        t("login.rolesFeatures.supplier.2"),
+        t("login.rolesFeatures.supplier.3"),
+      ],
     },
     {
       id: "dealer" as LoginRole,
-      name: "Dealer Partener",
-      description: "Acces la configurator cu prețuri speciale",
+      name: t("login.roles.dealer"),
+      description: t("login.roles.dealerDesc"),
       icon: <Users className="w-8 h-8" />,
       color: "from-blue-600 to-cyan-700",
       hoverColor: "hover:from-blue-500 hover:to-cyan-600",
       borderColor: "group-hover:border-blue-400",
-      features: ["Configurator complet", "Prețuri dealer", "Comenzi clienți", "Comisioane"],
+      features: [
+        t("login.rolesFeatures.dealer.0"),
+        t("login.rolesFeatures.dealer.1"),
+        t("login.rolesFeatures.dealer.2"),
+        t("login.rolesFeatures.dealer.3"),
+      ],
     },
     {
       id: "client" as LoginRole,
-      name: "Client Final",
-      description: "Calculator și ofertare rapidă",
+      name: t("login.roles.client"),
+      description: t("login.roles.clientDesc"),
       icon: <ShoppingCart className="w-8 h-8" />,
       color: "from-emerald-600 to-teal-700",
       hoverColor: "hover:from-emerald-500 hover:to-teal-600",
       borderColor: "group-hover:border-emerald-400",
-      features: ["Calculator ferestre", "Ofertare instant", "Culori RAL complete", "Pregătire pentru montaj"],
+      features: [
+        t("login.rolesFeatures.client.0"),
+        t("login.rolesFeatures.client.1"),
+        t("login.rolesFeatures.client.2"),
+        t("login.rolesFeatures.client.3"),
+      ],
     },
   ];
 
@@ -105,8 +122,8 @@ export default function LoginPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold text-white">Selectați tipul de cont</h2>
-              <p className="text-slate-400 text-sm mt-1">Alegeți rolul care vă descrie cel mai bine</p>
+              <h2 className="text-xl font-semibold text-white">{t("login.selectRole")}</h2>
+              <p className="text-slate-400 text-sm mt-1">{t("login.selectRoleDesc")}</p>
             </div>
 
             <div className="grid gap-4">
@@ -156,7 +173,7 @@ export default function LoginPage() {
               className="mb-4 text-slate-400 hover:text-white flex items-center gap-2 text-sm"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
-              Înapoi la selectare
+              {t("login.backToSelect")}
             </button>
 
             <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700">
@@ -171,16 +188,16 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-white">
-                    Autentificare {roles.find((r) => r.id === selectedRole)?.name}
+                    {t("login.authTitle")} {roles.find((r) => r.id === selectedRole)?.name}
                   </h2>
-                  <p className="text-slate-400 text-sm">Introduceți credențialele</p>
+                  <p className="text-slate-400 text-sm">{t("login.authSubtitle")}</p>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                    Email
+                    {t("login.emailLabel")}
                   </label>
                   <div className="relative">
                     <input
@@ -197,7 +214,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                    Parolă
+                    {t("login.passwordLabel")}
                   </label>
                   <div className="relative">
                     <input
@@ -227,7 +244,7 @@ export default function LoginPage() {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
-                      Autentificare
+                      {t("login.submitButton")}
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -237,11 +254,11 @@ export default function LoginPage() {
               <div className="mt-6 p-4 bg-slate-700/30 rounded-xl">
                 <div className="flex items-center gap-2 text-amber-400 mb-2">
                   <Shield className="w-4 h-4" />
-                  <span className="text-sm font-medium">Credențiale de test</span>
+                  <span className="text-sm font-medium">{t("login.testCredentials")}</span>
                 </div>
                 <div className="text-xs text-slate-400 space-y-1">
-                  <p>Email: <span className="text-slate-300">{testCredentials[selectedRole].email}</span></p>
-                  <p>Parolă: <span className="text-slate-300">{testCredentials[selectedRole].password}</span></p>
+                  <p>{t("login.emailLabel")}: <span className="text-slate-300">{testCredentials[selectedRole].email}</span></p>
+                  <p>{t("login.passwordLabel")}: <span className="text-slate-300">{testCredentials[selectedRole].password}</span></p>
                 </div>
               </div>
             </div>
