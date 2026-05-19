@@ -1189,11 +1189,11 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           <div className="flex-1 flex flex-col overflow-hidden min-h-0">
           {/* 2D Preview - Always visible on mobile */}
           {(showPreview || isMobile) && (
-            <div className="flex-1 flex flex-col min-h-0 p-2">
+            <div className="flex-1 flex flex-col min-h-0">
               <div className="flex-1 flex flex-col min-h-0">
                 <div className="flex-1 flex flex-col min-h-0">
                   {/* Window Tabs */}
-                  <div className="flex items-center gap-1 mb-2 overflow-x-auto">
+                  <div className="flex items-center gap-1 mb-1 overflow-x-auto px-2 pt-1">
                     {windows.map((win, idx) => (
                       <button
                         key={win.id}
@@ -1253,15 +1253,15 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     </div>
                   ) : (
                     /* Multiple Windows */
-                    <div className="flex-1 flex items-stretch justify-start gap-6 min-w-0 overflow-x-auto px-6 py-1">
+                    <div className="flex-1 flex items-stretch justify-start gap-4 min-w-0 overflow-x-auto px-4">
                       {windows.map((win, idx) => {
                         const draft = draftDimensions[win.id] || { w: String(win.width), h: String(win.height) };
                         const hasInvalidDims = win.width <= 0 || win.height <= 0;
 
                         return (
-                        <div key={win.id} className={cn("flex-shrink flex flex-col items-center w-full max-w-[600px] min-h-0", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
+                        <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center w-full max-w-[600px] min-h-0", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                           {/* Per-Window Header */}
-                          <div className="flex items-center gap-2 mb-[5px] px-1">
+                          <div className="flex items-center gap-2 mb-1 px-1 flex-shrink-0">
                             <button
                               onClick={() => openConfigForWindow(idx)}
                               className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
@@ -1300,8 +1300,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             </button>
                           </div>
 
-                          {/* SVG Container - fills available space with 5px margins */}
-                          <div className="flex-1 w-full mx-2 my-[5px] flex items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-white min-h-0">
+                          {/* SVG Container - fills ALL available space, no wasted whitespace */}
+                          <div className="flex-1 w-full flex items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-white min-h-0">
                             {hasInvalidDims ? (
                               <div className="flex flex-col items-center justify-center text-center p-6">
                                 <AlertTriangle className="w-10 h-10 text-amber-500 mb-3" />
@@ -1334,7 +1334,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </div>
 
                           {/* Quantity Controls */}
-                          <div className="flex items-center gap-1 mt-[5px]">
+                          <div className="flex items-center gap-1 mt-1 flex-shrink-0">
                             <button 
                               onClick={() => {
                                 setWindows(prev => prev.map((w, i) => 

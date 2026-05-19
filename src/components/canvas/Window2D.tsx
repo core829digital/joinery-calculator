@@ -127,20 +127,24 @@ export default function Window2D({
   const handleColor = getHandleColor();
   const handleAccentColor = getHandleAccentColor();
 
-  // DYNAMIC scale — invers proporțional cu dimensiunile ferestrei
-  // Astfel toate ferestrele au aceeași dimensiune vizuală în container
-  // preserveAspectRatio="xMidYMid meet" nu mai distorsionează
-  const targetDisplaySize = 500;
-  const maxDim = Math.max(width, height, 1); // evită div by zero
-  const s = targetDisplaySize / maxDim;
+  // PROPORTIONAL scale — SVG viewBox matches real-world proportions
+  // Container CSS controls the visual size, SVG fills it via viewBox + preserveAspectRatio
+  // We use a fixed scale so that real dimensions are represented proportionally
+  const s = 0.8;
 
   const w = width * s;
   const h = height * s;
 
-  // GROSIME MĂRITĂ pentru toc și cercevea - stil CAD foarte pronunțat
-  const tocThickness = 55 * s;  // grosime proporțională cu fereastra
-  const sashThickness = 28 * s; // grosime proporțională cu fereastra
-  const glassGap = 6 * s; // spațiu mai mare pentru sticlă
+  // INTERACTIVE ELEMENT SIZES — with minimums for easy clicking
+  // All sizes are in SVG viewBox units (not pixels)
+  const tocThickness = Math.max(55, 55) * s;    // toc frame thickness
+  const sashThickness = Math.max(28, 28) * s;   // sash frame thickness
+  const glassGap = 6 * s;
+
+  // MINIMUM interactive hit areas (in viewBox units)
+  const minHandleSize = 12;    // minimum handle size for easy clicking
+  const minHingeSize = 8;      // minimum hinge size
+  const minThresholdH = 8;     // minimum threshold height
 
   const handleComponentHover = (component: WindowComponent | null) => {
     setHoveredComponent(component);
@@ -151,7 +155,7 @@ export default function Window2D({
       case "window_1_canat":
         return {
           type: "1 canat",
-          sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: openingSide as "left" | "right" | "none" }],
+          sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: "center" as const }],
           isDoor: false,
         };
       case "window_2_canate":
@@ -398,8 +402,8 @@ export default function Window2D({
     }
     
     const hy = handleYFromBottom(sash);
-    const handleW = 8 * s;
-    const handleH = 16 * s;
+    const handleW = Math.max(8 * s, minHandleSize);
+    const handleH = Math.max(16 * s, minHandleSize * 2);
 
     return (
       <g 
@@ -618,9 +622,9 @@ export default function Window2D({
                     <rect
                       x={sash.x - sashThickness + 1 * s}
                       y={sash.y + sash.h * 0.12}
-                      width={5 * s}
-                      height={10 * s}
-                      rx={1 * s}
+                      width={Math.max(5 * s, minHingeSize)}
+                      height={Math.max(10 * s, minHingeSize * 2)}
+                      rx={Math.max(1 * s, 2)}
                       fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
                       stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
                       strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
@@ -628,9 +632,9 @@ export default function Window2D({
                     <rect
                       x={sash.x - sashThickness + 1 * s}
                       y={sash.y + sash.h * 0.75}
-                      width={5 * s}
-                      height={10 * s}
-                      rx={1 * s}
+                      width={Math.max(5 * s, minHingeSize)}
+                      height={Math.max(10 * s, minHingeSize * 2)}
+                      rx={Math.max(1 * s, 2)}
                       fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
                       stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
                       strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
@@ -656,13 +660,13 @@ export default function Window2D({
               >
                 <rect
                   x={tocThickness - 1 * s}
-                  y={h - 5 * s}
+                  y={h - Math.max(5 * s, minThresholdH)}
                   width={w - tocThickness * 2 + 2 * s}
-                  height={5 * s}
+                  height={Math.max(5 * s, minThresholdH)}
                   fill={hoveredComponent === "prag" ? "#3B82F6" : "#374151"}
                   stroke={hoveredComponent === "prag" ? "#1D4ED8" : "#1F2937"}
                   strokeWidth={hoveredComponent === "prag" ? 0.8 : 0.4}
-                  rx={0.5 * s}
+                  rx={Math.max(0.5 * s, 2)}
                 />
               </g>
             )}
