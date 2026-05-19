@@ -566,7 +566,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const configPopupWin = configPopupWindowIdx !== null ? windows[configPopupWindowIdx] : null;
   const configSashes = configPopupWin
     ? (configPopupWin.productType === "window_1_canat" || configPopupWin.productType === "usa_balcon_1"
-      ? [{ side: "center" }]
+      ? [{ side: configPopupWin.openingSide || "right" }]
       : configPopupWin.productType === "window_fix"
       ? []
       : configPopupWin.productType === "window_3_canate"
