@@ -623,6 +623,28 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
           </div>
         </div>
 
+        {/* Reverse Opening Direction */}
+        <div className="p-4 border-b border-slate-100">
+          <label className="block text-sm font-medium text-slate-700 mb-2">Direcție Deschidere</label>
+          <button
+            onClick={() => {
+              const currentSide = configPopupWin.openingSide;
+              updateWindowField(configPopupWindowIdx, "openingSide", currentSide === "left" ? "right" : "left");
+            }}
+            className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-slate-200 hover:border-primary-500 hover:bg-primary-50 transition-all group"
+          >
+            <svg className="w-5 h-5 text-slate-500 group-hover:text-primary-600 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 1l4 4-4 4" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <path d="M7 23l-4-4 4-4" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
+            <span className="text-sm font-medium text-slate-700 group-hover:text-primary-700 transition-colors">
+              Inversează deschiderea ({configPopupWin.openingSide === "left" ? "Stânga" : "Dreapta"} → {configPopupWin.openingSide === "left" ? "Dreapta" : "Stânga"})
+            </span>
+          </button>
+        </div>
+
         {/* Visual Sash Selection */}
         {configSashes.length > 0 && (
           <div className="p-4 border-b border-slate-100">

@@ -157,7 +157,7 @@ export default function Window2D({
       case "window_1_canat":
         return {
           type: "1 canat",
-          sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: "center" as const }],
+          sashes: [{ x: tocThickness, y: tocThickness, w: w - tocThickness * 2, h: h - tocThickness * 2, side: openingSide as "left" | "right" }],
           isDoor: false,
         };
       case "window_2_canate":
@@ -621,26 +621,35 @@ export default function Window2D({
                     onMouseLeave={() => handleComponentHover(null)}
                     style={{ cursor: "pointer" }}
                   >
-                    <rect
-                      x={sash.x - sashThickness + 1 * SCALE}
-                      y={sash.y + sash.h * 0.12}
-                      width={Math.max(5 * SCALE, minHingeSize)}
-                      height={Math.max(10 * SCALE, minHingeSize * 2)}
-                      rx={Math.max(1 * SCALE, 2)}
-                      fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
-                      stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
-                      strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
-                    />
-                    <rect
-                      x={sash.x - sashThickness + 1 * SCALE}
-                      y={sash.y + sash.h * 0.75}
-                      width={Math.max(5 * SCALE, minHingeSize)}
-                      height={Math.max(10 * SCALE, minHingeSize * 2)}
-                      rx={Math.max(1 * SCALE, 2)}
-                      fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
-                      stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
-                      strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
-                    />
+                    {(() => {
+                      const hingeXPos = sash.side === "right" 
+                        ? sash.x + sash.w + sashThickness - 6 * SCALE 
+                        : sash.x - sashThickness + 1 * SCALE;
+                      return (
+                        <>
+                          <rect
+                            x={hingeXPos}
+                            y={sash.y + sash.h * 0.12}
+                            width={Math.max(5 * SCALE, minHingeSize)}
+                            height={Math.max(10 * SCALE, minHingeSize * 2)}
+                            rx={Math.max(1 * SCALE, 2)}
+                            fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
+                            stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
+                            strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
+                          />
+                          <rect
+                            x={hingeXPos}
+                            y={sash.y + sash.h * 0.75}
+                            width={Math.max(5 * SCALE, minHingeSize)}
+                            height={Math.max(10 * SCALE, minHingeSize * 2)}
+                            rx={Math.max(1 * SCALE, 2)}
+                            fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
+                            stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
+                            strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
+                          />
+                        </>
+                      );
+                    })()}
                   </g>
                 )}
 
