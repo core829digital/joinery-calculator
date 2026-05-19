@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import type { ProductType, Color, OpeningType } from "@/types";
 import { COLORS } from "@/data/joinery";
@@ -11,19 +12,6 @@ const COLOR_MAP: Record<string, string> = COLORS.reduce((acc, c) => {
   acc[c.id] = c.hex;
   return acc;
 }, {} as Record<string, string>);
-
-const COMPONENT_LABELS: Record<WindowComponent, string> = {
-  toc: "Toc (Rama)",
-  canat: "Canat",
-  sticla: "Sticlă",
-  baghete: "Baghete",
-  maner: "Maner",
-  balamale: "Balamale",
-  glaf: "Glaf",
-  prag: "Prag",
-  stulp: "Stulp",
-  montant: "Montant",
-};
 
 export type SashRole = "active" | "inactive" | "fixed";
 
@@ -90,7 +78,21 @@ export default function Window2D({
   glassType,
   hardwareBrand,
 }: Window2DProps) {
+  const { t } = useTranslation();
   const [hoveredComponent, setHoveredComponent] = useState<WindowComponent | null>(null);
+
+  const COMPONENT_LABELS: Record<WindowComponent, string> = {
+    toc: t("window2d.toc"),
+    canat: t("window2d.canat"),
+    sticla: t("window2d.sticla"),
+    baghete: t("window2d.baghete"),
+    maner: t("window2d.maner"),
+    balamale: t("window2d.balamale"),
+    glaf: t("window2d.glaf"),
+    prag: t("window2d.prag"),
+    stulp: t("window2d.stulp"),
+    montant: t("window2d.montant"),
+  };
 
   const getTocColor = () => {
     if (interiorColor && COLOR_MAP[interiorColor]) {
@@ -286,7 +288,7 @@ export default function Window2D({
           <line x1={leftX} y1={topY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
           <line x1={rightX} y1={topY} x2={leftX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
           <circle cx={centerX} cy={centerY} r={4 * SCALE} fill="none" stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
-          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={lineColor} fontWeight="bold">FIX</text>
+          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={lineColor} fontWeight="bold">{t("window2d.fixed")}</text>
         </g>
       );
     }
@@ -302,7 +304,7 @@ export default function Window2D({
           <circle cx={hingeX} cy={bottomY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
           <circle cx={centerX} cy={centerY} r={4.5 * SCALE} fill="#F59E0B" stroke="white" strokeWidth={0.8 * SCALE} />
           <text x={centerX - 3 * SCALE} y={centerY + 1.5 * SCALE} textAnchor="middle" fontSize={7 * SCALE} fill="white" fontWeight="bold">+</text>
-          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill="#F59E0B" fontWeight="bold">INACTIV</text>
+          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill="#F59E0B" fontWeight="bold">{t("window2d.inactive")}</text>
         </g>
       );
     }
@@ -319,7 +321,7 @@ export default function Window2D({
           <circle cx={hingeX} cy={topY} r={2 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.5 * SCALE} />
           <circle cx={hingeX} cy={bottomY} r={2 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.5 * SCALE} />
           <circle cx={centerX} cy={topY} r={2.5 * SCALE} fill="#8B5CF6" stroke="white" strokeWidth={0.5 * SCALE} />
-          <text x={centerX} y={topY - 6 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="#8B5CF6" fontWeight="bold">OSCILO</text>
+          <text x={centerX} y={topY - 6 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="#8B5CF6" fontWeight="bold">{t("window2d.oscilo")}</text>
         </g>
       );
     }
@@ -334,8 +336,8 @@ export default function Window2D({
         <circle cx={hingeX} cy={bottomY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
         <circle cx={hingeX} cy={centerY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
         <circle cx={handleXPos} cy={centerY} r={3 * SCALE} fill={secondaryColor} stroke="white" strokeWidth={0.8 * SCALE} />
-        <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={secondaryColor} fontWeight="bold">MANER</text>
-        <text x={hingeX} y={bottomY + 10 * SCALE} textAnchor={isLeft ? "start" : "end"} fontSize={4 * SCALE} fill={lineColor} fontWeight="600">BALAMA</text>
+        <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={secondaryColor} fontWeight="bold">{t("window2d.maner")}</text>
+        <text x={hingeX} y={bottomY + 10 * SCALE} textAnchor={isLeft ? "start" : "end"} fontSize={4 * SCALE} fill={lineColor} fontWeight="600">{t("window2d.balama")}</text>
       </g>
     );
   };
@@ -698,7 +700,7 @@ export default function Window2D({
                       style={{ cursor: "pointer" }}
                     >
                       <rect x={w / 2 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
+                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.stulp")}</text>
                       <circle cx={w / 2} cy={h - tocThickness - 6 * SCALE} r={2.5 * SCALE} fill={hoveredComponent === "stulp" ? "#60A5FA" : "#9CA3AF"} />
                     </g>
                   ) : (
@@ -710,7 +712,7 @@ export default function Window2D({
                     >
                       <rect x={w / 2 - 3 * SCALE} y={tocThickness} width={6 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
                       <rect x={w / 2 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
+                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.montant")}</text>
                       <circle cx={w / 2} cy={h - tocThickness - 6 * SCALE} r={2.5 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#9CA3AF"} />
                     </g>
                   )
@@ -721,8 +723,8 @@ export default function Window2D({
                       <>
                         <rect x={w / 3 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
                         <rect x={w * 2 / 3 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
-                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
+                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.stulp")}</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.stulp")}</text>
                       </>
                     ) : (
                       <>
@@ -730,8 +732,8 @@ export default function Window2D({
                         <rect x={w / 3 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
                         <rect x={w * 2 / 3 - 3 * SCALE} y={tocThickness} width={6 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
                         <rect x={w * 2 / 3 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
-                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
+                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.montant")}</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">{t("window2d.montant")}</text>
                       </>
                     )}
                   </>
@@ -777,18 +779,18 @@ export default function Window2D({
       <div className="px-2 py-1 bg-slate-50 border-t border-slate-100 flex items-center gap-2 text-[10px] flex-wrap">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-sm" style={{ background: `linear-gradient(180deg, ${tocColor} 0%, ${tocStrokeColor} 100%)` }}></div>
-          <span className="text-slate-600">Toc</span>
+          <span className="text-slate-600">{t("window2d.toc")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: '#E3F2FD', border: '1px solid #90CAF9' }}></div>
-          <span className="text-slate-600">Sticlă</span>
+          <span className="text-slate-600">{t("window2d.sticla")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: handleColor }}></div>
-          <span className="text-slate-600">Maner</span>
+          <span className="text-slate-600">{t("window2d.maner")}</span>
         </div>
         <div className="ml-auto text-primary-600">
-          <span className="font-medium">{hoveredComponent ? `${COMPONENT_LABELS[hoveredComponent]} selectat` : 'Click pe elemente'}</span>
+          <span className="font-medium">{hoveredComponent ? `${COMPONENT_LABELS[hoveredComponent]} ${t("window2d.selected")}` : t("window2d.clickElements")}</span>
         </div>
       </div>
     </div>

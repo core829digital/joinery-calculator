@@ -35,6 +35,7 @@ import {
 } from "@/components/panels/PricingPanels";
 import PrintLayout from "@/components/pdf/PrintLayout";
 import { calculatePrice, formatPrice } from "@/lib/pricing";
+import { useTranslation } from "@/lib/i18n";
 import {
   Layers,
   Frame,
@@ -104,6 +105,7 @@ const getProductDisplayName = (type: ProductType | null | undefined): string => 
 
 export default function DealerApp({ userRole = "dealer", clientCode, dealerId }: DealerAppProps) {
   const { addOrder } = useAuth();
+  const { t } = useTranslation();
   const [productType, setProductType] = useState<ProductType | null>(null);
   const [profileSeries, setProfileSeries] = useState<ProfileSeries | null>(null);
   const [interiorColor, setInteriorColor] = useState<Color | null>(null);
@@ -316,7 +318,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
   const handleSave = () => {
     if (!activeWindow?.productType) {
-      alert("Selectați un produs înainte de a salva!");
+      alert(t("configurator.warnings.selectProductBeforeSave"));
       return;
     }
 
@@ -352,7 +354,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     };
 
     addOrder(order);
-    alert("Configurație salvată ca proformă! Puteți continua cu configurarea sau trimite oferta.");
+    alert(t("configurator.warnings.configSaved"));
   };
 
   const handleSearch = useCallback((query: string) => {
@@ -389,31 +391,31 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
   const handleExportPDF = useCallback(() => {
     const winProductType = activeWindow?.productType;
     if (!winProductType) {
-      alert("Selectați un produs înainte de a exporta PDF!");
+      alert(t("configurator.warnings.selectProductBeforeExport"));
       return;
     }
     setShowPrintView(true);
-  }, [activeWindow?.productType]);
+  }, [activeWindow?.productType, t]);
 
   const handlePrint = useCallback(() => {
     const winProductType = activeWindow?.productType;
     if (!winProductType) {
-      alert("Selectați un produs înainte de a printa!");
+      alert(t("configurator.warnings.selectProductBeforePrint"));
       return;
     }
     setShowPrintView(true);
     setTimeout(() => {
       window.print();
     }, 500);
-  }, [activeWindow?.productType]);
+  }, [activeWindow?.productType, t]);
 
   const handleSendEmail = useCallback(() => {
     if (!activeWindow?.productType) {
-      alert("Selectați un produs înainte de a trimite email!");
+      alert(t("configurator.warnings.selectProductBeforeEmail"));
       return;
     }
     setShowOrderModal(true);
-  }, [activeWindow?.productType]);
+  }, [activeWindow?.productType, t]);
 
   const handleConfirmOrder = useCallback(() => {
     if (!activeWindow?.productType) return;
@@ -503,8 +505,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
     
     setShowOrderModal(false);
     setOrderForm({ clientName: "", clientEmail: "", clientPhone: "", notes: "" });
-    alert("Comanda a fost trimisă cu succes! Veți fi contactat în cel mai scurt timp.");
-  }, [activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder]);
+    alert(t("configurator.warnings.orderSent"));
+  }, [activeWindow, profileSeries, glassType, interiorColor, exteriorColor, hardwareBrand, hardwareLevel, accessories, userRole, distance, includeMontaj, clientCode, dealerId, orderForm, addOrder, t]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const activeCategory = MENU_CATEGORIES.find((c) => c.id === activeMenu);
@@ -586,7 +588,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200 sticky top-0 bg-white rounded-t-2xl z-10">
-          <h3 className="text-lg font-semibold text-slate-800">Configurare Canaturi</h3>
+          <h3 className="text-lg font-semibold text-slate-800">{t("configurator.configPopup.title")}</h3>
           <button onClick={closeConfigPopup} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-slate-500" />
           </button>
@@ -594,15 +596,15 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
         {/* Product Type Selector */}
         <div className="p-4 border-b border-slate-100 bg-slate-50">
-          <label className="block text-sm font-medium text-slate-700 mb-2">Tip Produs</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">{t("configurator.configPopup.productType")}</label>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { type: "window_1_canat" as ProductType, label: "1 Canat" },
-              { type: "window_2_canate" as ProductType, label: "2 Canate" },
-              { type: "window_3_canate" as ProductType, label: "3 Canate" },
-              { type: "window_fix" as ProductType, label: "Fix" },
-              { type: "usa_balcon_1" as ProductType, label: "Ușă 1C" },
-              { type: "usa_balcon_2" as ProductType, label: "Ușă 2C" },
+              { type: "window_1_canat" as ProductType, label: t("configurator.productTypes.window_1_canat") },
+              { type: "window_2_canate" as ProductType, label: t("configurator.productTypes.window_2_canate") },
+              { type: "window_3_canate" as ProductType, label: t("configurator.productTypes.window_3_canate") },
+              { type: "window_fix" as ProductType, label: t("configurator.productTypes.window_fix") },
+              { type: "usa_balcon_1" as ProductType, label: t("configurator.productTypes.usa_balcon_1") },
+              { type: "usa_balcon_2" as ProductType, label: t("configurator.productTypes.usa_balcon_2") },
             ].map((opt) => (
               <button
                 key={opt.type}
@@ -640,7 +642,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               <path d="M21 13v2a4 4 0 0 1-4 4H3" />
             </svg>
             <span className="text-sm font-medium text-slate-700 group-hover:text-primary-700 transition-colors">
-              Inversează deschiderea ({configPopupWin.openingSide === "left" ? "Stânga" : "Dreapta"} → {configPopupWin.openingSide === "left" ? "Dreapta" : "Stânga"})
+              {t("configurator.configPopup.reverseOpening")} ({configPopupWin.openingSide === "left" ? t("configurator.configPopup.left") : t("configurator.configPopup.right")} → {configPopupWin.openingSide === "left" ? t("configurator.configPopup.right") : t("configurator.configPopup.left")})
             </span>
           </button>
         </div>
@@ -648,12 +650,12 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         {/* Visual Sash Selection */}
         {configSashes.length > 0 && (
           <div className="p-4 border-b border-slate-100">
-            <label className="block text-sm font-medium text-slate-700 mb-3">Selectează canatul:</label>
+            <label className="block text-sm font-medium text-slate-700 mb-3">{t("configurator.configPopup.sashSelection")}</label>
             <div className="flex justify-center gap-2">
               {configSashes.map((sash, idx) => {
                 const sashId = sash.side || String(idx);
                 const role = configPopupWin.sashRoles[sashId] || "active";
-                const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+                const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `Canat ${idx + 1}`;
                 return (
                   <div
                     key={sashId}
@@ -679,7 +681,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                       role === "inactive" ? "text-amber-600" : 
                       "text-slate-500"
                     )}>
-                      {role === "active" ? "Activ" : role === "inactive" ? "Inactiv" : "Fix"}
+                      {role === "active" ? t("configurator.configPopup.active") : role === "inactive" ? t("configurator.configPopup.inactive") : t("configurator.configPopup.fixed")}
                     </div>
                   </div>
                 );
@@ -690,21 +692,21 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
         {/* Window Options */}
         <div className="p-4 space-y-4 border-b border-slate-100">
-          <label className="block text-sm font-medium text-slate-700">Opțiuni Fereastră</label>
+          <label className="block text-sm font-medium text-slate-700">{t("configurator.configPopup.windowOptions")}</label>
           
           {/* Stulp / Montant */}
           <div>
-            <label className="block text-xs text-slate-500 mb-1">Stulp / Montant</label>
+            <label className="block text-xs text-slate-500 mb-1">{t("configurator.configPopup.stulp")} / {t("configurator.configPopup.montant")}</label>
             <div className="flex gap-2">
-              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "stulp")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "stulp" ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-200 hover:border-purple-300")}>Stulp</button>
-              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "montant")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "montant" ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-300")}>Montant</button>
-              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", null)} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", !configPopupWin.sashConfiguration ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200 hover:border-slate-400")}>Niciunul</button>
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "stulp")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "stulp" ? "border-purple-500 bg-purple-50 text-purple-700" : "border-slate-200 hover:border-purple-300")}>{t("configurator.configPopup.stulp")}</button>
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", "montant")} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", configPopupWin.sashConfiguration === "montant" ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-300")}>{t("configurator.configPopup.montant")}</button>
+              <button onClick={() => updateWindowField(configPopupWindowIdx, "sashConfiguration", null)} className={cn("flex-1 p-2 rounded-lg border text-center text-xs transition-all", !configPopupWin.sashConfiguration ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200 hover:border-slate-400")}>{t("configurator.configPopup.none")}</button>
             </div>
           </div>
 
           {/* Prag */}
           <div className="flex items-center justify-between">
-            <label className="text-xs text-slate-500">Prag</label>
+            <label className="text-xs text-slate-500">{t("configurator.configPopup.threshold")}</label>
             <button onClick={() => updateWindowField(configPopupWindowIdx, "showThreshold", !configPopupWin.showThreshold)} className={cn("w-12 h-6 rounded-full transition-colors", configPopupWin.showThreshold ? "bg-primary-600" : "bg-slate-300")}>
               <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", configPopupWin.showThreshold ? "translate-x-6" : "translate-x-0.5")} />
             </button>
@@ -712,7 +714,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
           {/* Montant Orizontal */}
           <div className="flex items-center justify-between">
-            <label className="text-xs text-slate-500">Montant Orizontal</label>
+            <label className="text-xs text-slate-500">{t("configurator.configPopup.horizontalMuntin")}</label>
             <button onClick={() => updateWindowField(configPopupWindowIdx, "horizontalMuntin", !configPopupWin.horizontalMuntin)} className={cn("w-12 h-6 rounded-full transition-colors", configPopupWin.horizontalMuntin ? "bg-primary-600" : "bg-slate-300")}>
               <div className={cn("w-5 h-5 bg-white rounded-full shadow transform transition-transform", configPopupWin.horizontalMuntin ? "translate-x-6" : "translate-x-0.5")} />
             </button>
@@ -720,7 +722,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
 
           {/* Handle Height */}
           <div>
-            <div className="text-xs text-slate-500 mb-1">Înălțime mâner: {configPopupWin.handleHeight}mm</div>
+            <div className="text-xs text-slate-500 mb-1">{t("configurator.configPopup.handleHeight")}: {configPopupWin.handleHeight}mm</div>
             <input type="range" min="30" max="200" value={configPopupWin.handleHeight} onChange={(e) => updateWindowField(configPopupWindowIdx, "handleHeight", Number(e.target.value))} className="w-full h-1.5 accent-primary-600" />
           </div>
         </div>
@@ -732,13 +734,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               const sashId = sash.side || String(idx);
               const role = configPopupWin.sashRoles[sashId] || "active";
               const openingType = configPopupWin.sashOpeningTypes[sashId] || "normal";
-              const label = sash.side === "left" ? "Canat Stânga" : sash.side === "right" ? "Canat Dreapta" : sash.side === "center" ? "Canat Central" : `Canat ${idx + 1}`;
+              const label = sash.side === "left" ? t("configurator.configPopup.sashLeft") : sash.side === "right" ? t("configurator.configPopup.sashRight") : sash.side === "center" ? t("configurator.configPopup.sashCenter") : `Canat ${idx + 1}`;
               const openingOptions = role === "inactive"
-                ? [{ id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false }]
+                ? [{ id: "normal", label: t("configurator.configPopup.openingNormal"), desc: t("configurator.configPopup.normalDesc"), disabled: false }]
                 : [
-                    { id: "normal", label: "Normal", desc: "Deschidere clasică", disabled: false },
-                    { id: "oscilobatant", label: "Oscilobatant", desc: "Deschidere completă + aerisire", disabled: false },
-                    { id: "batant", label: "Batant", desc: "Doar deschidere completă", disabled: false },
+                    { id: "normal", label: t("configurator.configPopup.openingNormal"), desc: t("configurator.configPopup.normalDesc"), disabled: false },
+                    { id: "oscilobatant", label: t("configurator.configPopup.openingOscilobatant"), desc: t("configurator.configPopup.oscilobatantDesc"), disabled: false },
+                    { id: "batant", label: t("configurator.configPopup.openingBatant"), desc: t("configurator.configPopup.batantDesc"), disabled: false },
                   ];
 
               return (
@@ -747,18 +749,18 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   
                   {/* Rol Canat */}
                   <div>
-                    <label className="block text-xs text-slate-500 mb-1">Rol Canat</label>
+                    <label className="block text-xs text-slate-500 mb-1">{t("configurator.configPopup.sashRole")}</label>
                     <div className="flex gap-2">
-                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "active" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "active" ? "border-green-500 bg-green-50 text-green-700" : "border-slate-200")}>Activ</button>
-                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "inactive" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "inactive" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200")}>Inactiv<div className="text-[9px] text-amber-600">Deschidere limitată</div></button>
-                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "fixed" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "fixed" ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200")}>Fix</button>
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "active" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "active" ? "border-green-500 bg-green-50 text-green-700" : "border-slate-200")}>{t("configurator.configPopup.active")}</button>
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "inactive" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "inactive" ? "border-amber-500 bg-amber-50 text-amber-700" : "border-slate-200")}>{t("configurator.configPopup.inactive")}<div className="text-[9px] text-amber-600">{t("configurator.configPopup.inactiveDesc")}</div></button>
+                      <button onClick={() => { const r: Record<string, SashRole> = { ...configPopupWin.sashRoles, [sashId]: "fixed" }; updateWindowField(configPopupWindowIdx, "sashRoles", r); }} className={cn("flex-1 p-2 rounded-lg border text-center text-xs", role === "fixed" ? "border-slate-500 bg-slate-100 text-slate-700" : "border-slate-200")}>{t("configurator.configPopup.fixed")}</button>
                     </div>
                   </div>
 
                   {/* Tip Deschidere */}
                   {role !== "fixed" && (
                     <div>
-                      <label className="block text-xs text-slate-500 mb-1">Tip Deschidere</label>
+                      <label className="block text-xs text-slate-500 mb-1">{t("configurator.configPopup.openingType")}</label>
                       <div className="flex gap-1.5">
                         {openingOptions.map((opt) => (
                           <button
@@ -772,7 +774,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                           </button>
                         ))}
                       </div>
-                      {role === "inactive" && <div className="text-[10px] text-amber-600 mt-1">Canatul inactiv are deschidere limitată</div>}
+                      {role === "inactive" && <div className="text-[10px] text-amber-600 mt-1">{t("configurator.configPopup.inactiveWarning")}</div>}
                     </div>
                   )}
                 </div>
@@ -784,7 +786,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         {/* Close Button */}
         <div className="p-4 border-t border-slate-100">
           <button onClick={closeConfigPopup} className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
-            Închide
+            {t("common.close")}
           </button>
         </div>
       </div>
@@ -886,18 +888,18 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">Adaugă produs nou</div>
+            <div className="px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">{t("configurator.addNewProduct")}</div>
             <div className="p-2">
-              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase">Ferestre</div>
-              <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 1 canat</button>
-              <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 2 canate</button>
-              <button onClick={() => { addWindow("window_3_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră 3 canate</button>
-              <button onClick={() => { addWindow("window_fix"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Fereastră Fix</button>
-              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase border-t border-slate-100 mt-2">Uși</div>
-              <button onClick={() => { addWindow("usa_balcon_1"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă balcon 1 canat</button>
-              <button onClick={() => { addWindow("usa_balcon_2"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă balcon 2 canate</button>
-              <button onClick={() => { addWindow("usa_intrare_pvc"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă intrare PVC</button>
-              <button onClick={() => { addWindow("usa_intrare_aluminiu"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">Ușă intrare Aluminiu</button>
+              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase">{t("configurator.sections.windows")}</div>
+              <button onClick={() => { addWindow("window_1_canat"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.window_1_canat")}</button>
+              <button onClick={() => { addWindow("window_2_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.window_2_canate")}</button>
+              <button onClick={() => { addWindow("window_3_canate"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.window_3_canate")}</button>
+              <button onClick={() => { addWindow("window_fix"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.window_fix")}</button>
+              <div className="px-2 py-1 text-[10px] font-semibold text-slate-400 uppercase border-t border-slate-100 mt-2">{t("configurator.sections.doors")}</div>
+              <button onClick={() => { addWindow("usa_balcon_1"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.usa_balcon_1")}</button>
+              <button onClick={() => { addWindow("usa_balcon_2"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.usa_balcon_2")}</button>
+              <button onClick={() => { addWindow("usa_intrare_pvc"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.usa_intrare_pvc")}</button>
+              <button onClick={() => { addWindow("usa_intrare_aluminiu"); setShowAddWindowMenu(false); }} className="w-full px-3 py-2 text-sm text-left hover:bg-slate-100 text-slate-700 rounded">{t("configurator.productTypes.usa_intrare_aluminiu")}</button>
             </div>
           </div>
         </div>
@@ -933,14 +935,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 onClick={() => setShowPanelPopup(false)}
                 className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                Renunță
+                {t("common.cancel")}
               </button>
               <button
                 onClick={() => setShowPanelPopup(false)}
                 className="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
               >
                 <Check className="w-4 h-4" />
-                Salvează și închide
+                {t("common.save")}
               </button>
             </div>
           </div>
@@ -950,7 +952,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       {showPrintView && (
         <div className="fixed inset-0 bg-white z-50 overflow-auto">
           <div className="sticky top-0 bg-white border-b border-slate-200 p-4 flex justify-between items-center print:hidden">
-            <h2 className="text-lg font-semibold">Previzualizare Export</h2>
+            <h2 className="text-lg font-semibold">{t("configurator.preview.exportPreview")}</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -959,14 +961,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 className="px-4 py-2 bg-primary-600 text-white rounded-lg flex items-center gap-2 hover:bg-primary-700"
               >
                 <FileText className="w-4 h-4" />
-                Printează
+                {t("configurator.preview.print")}
               </button>
               <button
                 onClick={() => setShowPrintView(false)}
                 className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg flex items-center gap-2 hover:bg-slate-300"
               >
                 <X className="w-4 h-4" />
-                Închide
+                {t("common.close")}
               </button>
             </div>
           </div>
@@ -994,7 +996,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-slate-800">Trimite Comanda</h2>
+              <h2 className="text-xl font-bold text-slate-800">{t("configurator.orderModal.title")}</h2>
               <button
                 onClick={() => setShowOrderModal(false)}
                 className="p-2 hover:bg-slate-100 rounded-lg"
@@ -1010,51 +1012,51 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Nume Client
+                  {t("configurator.orderModal.clientName")}
                 </label>
                 <input
                   type="text"
                   value={orderForm.clientName}
                   onChange={(e) => setOrderForm({ ...orderForm, clientName: e.target.value })}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="Numele tău complet"
+                  placeholder={t("configurator.orderModal.clientNamePlaceholder")}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Email *
+                  {t("configurator.orderModal.email")} *
                 </label>
                 <input
                   type="email"
                   value={orderForm.clientEmail}
                   onChange={(e) => setOrderForm({ ...orderForm, clientEmail: e.target.value })}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="email@exemplu.ro"
+                  placeholder={t("configurator.orderModal.emailPlaceholder")}
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Telefon
+                  {t("configurator.orderModal.phone")}
                 </label>
                 <input
                   type="tel"
                   value={orderForm.clientPhone}
                   onChange={(e) => setOrderForm({ ...orderForm, clientPhone: e.target.value })}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="+40 721 000 000"
+                  placeholder={t("configurator.orderModal.phonePlaceholder")}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Observații
+                  {t("configurator.orderModal.notes")}
                 </label>
                 <textarea
                   value={orderForm.notes}
                   onChange={(e) => setOrderForm({ ...orderForm, notes: e.target.value })}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   rows={3}
-                  placeholder="Informații suplimentare..."
+                  placeholder={t("configurator.orderModal.notesPlaceholder")}
                 />
               </div>
             </div>
@@ -1064,7 +1066,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 onClick={() => setShowOrderModal(false)}
                 className="flex-1 py-2 px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50"
               >
-                Anulează
+                {t("common.cancel")}
               </button>
               <button
                 onClick={handleConfirmOrder}
@@ -1072,7 +1074,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 className="flex-1 py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Send className="w-4 h-4" />
-                Trimite
+                {t("common.send")}
               </button>
             </div>
           </div>
@@ -1084,7 +1086,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-slate-800">Filtrează Produse</h2>
+              <h2 className="text-xl font-bold text-slate-800">{t("configurator.filterModal.title")}</h2>
               <button
                 onClick={() => setShowFilters(false)}
                 className="p-2 hover:bg-slate-100 rounded-lg"
@@ -1097,9 +1099,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
               {Object.entries(filterOptions).map(([category, options]) => (
                 <div key={category}>
                   <h3 className="text-sm font-semibold text-slate-700 mb-2 capitalize">
-                    {category === "produse" ? "Tip Produs" : 
-                     category === "profil" ? "Profil" :
-                     category === "sticla" ? "Sticlă" : "Feronerie"}
+                    {category === "produse" ? t("configurator.filterModal.productType") :
+                     category === "profil" ? t("configurator.filterModal.profile") :
+                     category === "sticla" ? t("configurator.filterModal.glass") : t("configurator.filterModal.hardware")}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {options.map((opt) => {
@@ -1129,13 +1131,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                 onClick={clearFilters}
                 className="flex-1 py-2 px-4 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50"
               >
-                Curăță Filtre
+                {t("configurator.filterModal.clearFilters")}
               </button>
               <button
                 onClick={() => setShowFilters(false)}
                 className="flex-1 py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
               >
-                Aplică
+                {t("configurator.filterModal.apply")}
               </button>
             </div>
           </div>
@@ -1163,7 +1165,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             <button
               onClick={() => setSidebarExpanded(!sidebarExpanded)}
               className="flex items-center justify-center h-10 border-b border-slate-100 hover:bg-slate-50 transition-colors"
-              title={sidebarExpanded ? "Restrange meniu" : "Extinde meniu"}
+              title={sidebarExpanded ? t("configurator.collapseMenu") : t("configurator.expandMenu")}
             >
               {sidebarExpanded ? (
                 <ChevronLeft className="w-4 h-4 text-slate-500" />
@@ -1176,7 +1178,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             {sidebarExpanded && (
               <div className="px-3 py-2 border-b border-slate-100">
                 <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                  Configurare Proiect
+                  {t("configurator.title")}
                 </span>
               </div>
             )}
@@ -1230,7 +1232,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         <span 
                           onClick={(e) => { e.stopPropagation(); duplicateWindow(idx); }}
                           className="ml-0.5 text-[10px] opacity-50 hover:opacity-100 hover:text-blue-400"
-                          title="Duplică"
+                          title={t("common.duplicate")}
                         >
                           ⧉
                         </span>
@@ -1248,7 +1250,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         }}
                         className="px-3 py-1 rounded text-xs font-medium bg-green-100 text-green-700 hover:bg-green-200 whitespace-nowrap"
                       >
-                        + Adaugă
+                        + {t("configurator.addWindow")}
                       </button>
                     </div>
                   </div>
@@ -1260,16 +1262,16 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center">
                           <Ruler className="w-8 h-8 text-slate-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-slate-700 mb-2">Niciun produs adăugat</h3>
+                        <h3 className="text-lg font-semibold text-slate-700 mb-2">{t("configurator.emptyState.title")}</h3>
                         <p className="text-sm text-slate-500 mb-6">
-                          Începe configurarea adăugând primul produs. Poți alege din ferestre, uși de balcon sau uși de intrare.
+                          {t("configurator.emptyState.description")}
                         </p>
                         <button
                           onClick={() => setShowAddWindowMenu(true)}
                           className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-600/20"
                         >
                           <PlusSquare className="w-5 h-5" />
-                          Adaugă Produs
+                          {t("configurator.emptyState.button")}
                         </button>
                       </div>
                     </div>
@@ -1287,7 +1289,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             <button
                               onClick={() => openConfigForWindow(idx)}
                               className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
-                              title="Configurare canaturi"
+                              title={t("configurator.tooltips.configureSashes")}
                             >
                               <Settings className="w-4 h-4 text-slate-600" />
                             </button>
@@ -1316,7 +1318,7 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             <button
                               onClick={() => setShowInfoPopup(idx)}
                               className="w-8 h-8 rounded-lg bg-blue-100 hover:bg-blue-200 flex items-center justify-center transition-colors"
-                              title="Informații produs"
+                              title={t("configurator.tooltips.productInfo")}
                             >
                               <Info className="w-4 h-4 text-blue-600" />
                             </button>
@@ -1327,9 +1329,9 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             {hasInvalidDims ? (
                               <div className="flex flex-col items-center justify-center text-center p-6">
                                 <AlertTriangle className="w-10 h-10 text-amber-500 mb-3" />
-                                <p className="text-sm font-semibold text-slate-700 mb-1">Dimensiuni non-valide</p>
+                                <p className="text-sm font-semibold text-slate-700 mb-1">{t("configurator.invalidDimensions.title")}</p>
                                 <p className="text-xs text-slate-500 max-w-[200px]">
-                                  Vă rugăm introduceți dimensiuni corecte pentru a vizualiza produsul.
+                                  {t("configurator.invalidDimensions.description")}
                                 </p>
                               </div>
                             ) : (
@@ -1388,13 +1390,13 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                   {/* Bottom Status - Compact */}
                   <div className="h-10 border-t border-slate-200 bg-white flex items-center justify-between px-4 text-xs">
                     <div className="flex items-center gap-3">
-                      <span className="text-slate-400">Produs:</span>
+                      <span className="text-slate-400">{t("configurator.statusBar.product")}:</span>
                       <span className="font-medium text-slate-700">{productType ? productType.replace(/_/g, " ") : "—"}</span>
                       <span className="text-slate-300">|</span>
-                      <span className="text-slate-400">Profil:</span>
+                      <span className="text-slate-400">{t("configurator.statusBar.profile")}:</span>
                       <span className="font-medium text-slate-700">{profileSeries || "—"}</span>
                       <span className="text-slate-300">|</span>
-                      <span className="text-slate-400">Sticlă:</span>
+                      <span className="text-slate-400">{t("configurator.statusBar.glass")}:</span>
                       <span className="font-medium text-slate-700">{glassType || "—"}</span>
                     </div>
 
@@ -1417,46 +1419,46 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-slate-800">Informații Produs</h2>
+            <h2 className="text-xl font-bold text-slate-800">{t("configurator.infoPopup.title")}</h2>
             <button onClick={() => setShowInfoPopup(null)} className="p-2 hover:bg-slate-100 rounded-lg">
               <X className="w-5 h-5 text-slate-500" />
             </button>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Tip Produs</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.productType")}</span>
               <span className="font-medium text-slate-800">{getProductDisplayName(windows[showInfoPopup]?.productType)}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Dimensiuni</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.dimensions")}</span>
               <span className="font-medium text-slate-800">{windows[showInfoPopup]?.width} × {windows[showInfoPopup]?.height} mm</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Suprafață</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.area")}</span>
               <span className="font-medium text-slate-800">{((windows[showInfoPopup]?.width * windows[showInfoPopup]?.height) / 1000000).toFixed(3)} m²</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Profil</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.profile")}</span>
               <span className="font-medium text-slate-800">{profileSeries || "—"}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Sticlă</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.glass")}</span>
               <span className="font-medium text-slate-800">{glassType || "—"}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Culoare Interior</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.interiorColor")}</span>
               <span className="font-medium text-slate-800">{interiorColor || "—"}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Culoare Exterior</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.exteriorColor")}</span>
               <span className="font-medium text-slate-800">{exteriorColor || "—"}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-slate-100">
-              <span className="text-slate-500">Feronerie</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.hardware")}</span>
               <span className="font-medium text-slate-800">{hardwareBrand || "—"}</span>
             </div>
             <div className="flex justify-between py-2">
-              <span className="text-slate-500">Cantitate</span>
+              <span className="text-slate-500">{t("configurator.infoPopup.quantity")}</span>
               <span className="font-medium text-slate-800">{windows[showInfoPopup]?.quantity || 1}</span>
             </div>
           </div>
@@ -1486,12 +1488,12 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             return (
               <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-slate-600">Preț unitar</span>
+                  <span className="text-sm font-medium text-slate-600">{t("configurator.pricing.unitPrice")}</span>
                   <span className="text-lg font-bold text-slate-800">{formatPrice(unitPrice)}</span>
                 </div>
                 {qty > 1 && (
                   <div className="flex justify-between items-center pt-2 border-t border-blue-200">
-                    <span className="text-sm font-medium text-slate-600">Total ({qty} buc)</span>
+                    <span className="text-sm font-medium text-slate-600">{t("configurator.pricing.total")} ({qty} {t("configurator.pricing.pieces")})</span>
                     <span className="text-xl font-bold text-blue-700">{formatPrice(totalPrice)}</span>
                   </div>
                 )}

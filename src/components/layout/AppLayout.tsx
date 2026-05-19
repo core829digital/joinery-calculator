@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation, LanguageSwitcher } from "@/lib/i18n";
 import { useAuth } from "@/context/AuthContext";
 import Logo from "@/components/Logo";
 import {
@@ -37,19 +38,20 @@ export default function AppLayout({
   onSearchChange,
   onToggleFilter,
 }: AppLayoutProps) {
+  const { t } = useTranslation();
   const [windowFocused, setWindowFocused] = useState(true);
   const { user } = useAuth();
 
   const getRoleDisplay = () => {
     switch (user?.role) {
       case "supplier":
-        return { label: "Furnizor", discount: "0%" };
+        return { label: t("layout.statusBar.supplier"), discount: "0%" };
       case "dealer":
-        return { label: "Dealer", discount: "18%" };
+        return { label: t("layout.statusBar.dealer"), discount: "18%" };
       case "client":
-        return { label: "Client", discount: "0%" };
+        return { label: t("layout.statusBar.client"), discount: "0%" };
       default:
-        return { label: "Vizitator", discount: "0%" };
+        return { label: t("layout.statusBar.visitor"), discount: "0%" };
     }
   };
 
@@ -69,7 +71,7 @@ export default function AppLayout({
         <div className="flex items-center gap-3" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           <Logo size={28} className="rounded-md" />
           <span className="text-white font-semibold text-sm tracking-wide">
-            Core829 SRL - Calculator Tâmplărie
+            {t("layout.title")}
           </span>
         </div>
 
@@ -98,7 +100,7 @@ export default function AppLayout({
       <div className="h-14 bg-gradient-to-r from-blue-600 to-blue-700 flex items-center justify-between px-4 md:hidden">
         <div className="flex items-center gap-2">
           <Logo size={32} className="rounded-md" />
-          <span className="text-white font-semibold text-base">Core829</span>
+          <span className="text-white font-semibold text-base">{t("layout.shortTitle")}</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={onSave} className="p-2 bg-white/20 rounded-lg">
@@ -119,28 +121,28 @@ export default function AppLayout({
             className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Save className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Salvează</span>
+            <span className="hidden sm:inline">{t("layout.toolbar.save")}</span>
           </button>
           <button
             onClick={onPrint}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Print</span>
+            <span className="hidden sm:inline">{t("layout.toolbar.print")}</span>
           </button>
           <button
             onClick={onExportPDF}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PDF</span>
+            <span className="hidden sm:inline">{t("layout.toolbar.pdf")}</span>
           </button>
           <button
             onClick={onSendEmail}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Mail className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Email</span>
+            <span className="hidden sm:inline">{t("layout.toolbar.email")}</span>
           </button>
         </div>
 
@@ -155,7 +157,7 @@ export default function AppLayout({
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Caută..."
+            placeholder={t("common.search")}
             value={searchQuery}
             onChange={(e) => onSearchChange?.(e.target.value)}
             className="w-40 lg:w-72 pl-8 pr-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -167,6 +169,9 @@ export default function AppLayout({
         >
           <Filter className="w-4 h-4 text-slate-600" />
         </button>
+
+        {/* Language Switcher */}
+        <LanguageSwitcher className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer" />
       </div>
 
       {/* Main Content */}
@@ -178,7 +183,7 @@ export default function AppLayout({
       <div className="h-6 bg-slate-800 border-t border-slate-700 flex items-center justify-between px-3 text-xs text-slate-400">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-          <span className="hidden sm:inline">Conectat</span>
+          <span className="hidden sm:inline">{t("layout.statusBar.connected")}</span>
           <span className="hidden md:inline">|</span>
           <span className="hidden md:inline">{roleDisplay.label}</span>
           <span className="hidden md:inline">|</span>
