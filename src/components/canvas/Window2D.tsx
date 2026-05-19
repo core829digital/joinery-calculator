@@ -127,24 +127,26 @@ export default function Window2D({
   const handleColor = getHandleColor();
   const handleAccentColor = getHandleAccentColor();
 
-  // PROPORTIONAL scale — SVG viewBox matches real-world proportions
-  // Container CSS controls the visual size, SVG fills it via viewBox + preserveAspectRatio
-  // We use a fixed scale so that real dimensions are represented proportionally
-  const s = 0.8;
+  // PROPORTIONAL SCALE CALCULATOR
+  // 1mm real = 0.5px in SVG viewBox (scale 1:2)
+  // This ensures all windows are drawn proportionally to real dimensions
+  // Larger windows = larger viewBox = larger visual size
+  // Smaller windows = smaller viewBox = smaller visual size
+  const SCALE = 0.5; // 1mm = 0.5px
 
-  const w = width * s;
-  const h = height * s;
+  const w = width * SCALE;
+  const h = height * SCALE;
 
-  // INTERACTIVE ELEMENT SIZES — with minimums for easy clicking
-  // All sizes are in SVG viewBox units (not pixels)
-  const tocThickness = Math.max(55, 55) * s;    // toc frame thickness
-  const sashThickness = Math.max(28, 28) * s;   // sash frame thickness
-  const glassGap = 6 * s;
+  // INTERACTIVE ELEMENT SIZES — proportional to scale with minimums
+  const tocThickness = 55 * SCALE;
+  const sashThickness = 28 * SCALE;
+  const glassGap = 6 * SCALE;
 
-  // MINIMUM interactive hit areas (in viewBox units)
-  const minHandleSize = 12;    // minimum handle size for easy clicking
-  const minHingeSize = 8;      // minimum hinge size
-  const minThresholdH = 8;     // minimum threshold height
+  // MINIMUM interactive hit areas (in SVG viewBox units)
+  // These ensure elements are always clickable even on small windows
+  const minHandleSize = 12;
+  const minHingeSize = 8;
+  const minThresholdH = 8;
 
   const handleComponentHover = (component: WindowComponent | null) => {
     setHoveredComponent(component);
@@ -162,8 +164,8 @@ export default function Window2D({
         return {
           type: "2 canate",
           sashes: [
-            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * s) / 2, h: h - tocThickness * 2, side: "left" as const },
-            { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * s, y: tocThickness, w: (w - tocThickness * 2 - 4 * s) / 2, h: h - tocThickness * 2, side: "right" as const },
+            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "left" as const },
+            { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "right" as const },
           ],
           isDoor: false,
         };
@@ -171,9 +173,9 @@ export default function Window2D({
         return {
           type: "3 canate",
           sashes: [
-            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 6 * s) / 3, h: h - tocThickness * 2, side: "left" as const },
-            { x: tocThickness + (w - tocThickness * 2) / 3 + 2 * s, y: tocThickness, w: (w - tocThickness * 2 - 6 * s) / 3, h: h - tocThickness * 2, side: "center" as const },
-            { x: tocThickness + (w - tocThickness * 2) * 2 / 3 + 4 * s, y: tocThickness, w: (w - tocThickness * 2 - 6 * s) / 3, h: h - tocThickness * 2, side: "right" as const },
+            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 6 * SCALE) / 3, h: h - tocThickness * 2, side: "left" as const },
+            { x: tocThickness + (w - tocThickness * 2) / 3 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 6 * SCALE) / 3, h: h - tocThickness * 2, side: "center" as const },
+            { x: tocThickness + (w - tocThickness * 2) * 2 / 3 + 4 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 6 * SCALE) / 3, h: h - tocThickness * 2, side: "right" as const },
           ],
           isDoor: false,
         };
@@ -195,8 +197,8 @@ export default function Window2D({
         return {
           type: "ușă 2 canate",
           sashes: [
-            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * s) / 2, h: h - tocThickness * 2, side: "left" as const },
-            { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * s, y: tocThickness, w: (w - tocThickness * 2 - 4 * s) / 2, h: h - tocThickness * 2, side: "right" as const },
+            { x: tocThickness, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "left" as const },
+            { x: tocThickness + (w - tocThickness * 2) / 2 + 2 * SCALE, y: tocThickness, w: (w - tocThickness * 2 - 4 * SCALE) / 2, h: h - tocThickness * 2, side: "right" as const },
           ],
           isDoor: true,
         };
@@ -207,22 +209,22 @@ export default function Window2D({
           isDoor: false,
         };
     }
-  }, [productType, w, h, s, tocThickness, openingSide]);
+  }, [productType, w, h, SCALE, tocThickness, openingSide]);
 
-  const margin = Math.max(6, 14 * s);
+  const margin = Math.max(6, 14 * SCALE);
   const svgWidth = w + margin * 2;
   const svgHeight = h + margin * 2;
 
   const handleX = (sash: typeof config.sashes[0]) => {
     if (sash.side === "none" || sash.side === "center" || !sash.side) return sash.x + sash.w / 2;
-    return sash.side === "right" ? sash.x + sash.w - 8 * s : sash.x + 8 * s;
+    return sash.side === "right" ? sash.x + sash.w - 8 * SCALE : sash.x + 8 * SCALE;
   };
   
   const handleYFromBottom = (sash: typeof config.sashes[0]) => {
-    const minHandleY = 30 * s;
-    const maxHandleY = sash.h - 30 * s;
+    const minHandleY = 30 * SCALE;
+    const maxHandleY = sash.h - 30 * SCALE;
     if (!handleHeight) return sash.y + sash.h / 2;
-    const requestedY = handleHeight * s;
+    const requestedY = handleHeight * SCALE;
     const clampedY = Math.max(minHandleY, Math.min(requestedY, maxHandleY));
     return sash.y + sash.h - clampedY;
   };
@@ -281,10 +283,10 @@ export default function Window2D({
     if (sashRole === "fixed") {
       return (
         <g key={`fixed-${idx}`} opacity={0.95}>
-          <line x1={leftX} y1={topY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * s} opacity={0.6} />
-          <line x1={rightX} y1={topY} x2={leftX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * s} opacity={0.6} />
-          <circle cx={centerX} cy={centerY} r={4 * s} fill="none" stroke={lineColor} strokeWidth={1.5 * s} opacity={0.6} />
-          <text x={centerX} y={topY - 8 * s} textAnchor="middle" fontSize={5 * s} fill={lineColor} fontWeight="bold">FIX</text>
+          <line x1={leftX} y1={topY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
+          <line x1={rightX} y1={topY} x2={leftX} y2={bottomY} stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
+          <circle cx={centerX} cy={centerY} r={4 * SCALE} fill="none" stroke={lineColor} strokeWidth={1.5 * SCALE} opacity={0.6} />
+          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={lineColor} fontWeight="bold">FIX</text>
         </g>
       );
     }
@@ -292,15 +294,15 @@ export default function Window2D({
     if (sashRole === "inactive") {
       return (
         <g key={`inactive-${idx}`} opacity={0.9}>
-          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * s} strokeDasharray={`${4 * s} ${3 * s}`} />
-          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * s} strokeDasharray={`${4 * s} ${3 * s}`} />
-          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * s} opacity={0.7} strokeDasharray={`${4 * s} ${3 * s}`} />
-          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * s} strokeDasharray={`${4 * s} ${3 * s}`} />
-          <circle cx={hingeX} cy={topY} r={3 * s} fill={lineColor} stroke="white" strokeWidth={0.8 * s} />
-          <circle cx={hingeX} cy={bottomY} r={3 * s} fill={lineColor} stroke="white" strokeWidth={0.8 * s} />
-          <circle cx={centerX} cy={centerY} r={4.5 * s} fill="#F59E0B" stroke="white" strokeWidth={0.8 * s} />
-          <text x={centerX - 3 * s} y={centerY + 1.5 * s} textAnchor="middle" fontSize={7 * s} fill="white" fontWeight="bold">+</text>
-          <text x={centerX} y={topY - 8 * s} textAnchor="middle" fontSize={5 * s} fill="#F59E0B" fontWeight="bold">INACTIV</text>
+          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * SCALE} strokeDasharray={`${4 * SCALE} ${3 * SCALE}`} />
+          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * SCALE} strokeDasharray={`${4 * SCALE} ${3 * SCALE}`} />
+          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * SCALE} opacity={0.7} strokeDasharray={`${4 * SCALE} ${3 * SCALE}`} />
+          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * SCALE} strokeDasharray={`${4 * SCALE} ${3 * SCALE}`} />
+          <circle cx={hingeX} cy={topY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
+          <circle cx={hingeX} cy={bottomY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
+          <circle cx={centerX} cy={centerY} r={4.5 * SCALE} fill="#F59E0B" stroke="white" strokeWidth={0.8 * SCALE} />
+          <text x={centerX - 3 * SCALE} y={centerY + 1.5 * SCALE} textAnchor="middle" fontSize={7 * SCALE} fill="white" fontWeight="bold">+</text>
+          <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill="#F59E0B" fontWeight="bold">INACTIV</text>
         </g>
       );
     }
@@ -308,32 +310,32 @@ export default function Window2D({
     if (isOscilobatant) {
       return (
         <g key={`oscilo-${idx}`} opacity={0.95}>
-          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * s} />
-          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * s} />
-          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * s} opacity={0.7} />
-          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * s} />
-          <line x1={leftX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * s} />
-          <line x1={rightX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * s} />
-          <circle cx={hingeX} cy={topY} r={2 * s} fill={lineColor} stroke="white" strokeWidth={0.5 * s} />
-          <circle cx={hingeX} cy={bottomY} r={2 * s} fill={lineColor} stroke="white" strokeWidth={0.5 * s} />
-          <circle cx={centerX} cy={topY} r={2.5 * s} fill="#8B5CF6" stroke="white" strokeWidth={0.5 * s} />
-          <text x={centerX} y={topY - 6 * s} textAnchor="middle" fontSize={4 * s} fill="#8B5CF6" fontWeight="bold">OSCILO</text>
+          <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * SCALE} />
+          <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * SCALE} />
+          <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * SCALE} opacity={0.7} />
+          <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * SCALE} />
+          <line x1={leftX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * SCALE} />
+          <line x1={rightX} y1={bottomY} x2={centerX} y2={topY} stroke="#8B5CF6" strokeWidth={3 * SCALE} />
+          <circle cx={hingeX} cy={topY} r={2 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.5 * SCALE} />
+          <circle cx={hingeX} cy={bottomY} r={2 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.5 * SCALE} />
+          <circle cx={centerX} cy={topY} r={2.5 * SCALE} fill="#8B5CF6" stroke="white" strokeWidth={0.5 * SCALE} />
+          <text x={centerX} y={topY - 6 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="#8B5CF6" fontWeight="bold">OSCILO</text>
         </g>
       );
     }
     
     return (
       <g key={`normal-${idx}`} opacity={0.95}>
-        <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * s} />
-        <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * s} />
-        <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * s} opacity={0.7} />
-        <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * s} />
-        <circle cx={hingeX} cy={topY} r={3 * s} fill={lineColor} stroke="white" strokeWidth={0.8 * s} />
-        <circle cx={hingeX} cy={bottomY} r={3 * s} fill={lineColor} stroke="white" strokeWidth={0.8 * s} />
-        <circle cx={hingeX} cy={centerY} r={3 * s} fill={lineColor} stroke="white" strokeWidth={0.8 * s} />
-        <circle cx={handleXPos} cy={centerY} r={3 * s} fill={secondaryColor} stroke="white" strokeWidth={0.8 * s} />
-        <text x={centerX} y={topY - 8 * s} textAnchor="middle" fontSize={5 * s} fill={secondaryColor} fontWeight="bold">MANER</text>
-        <text x={hingeX} y={bottomY + 10 * s} textAnchor={isLeft ? "start" : "end"} fontSize={4 * s} fill={lineColor} fontWeight="600">BALAMA</text>
+        <line x1={leftX} y1={topY} x2={rightX} y2={topY} stroke={lineColor} strokeWidth={2 * SCALE} />
+        <line x1={leftX} y1={bottomY} x2={rightX} y2={bottomY} stroke={lineColor} strokeWidth={2 * SCALE} />
+        <line x1={hingeX} y1={topY} x2={hingeX} y2={bottomY} stroke={lineColor} strokeWidth={2.5 * SCALE} opacity={0.7} />
+        <polygon points={`${hingeX},${topY} ${hingeX},${bottomY} ${farX},${centerY}`} fill="none" stroke={lineColor} strokeWidth={2.5 * SCALE} />
+        <circle cx={hingeX} cy={topY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
+        <circle cx={hingeX} cy={bottomY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
+        <circle cx={hingeX} cy={centerY} r={3 * SCALE} fill={lineColor} stroke="white" strokeWidth={0.8 * SCALE} />
+        <circle cx={handleXPos} cy={centerY} r={3 * SCALE} fill={secondaryColor} stroke="white" strokeWidth={0.8 * SCALE} />
+        <text x={centerX} y={topY - 8 * SCALE} textAnchor="middle" fontSize={5 * SCALE} fill={secondaryColor} fontWeight="bold">MANER</text>
+        <text x={hingeX} y={bottomY + 10 * SCALE} textAnchor={isLeft ? "start" : "end"} fontSize={4 * SCALE} fill={lineColor} fontWeight="600">BALAMA</text>
       </g>
     );
   };
@@ -352,21 +354,21 @@ export default function Window2D({
       const rightSashRole = sashRoles["right"] || "active";
       const leftSashRole = sashRoles["left"] || "active";
       if (rightSashRole === "inactive") {
-        boltX = sash.x + sash.w - 5 * s; // bolts on right
+        boltX = sash.x + sash.w - 5 * SCALE; // bolts on right
       } else if (leftSashRole === "inactive") {
-        boltX = sash.x + 3 * s; // bolts on left
+        boltX = sash.x + 3 * SCALE; // bolts on left
       } else {
-        boltX = sash.x + sash.w - 5 * s; // default: bolts on right
+        boltX = sash.x + sash.w - 5 * SCALE; // default: bolts on right
       }
     } else {
       const isLeftSash = sash.side === "left";
-      boltX = isLeftSash ? sash.x + sash.w - 5 * s : sash.x + 3 * s;
+      boltX = isLeftSash ? sash.x + sash.w - 5 * SCALE : sash.x + 3 * SCALE;
     }
     
     return (
       <g key={`bolts-${idx}`} opacity={0.7}>
-        <rect x={boltX} y={sash.y + sash.h * 0.15} width={6 * s} height={3 * s} rx={1 * s} fill="#6B7280" />
-        <rect x={boltX} y={sash.y + sash.h * 0.85 - 3 * s} width={6 * s} height={3 * s} rx={1 * s} fill="#6B7280" />
+        <rect x={boltX} y={sash.y + sash.h * 0.15} width={6 * SCALE} height={3 * SCALE} rx={1 * SCALE} fill="#6B7280" />
+        <rect x={boltX} y={sash.y + sash.h * 0.85 - 3 * SCALE} width={6 * SCALE} height={3 * SCALE} rx={1 * SCALE} fill="#6B7280" />
       </g>
     );
   };
@@ -391,19 +393,19 @@ export default function Window2D({
       const leftSashRole = sashRoles["left"] || "active";
       // Handle on the side opposite to the inactive sash
       if (rightSashRole === "inactive") {
-        hx = sash.x + sash.w - 8 * s; // handle on right
+        hx = sash.x + sash.w - 8 * SCALE; // handle on right
       } else if (leftSashRole === "inactive") {
-        hx = sash.x + 8 * s; // handle on left
+        hx = sash.x + 8 * SCALE; // handle on left
       } else {
-        hx = sash.x + sash.w - 8 * s; // default: handle on right
+        hx = sash.x + sash.w - 8 * SCALE; // default: handle on right
       }
     } else {
       hx = handleX(sash);
     }
     
     const hy = handleYFromBottom(sash);
-    const handleW = Math.max(8 * s, minHandleSize);
-    const handleH = Math.max(16 * s, minHandleSize * 2);
+    const handleW = Math.max(8 * SCALE, minHandleSize);
+    const handleH = Math.max(16 * SCALE, minHandleSize * 2);
 
     return (
       <g 
@@ -418,32 +420,32 @@ export default function Window2D({
           y={hy - handleH / 2}
           width={handleW}
           height={handleH}
-          rx={2 * s}
+          rx={2 * SCALE}
           fill={hoveredComponent === "maner" ? handleColor : handleAccentColor}
           stroke={hoveredComponent === "maner" ? "#1D4ED8" : handleColor}
           strokeWidth={hoveredComponent === "maner" ? 1 : 0.5}
         />
         <rect
-          x={hx - handleW / 2 + 1.5 * s}
-          y={hy - handleH / 2 + 1.5 * s}
-          width={handleW - 3 * s}
-          height={handleH - 3 * s}
-          rx={1.5 * s}
+          x={hx - handleW / 2 + 1.5 * SCALE}
+          y={hy - handleH / 2 + 1.5 * SCALE}
+          width={handleW - 3 * SCALE}
+          height={handleH - 3 * SCALE}
+          rx={1.5 * SCALE}
           fill={hoveredComponent === "maner" ? "#60A5FA" : "#E5E7EB"}
           stroke="#FFFFFF"
-          strokeWidth={0.3 * s}
+          strokeWidth={0.3 * SCALE}
         />
       </g>
     );
   };
 
   return (
-    <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
-      <div className="flex items-center justify-center bg-slate-50 w-full h-full overflow-hidden" style={{ minHeight: 0 }}>
+    <div className={cn("bg-white rounded-xl border border-slate-200 overflow-auto", className)}>
+      <div className="flex items-center justify-center bg-slate-50 w-full h-full min-h-0 p-2">
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           preserveAspectRatio="xMidYMid meet"
-          style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+          style={{ width: `${svgWidth}px`, height: `${svgHeight}px`, maxWidth: '100%', maxHeight: '100%', display: 'block' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -469,14 +471,14 @@ export default function Window2D({
           <g transform={`translate(${margin}, ${margin})`}>
             {/* ZIDARIA / BRICKMOLD - exterior outline */}
             <rect
-              x={-4 * s}
-              y={-4 * s}
-              width={w + 8 * s}
-              height={h + 8 * s}
+              x={-4 * SCALE}
+              y={-4 * SCALE}
+              width={w + 8 * SCALE}
+              height={h + 8 * SCALE}
               fill="none"
               stroke="#CBD5E1"
-              strokeWidth={2 * s}
-              strokeDasharray={`${6 * s} ${3 * s}`}
+              strokeWidth={2 * SCALE}
+              strokeDasharray={`${6 * SCALE} ${3 * SCALE}`}
             />
 
             {/* TOC EXTERIOR - Rama principala - STIL CAD */}
@@ -487,7 +489,7 @@ export default function Window2D({
               height={h}
               fill="url(#frameGradient)"
               stroke={hoveredComponent === "toc" ? "#2563EB" : tocStrokeColor}
-              strokeWidth={hoveredComponent === "toc" ? 4 * s : 3 * s}
+              strokeWidth={hoveredComponent === "toc" ? 4 * SCALE : 3 * SCALE}
               onClick={(e) => { e.stopPropagation(); onComponentClick?.("toc"); }}
               onMouseEnter={() => handleComponentHover("toc")}
               onMouseLeave={() => handleComponentHover(null)}
@@ -496,13 +498,13 @@ export default function Window2D({
 
             {/* TOC INTERIOR - Linie de contur interioara - CAD stil */}
             <rect
-              x={tocThickness - 1 * s}
-              y={tocThickness - 1 * s}
-              width={w - (tocThickness - 1 * s) * 2}
-              height={h - (tocThickness - 1 * s) * 2}
+              x={tocThickness - 1 * SCALE}
+              y={tocThickness - 1 * SCALE}
+              width={w - (tocThickness - 1 * SCALE) * 2}
+              height={h - (tocThickness - 1 * SCALE) * 2}
               fill="none"
               stroke="#64748B"
-              strokeWidth={1.5 * s}
+              strokeWidth={1.5 * SCALE}
             />
 
             {/* CANATURI / Sashes */}
@@ -516,7 +518,7 @@ export default function Window2D({
                   height={sash.h + sashThickness * 2}
                   fill="url(#sashGradient)"
                   stroke={hoveredComponent === "canat" ? "#2563EB" : tocStrokeColor}
-                  strokeWidth={hoveredComponent === "canat" ? 3 * s : 2 * s}
+                  strokeWidth={hoveredComponent === "canat" ? 3 * SCALE : 2 * SCALE}
                   onClick={(e) => { e.stopPropagation(); onComponentClick?.("canat"); }}
                   onMouseEnter={() => handleComponentHover("canat")}
                   onMouseLeave={() => handleComponentHover(null)}
@@ -525,13 +527,13 @@ export default function Window2D({
 
                 {/* CERCEVEA INTERIOARA - linie de contur */}
                 <rect
-                  x={sash.x - sashThickness + 1.5 * s}
-                  y={sash.y - sashThickness + 1.5 * s}
-                  width={sash.w + sashThickness * 2 - 3 * s}
-                  height={sash.h + sashThickness * 2 - 3 * s}
+                  x={sash.x - sashThickness + 1.5 * SCALE}
+                  y={sash.y - sashThickness + 1.5 * SCALE}
+                  width={sash.w + sashThickness * 2 - 3 * SCALE}
+                  height={sash.h + sashThickness * 2 - 3 * SCALE}
                   fill="none"
                   stroke="#ADB5BD"
-                  strokeWidth={0.6 * s}
+                  strokeWidth={0.6 * SCALE}
                 />
 
                 {/* STICLA / Glass */}
@@ -558,23 +560,23 @@ export default function Window2D({
                   pointerEvents="none"
                 />
                 {/* Eticheta tip sticla pe desen */}
-                {glassType && sash.w > 80 * s && (
+                {glassType && sash.w > 80 * SCALE && (
                   <g>
                     <rect
-                      x={sash.x + sash.w / 2 - 20 * s}
-                      y={sash.y + sash.h / 2 - 6 * s}
-                      width={40 * s}
-                      height={12 * s}
+                      x={sash.x + sash.w / 2 - 20 * SCALE}
+                      y={sash.y + sash.h / 2 - 6 * SCALE}
+                      width={40 * SCALE}
+                      height={12 * SCALE}
                       fill="rgba(255,255,255,0.85)"
-                      rx={2 * s}
+                      rx={2 * SCALE}
                       stroke="#90CAF9"
-                      strokeWidth={0.5 * s}
+                      strokeWidth={0.5 * SCALE}
                     />
                     <text
                       x={sash.x + sash.w / 2}
-                      y={sash.y + sash.h / 2 + 2 * s}
+                      y={sash.y + sash.h / 2 + 2 * SCALE}
                       textAnchor="middle"
-                      fontSize={5 * s}
+                      fontSize={5 * SCALE}
                       fill="#1565C0"
                       fontWeight="600"
                     >
@@ -585,10 +587,10 @@ export default function Window2D({
 
                 {/* BAGHETE / Glazing beads */}
                 <rect
-                  x={sash.x + glassGap + 2 * s}
-                  y={sash.y + glassGap + 2 * s}
-                  width={sash.w - glassGap * 2 - 4 * s}
-                  height={sash.h - glassGap * 2 - 4 * s}
+                  x={sash.x + glassGap + 2 * SCALE}
+                  y={sash.y + glassGap + 2 * SCALE}
+                  width={sash.w - glassGap * 2 - 4 * SCALE}
+                  height={sash.h - glassGap * 2 - 4 * SCALE}
                   fill="none"
                   stroke={hoveredComponent === "baghete" ? "#3B82F6" : "#94A3B8"}
                   strokeWidth={hoveredComponent === "baghete" ? 2 : 1}
@@ -602,10 +604,10 @@ export default function Window2D({
                 {horizontalMuntin && (
                   <g>
                     <rect
-                      x={sash.x + glassGap + 2 * s}
-                      y={sash.y + sash.h / 2 - 1.5 * s}
-                      width={sash.w - glassGap * 2 - 4 * s}
-                      height={3 * s}
+                      x={sash.x + glassGap + 2 * SCALE}
+                      y={sash.y + sash.h / 2 - 1.5 * SCALE}
+                      width={sash.w - glassGap * 2 - 4 * SCALE}
+                      height={3 * SCALE}
                       fill="#6B7280"
                     />
                   </g>
@@ -620,21 +622,21 @@ export default function Window2D({
                     style={{ cursor: "pointer" }}
                   >
                     <rect
-                      x={sash.x - sashThickness + 1 * s}
+                      x={sash.x - sashThickness + 1 * SCALE}
                       y={sash.y + sash.h * 0.12}
-                      width={Math.max(5 * s, minHingeSize)}
-                      height={Math.max(10 * s, minHingeSize * 2)}
-                      rx={Math.max(1 * s, 2)}
+                      width={Math.max(5 * SCALE, minHingeSize)}
+                      height={Math.max(10 * SCALE, minHingeSize * 2)}
+                      rx={Math.max(1 * SCALE, 2)}
                       fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
                       stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
                       strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
                     />
                     <rect
-                      x={sash.x - sashThickness + 1 * s}
+                      x={sash.x - sashThickness + 1 * SCALE}
                       y={sash.y + sash.h * 0.75}
-                      width={Math.max(5 * s, minHingeSize)}
-                      height={Math.max(10 * s, minHingeSize * 2)}
-                      rx={Math.max(1 * s, 2)}
+                      width={Math.max(5 * SCALE, minHingeSize)}
+                      height={Math.max(10 * SCALE, minHingeSize * 2)}
+                      rx={Math.max(1 * SCALE, 2)}
                       fill={hoveredComponent === "balamale" ? "#3B82F6" : "#9CA3AF"}
                       stroke={hoveredComponent === "balamale" ? "#1D4ED8" : "#6B7280"}
                       strokeWidth={hoveredComponent === "balamale" ? 0.8 : 0.4}
@@ -659,14 +661,14 @@ export default function Window2D({
                 style={{ cursor: "pointer" }}
               >
                 <rect
-                  x={tocThickness - 1 * s}
-                  y={h - Math.max(5 * s, minThresholdH)}
-                  width={w - tocThickness * 2 + 2 * s}
-                  height={Math.max(5 * s, minThresholdH)}
+                  x={tocThickness - 1 * SCALE}
+                  y={h - Math.max(5 * SCALE, minThresholdH)}
+                  width={w - tocThickness * 2 + 2 * SCALE}
+                  height={Math.max(5 * SCALE, minThresholdH)}
                   fill={hoveredComponent === "prag" ? "#3B82F6" : "#374151"}
                   stroke={hoveredComponent === "prag" ? "#1D4ED8" : "#1F2937"}
                   strokeWidth={hoveredComponent === "prag" ? 0.8 : 0.4}
-                  rx={Math.max(0.5 * s, 2)}
+                  rx={Math.max(0.5 * SCALE, 2)}
                 />
               </g>
             )}
@@ -686,9 +688,9 @@ export default function Window2D({
                       onMouseLeave={() => handleComponentHover(null)}
                       style={{ cursor: "pointer" }}
                     >
-                      <rect x={w / 2 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                      <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
-                      <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "stulp" ? "#60A5FA" : "#9CA3AF"} />
+                      <rect x={w / 2 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
+                      <circle cx={w / 2} cy={h - tocThickness - 6 * SCALE} r={2.5 * SCALE} fill={hoveredComponent === "stulp" ? "#60A5FA" : "#9CA3AF"} />
                     </g>
                   ) : (
                     <g 
@@ -697,10 +699,10 @@ export default function Window2D({
                       onMouseLeave={() => handleComponentHover(null)}
                       style={{ cursor: "pointer" }}
                     >
-                      <rect x={w / 2 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
-                      <rect x={w / 2 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                      <text x={w / 2} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
-                      <circle cx={w / 2} cy={h - tocThickness - 6 * s} r={2.5 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#9CA3AF"} />
+                      <rect x={w / 2 - 3 * SCALE} y={tocThickness} width={6 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                      <rect x={w / 2 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                      <text x={w / 2} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
+                      <circle cx={w / 2} cy={h - tocThickness - 6 * SCALE} r={2.5 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#9CA3AF"} />
                     </g>
                   )
                 ) : (
@@ -708,19 +710,19 @@ export default function Window2D({
                   <>
                     {sashConfiguration === "stulp" ? (
                       <>
-                        <rect x={w / 3 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                        <rect x={w * 2 / 3 - 2.5 * s} y={tocThickness} width={5 * s} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
-                        <text x={w / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
-                        <text x={w * 2 / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">STULP</text>
+                        <rect x={w / 3 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                        <rect x={w * 2 / 3 - 2.5 * SCALE} y={tocThickness} width={5 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "stulp" ? "#3B82F6" : "#6B7280"} stroke={hoveredComponent === "stulp" ? "#1D4ED8" : "#4B5563"} strokeWidth={0.5} />
+                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">STULP</text>
                       </>
                     ) : (
                       <>
-                        <rect x={w / 3 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
-                        <rect x={w / 3 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                        <rect x={w * 2 / 3 - 3 * s} y={tocThickness} width={6 * s} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
-                        <rect x={w * 2 / 3 - 1.5 * s} y={tocThickness + 1.5 * s} width={3 * s} height={h - tocThickness * 2 - 3 * s} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
-                        <text x={w / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
-                        <text x={w * 2 / 3} y={tocThickness + 10 * s} textAnchor="middle" fontSize={4 * s} fill="white" fontWeight="bold">MONTANT</text>
+                        <rect x={w / 3 - 3 * SCALE} y={tocThickness} width={6 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                        <rect x={w / 3 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                        <rect x={w * 2 / 3 - 3 * SCALE} y={tocThickness} width={6 * SCALE} height={h - tocThickness * 2} fill={hoveredComponent === "montant" ? "#3B82F6" : "#4B5563"} stroke={hoveredComponent === "montant" ? "#1D4ED8" : "#374151"} strokeWidth={0.8} />
+                        <rect x={w * 2 / 3 - 1.5 * SCALE} y={tocThickness + 1.5 * SCALE} width={3 * SCALE} height={h - tocThickness * 2 - 3 * SCALE} fill={hoveredComponent === "montant" ? "#60A5FA" : "#6B7280"} />
+                        <text x={w / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
+                        <text x={w * 2 / 3} y={tocThickness + 10 * SCALE} textAnchor="middle" fontSize={4 * SCALE} fill="white" fontWeight="bold">MONTANT</text>
                       </>
                     )}
                   </>
@@ -735,27 +737,27 @@ export default function Window2D({
               onMouseLeave={() => handleComponentHover(null)}
               style={{ cursor: "pointer" }}
             >
-              <rect x={w - 6 * s} y={-2 * s} width={6 * s} height={tocThickness - 2 * s} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * s} />
+              <rect x={w - 6 * SCALE} y={-2 * SCALE} width={6 * SCALE} height={tocThickness - 2 * SCALE} fill={hoveredComponent === "glaf" ? "#3B82F6" : "#374151"} rx={0.5 * SCALE} />
             </g>
 
             {/* COTE / Dimension lines */}
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-10 * s} x2={w} y2={-10 * s} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <line x1={0} y1={-14 * s} x2={0} y2={-6 * s} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <line x1={w} y1={-14 * s} x2={w} y2={-6 * s} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <polygon points={`${-4 * s},${-10 * s} ${4 * s},${-10 * s} ${0},${-15 * s}`} fill="#1e293b" />
-                <polygon points={`${w - 4 * s},${-10 * s} ${w + 4 * s},${-10 * s} ${w},${-15 * s}`} fill="#1e293b" />
-                <text x={w / 2} y={-19 * s} textAnchor="middle" fontSize={12 * s} fill="#1e293b" fontWeight="700">{width} mm</text>
+                <line x1={0} y1={-10 * SCALE} x2={w} y2={-10 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <line x1={0} y1={-14 * SCALE} x2={0} y2={-6 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <line x1={w} y1={-14 * SCALE} x2={w} y2={-6 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <polygon points={`${-4 * SCALE},${-10 * SCALE} ${4 * SCALE},${-10 * SCALE} ${0},${-15 * SCALE}`} fill="#1e293b" />
+                <polygon points={`${w - 4 * SCALE},${-10 * SCALE} ${w + 4 * SCALE},${-10 * SCALE} ${w},${-15 * SCALE}`} fill="#1e293b" />
+                <text x={w / 2} y={-19 * SCALE} textAnchor="middle" fontSize={12 * SCALE} fill="#1e293b" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-10 * s} y1={0} x2={-10 * s} y2={h} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <line x1={-14 * s} y1={0} x2={-6 * s} y2={0} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <line x1={-14 * s} y1={h} x2={-6 * s} y2={h} stroke="#1e293b" strokeWidth={2 * s} strokeLinecap="round" />
-                <polygon points={`${-10 * s},${-4 * s} ${-10 * s},${4 * s} ${-15 * s},${0}`} fill="#1e293b" />
-                <polygon points={`${-10 * s},${h - 4 * s} ${-10 * s},${h + 4 * s} ${-15 * s},${h}`} fill="#1e293b" />
-                <text x={-19 * s} y={h / 2} textAnchor="middle" fontSize={12 * s} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-19 * s}, ${h / 2})`}>{height} mm</text>
+                <line x1={-10 * SCALE} y1={0} x2={-10 * SCALE} y2={h} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <line x1={-14 * SCALE} y1={0} x2={-6 * SCALE} y2={0} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <line x1={-14 * SCALE} y1={h} x2={-6 * SCALE} y2={h} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
+                <polygon points={`${-10 * SCALE},${-4 * SCALE} ${-10 * SCALE},${4 * SCALE} ${-15 * SCALE},${0}`} fill="#1e293b" />
+                <polygon points={`${-10 * SCALE},${h - 4 * SCALE} ${-10 * SCALE},${h + 4 * SCALE} ${-15 * SCALE},${h}`} fill="#1e293b" />
+                <text x={-19 * SCALE} y={h / 2} textAnchor="middle" fontSize={12 * SCALE} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-19 * SCALE}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>
