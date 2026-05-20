@@ -1285,13 +1285,14 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                         return (
                         <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center w-full max-w-[600px] min-h-0", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
                           {/* Per-Window Header */}
-                          <div className="flex items-center gap-2 mb-1 px-1 flex-shrink-0">
+                          <div className="flex items-center gap-2 mb-1 px-1 flex-shrink-0 w-full">
                             <button
                               onClick={() => openConfigForWindow(idx)}
-                              className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+                              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border-2 border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm hover:shadow-md"
                               title={t("configurator.tooltips.configureSashes")}
                             >
-                              <Settings className="w-4 h-4 text-slate-600" />
+                              <Settings className="w-5 h-5 text-blue-600" />
+                              <span className="text-xs font-semibold text-blue-700 whitespace-nowrap">Configurare Canaturi</span>
                             </button>
 
                             <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 px-2 py-1">

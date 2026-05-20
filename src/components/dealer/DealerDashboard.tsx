@@ -65,29 +65,59 @@ export default function DealerDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
       <header className="bg-slate-900/50 backdrop-blur border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold text-white truncate">
                 {t("dealer.dashboard.title")}
               </h1>
-              <p className="text-slate-400 text-sm">
+              <p className="text-slate-400 text-xs sm:text-sm truncate">
                 {dealer?.companyName || dealer?.name} • Cod: {dealer?.accessCode}
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="text-right">
-                <p className="text-sm text-slate-400">{t("dealer.pricing.currentMargin")}</p>
-                <p className="text-lg font-semibold text-blue-400">{editingMargin}%</p>
+                <p className="text-xs sm:text-sm text-slate-400">{t("dealer.pricing.currentMargin")}</p>
+                <p className="text-base sm:text-lg font-semibold text-blue-400">{editingMargin}%</p>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <nav className="w-56 flex-shrink-0">
+      {/* Mobile Tab Navigation */}
+      <div className="lg:hidden bg-slate-800/50 border-b border-slate-700 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-1 p-2 min-w-max">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors whitespace-nowrap text-xs sm:text-sm",
+                activeTab === tab.id
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-slate-700"
+              )}
+            >
+              <tab.icon className="w-4 h-4 flex-shrink-0" />
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span className={cn(
+                  "px-1.5 py-0.5 rounded-full text-[10px]",
+                  activeTab === tab.id ? "bg-white/20" : "bg-slate-700"
+                )}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="flex gap-4 sm:gap-6">
+          {/* Desktop Sidebar */}
+          <nav className="hidden lg:block w-52 xl:w-56 flex-shrink-0">
             <div className="bg-slate-800/50 rounded-xl p-2 space-y-1">
               {tabs.map((tab) => (
                 <button
@@ -133,14 +163,14 @@ export default function DealerDashboard() {
             </div>
           </nav>
 
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             {activeTab === "configurator" && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-4">{t("dealer.configurator.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-3 sm:mb-4">{t("dealer.configurator.title")}</h2>
                 <div className="text-center py-12">
                   <Calculator className="w-16 h-16 text-blue-500 mx-auto mb-4" />
                   <p className="text-slate-400 mb-4">{t("dealer.configurator.desc")}</p>
@@ -158,13 +188,13 @@ export default function DealerDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">{t("dealer.clients.title")}</h2>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-semibold text-white">{t("dealer.clients.title")}</h2>
                   <button 
                     onClick={() => setShowAddClient(true)}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg"
+                    className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm rounded-lg whitespace-nowrap"
                   >
                     + {t("dealer.clients.addClient")}
                   </button>
@@ -201,9 +231,9 @@ export default function DealerDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.orders.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("dealer.orders.title")}</h2>
 
                 {orders.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
@@ -247,9 +277,9 @@ export default function DealerDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.tabs.pricing")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("dealer.tabs.pricing")}</h2>
 
                 <div className="bg-slate-700/50 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-between">
@@ -334,11 +364,11 @@ export default function DealerDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("dealer.stats.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("dealer.stats.title")}</h2>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                   <div className="bg-slate-700/50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Users className="w-5 h-5 text-blue-400" />

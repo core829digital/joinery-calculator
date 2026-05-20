@@ -101,55 +101,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 flex items-center justify-center p-3 sm:p-4 overflow-hidden">
       <div className="w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden border border-white/20">
-            <Logo size={64} className="object-contain" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-2xl shadow-blue-500/30 overflow-hidden border border-white/20">
+            <Logo size={48} className="object-contain sm:w-16 sm:h-16" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Core829 SRL</h1>
-          <p className="text-slate-400">Building Tomorrow's Software Today</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2 px-2">Core829 SRL</h1>
+          <p className="text-slate-400 text-sm sm:text-base px-2">Building Tomorrow's Software Today</p>
         </motion.div>
 
         {!selectedRole ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold text-white">{t("login.selectRole")}</h2>
-              <p className="text-slate-400 text-sm mt-1">{t("login.selectRoleDesc")}</p>
+            <div className="text-center mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-white">{t("login.selectRole")}</h2>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">{t("login.selectRoleDesc")}</p>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {roles.map((role) => (
                 <motion.button
                   key={role.id}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedRole(role.id)}
-                  className={`group relative p-5 rounded-xl bg-gradient-to-r ${role.color} ${role.hoverColor} border-2 border-transparent ${role.borderColor} transition-all shadow-lg hover:shadow-xl text-left`}
+                  className={`group relative p-4 sm:p-5 rounded-xl bg-gradient-to-r ${role.color} ${role.hoverColor} border-2 border-transparent ${role.borderColor} transition-all shadow-lg hover:shadow-xl text-left`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center text-white">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white/20 flex items-center justify-center text-white flex-shrink-0">
                       {role.icon}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-white">{role.name}</h3>
-                      <p className="text-white/80 text-sm">{role.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base sm:text-lg font-bold text-white truncate">{role.name}</h3>
+                      <p className="text-white/80 text-xs sm:text-sm">{role.description}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
                     {role.features.map((feature) => (
                       <span
                         key={feature}
-                        className="px-2 py-0.5 text-xs bg-white/10 rounded-full text-white/70"
+                        className="px-2 py-0.5 text-[10px] sm:text-xs bg-white/10 rounded-full text-white/70"
                       >
                         {feature}
                       </span>
@@ -163,38 +163,38 @@ export default function LoginPage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="max-w-md mx-auto"
+            className="max-w-md mx-auto px-2"
           >
             <button
               onClick={() => {
                 setSelectedRole(null);
                 setError("");
               }}
-              className="mb-4 text-slate-400 hover:text-white flex items-center gap-2 text-sm"
+              className="mb-3 sm:mb-4 text-slate-400 hover:text-white flex items-center gap-2 text-sm"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
               {t("login.backToSelect")}
             </button>
 
-            <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700">
-              <div className="flex items-center gap-3 mb-6">
+            <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-4 sm:p-6 border border-slate-700">
+              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className={cn(
-                  "w-12 h-12 rounded-xl flex items-center justify-center text-white",
+                  "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-white flex-shrink-0",
                   selectedRole === "supplier" && "bg-gradient-to-br from-purple-600 to-indigo-700",
                   selectedRole === "dealer" && "bg-gradient-to-br from-blue-600 to-cyan-700",
                   selectedRole === "client" && "bg-gradient-to-br from-emerald-600 to-teal-700",
                 )}>
                   {roles.find((r) => r.id === selectedRole)?.icon}
                 </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-white">
+                <div className="min-w-0">
+                  <h2 className="text-base sm:text-lg font-semibold text-white truncate">
                     {t("login.authTitle")} {roles.find((r) => r.id === selectedRole)?.name}
                   </h2>
-                  <p className="text-slate-400 text-sm">{t("login.authSubtitle")}</p>
+                  <p className="text-slate-400 text-xs sm:text-sm">{t("login.authSubtitle")}</p>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-1.5">
                     {t("login.emailLabel")}
@@ -204,7 +204,7 @@ export default function LoginPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="email@exemplu.ro"
                       required
                     />
@@ -221,7 +221,7 @@ export default function LoginPage() {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                       placeholder="••••••••"
                       required
                     />
@@ -238,7 +238,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 px-4 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -251,12 +251,12 @@ export default function LoginPage() {
                 </button>
               </form>
 
-              <div className="mt-6 p-4 bg-slate-700/30 rounded-xl">
+              <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-slate-700/30 rounded-xl">
                 <div className="flex items-center gap-2 text-amber-400 mb-2">
-                  <Shield className="w-4 h-4" />
-                  <span className="text-sm font-medium">{t("login.testCredentials")}</span>
+                  <Shield className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium">{t("login.testCredentials")}</span>
                 </div>
-                <div className="text-xs text-slate-400 space-y-1">
+                <div className="text-[10px] sm:text-xs text-slate-400 space-y-1 break-all">
                   <p>{t("login.emailLabel")}: <span className="text-slate-300">{testCredentials[selectedRole].email}</span></p>
                   <p>{t("login.passwordLabel")}: <span className="text-slate-300">{testCredentials[selectedRole].password}</span></p>
                 </div>
@@ -265,7 +265,7 @@ export default function LoginPage() {
           </motion.div>
         )}
 
-        <p className="text-center text-slate-500 text-sm mt-8">
+        <p className="text-center text-slate-500 text-xs sm:text-sm mt-6 sm:mt-8 px-2">
           Core829 SRL • contact.core829@gmail.com • +40766668482
         </p>
       </div>

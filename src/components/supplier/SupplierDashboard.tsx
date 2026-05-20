@@ -71,29 +71,59 @@ export default function SupplierDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
       <header className="bg-slate-900/50 backdrop-blur border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold text-white truncate">
                 {t("supplier.admin.title")}
               </h1>
-              <p className="text-slate-400 text-sm">
+              <p className="text-slate-400 text-xs sm:text-sm truncate">
                 SC Core829 SRL • Building Tomorrow's Software Today
               </p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 rounded-full">
-                <Shield className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-green-400">{t("supplier.admin.badge")}</span>
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-green-500/20 rounded-full">
+                <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
+                <span className="text-xs sm:text-sm text-green-400">{t("supplier.admin.badge")}</span>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <nav className="w-60 flex-shrink-0">
+      {/* Mobile Tab Navigation */}
+      <div className="lg:hidden bg-slate-800/50 border-b border-slate-700 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-1 p-2 min-w-max">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors whitespace-nowrap text-xs sm:text-sm",
+                activeTab === tab.id
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-slate-700"
+              )}
+            >
+              <tab.icon className="w-4 h-4 flex-shrink-0" />
+              <span>{tab.label}</span>
+              {tab.count !== undefined && (
+                <span className={cn(
+                  "px-1.5 py-0.5 rounded-full text-[10px]",
+                  activeTab === tab.id ? "bg-white/20" : "bg-slate-700"
+                )}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="flex gap-4 sm:gap-6">
+          {/* Desktop Sidebar */}
+          <nav className="hidden lg:block w-56 xl:w-60 flex-shrink-0">
             <div className="bg-slate-800/50 rounded-xl p-2 space-y-1">
               {tabs.map((tab) => (
                 <button
@@ -139,22 +169,22 @@ export default function SupplierDashboard() {
             </div>
           </nav>
 
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             {activeTab === "dealers" && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">{t("supplier.dealers.title")}</h2>
-                  <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-base sm:text-xl font-semibold text-white">{t("supplier.dealers.title")}</h2>
+                  <button className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm rounded-lg whitespace-nowrap">
                     + {t("supplier.dealers.addDealer")}
                   </button>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[600px]">
                     <thead>
                       <tr className="text-left text-sm text-slate-400 border-b border-slate-700">
                         <th className="pb-3 font-medium">{t("supplier.dealers.name")}</th>
@@ -242,12 +272,12 @@ export default function SupplierDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.clients.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("supplier.clients.title")}</h2>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[500px]">
                     <thead>
                       <tr className="text-left text-sm text-slate-400 border-b border-slate-700">
                         <th className="pb-3 font-medium">{t("supplier.clients.name")}</th>
@@ -292,9 +322,9 @@ export default function SupplierDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.orders.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("supplier.orders.title")}</h2>
 
                 <div className="space-y-3">
                   {allOrders.map((order) => {
@@ -340,9 +370,9 @@ export default function SupplierDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.commissions.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("supplier.commissions.title")}</h2>
 
                 <div className="space-y-3">
                   {allCommissions.map((commission) => (
@@ -379,9 +409,9 @@ export default function SupplierDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.pricing.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("supplier.pricing.title")}</h2>
 
                 <div className="grid gap-4">
                   {[
@@ -426,9 +456,9 @@ export default function SupplierDashboard() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-6"
+                className="bg-slate-800/50 rounded-xl p-3 sm:p-6"
               >
-                <h2 className="text-xl font-semibold text-white mb-6">{t("supplier.settings.title")}</h2>
+                <h2 className="text-base sm:text-xl font-semibold text-white mb-4 sm:mb-6">{t("supplier.settings.title")}</h2>
 
                 <div className="grid gap-4">
                   <div className="p-4 bg-slate-700/50 rounded-lg">

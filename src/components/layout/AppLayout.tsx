@@ -113,33 +113,33 @@ export default function AppLayout({
       </div>
 
       {/* Toolbar - Responsive */}
-      <div className="bg-white border-b border-slate-200 flex items-center justify-between px-2 py-2 shadow-sm gap-2 overflow-x-auto">
+      <div className="bg-white border-b border-slate-200 flex items-center justify-between px-2 py-1.5 sm:py-2 shadow-sm gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide">
         {/* Action Buttons - Scrollable on mobile */}
-        <div className="flex items-center gap-1.5 flex-nowrap">
+        <div className="flex items-center gap-1 sm:gap-1.5 flex-nowrap">
           <button
             onClick={onSave}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Save className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t("layout.toolbar.save")}</span>
           </button>
           <button
             onClick={onPrint}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Printer className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t("layout.toolbar.print")}</span>
           </button>
           <button
             onClick={onExportPDF}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <FileText className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t("layout.toolbar.pdf")}</span>
           </button>
           <button
             onClick={onSendEmail}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
           >
             <Mail className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t("layout.toolbar.email")}</span>
@@ -165,13 +165,13 @@ export default function AppLayout({
         </div>
         <button 
           onClick={onToggleFilter}
-          className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+          className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
         >
           <Filter className="w-4 h-4 text-slate-600" />
         </button>
 
         {/* Language Switcher */}
-        <LanguageSwitcher className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer" />
+        <LanguageSwitcher className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0" />
       </div>
 
       {/* Main Content */}
