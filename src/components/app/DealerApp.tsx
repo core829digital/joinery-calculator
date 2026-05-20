@@ -1216,8 +1216,8 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
             <div className="flex-1 flex flex-col min-h-0">
               <div className="flex-1 flex flex-col min-h-0">
                 <div className="flex-1 flex flex-col min-h-0">
-                  {/* Window Tabs */}
-                  <div className="flex items-center gap-1 mb-1 overflow-x-auto px-2 pt-1">
+                  {/* Window Tabs - Centered */}
+                  <div className="flex items-center justify-center gap-1 mb-2 overflow-x-auto scrollbar-hide px-2 pt-1">
                     {windows.map((win, idx) => (
                       <button
                         key={win.id}
@@ -1277,15 +1277,15 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                     </div>
                   ) : (
                     /* Multiple Windows */
-                    <div className="flex-1 flex items-stretch justify-start gap-4 min-w-0 overflow-x-auto px-4">
+                    <div className="flex-1 flex items-stretch justify-center gap-4 min-w-0 overflow-x-auto px-4">
                       {windows.map((win, idx) => {
                         const draft = draftDimensions[win.id] || { w: String(win.width), h: String(win.height) };
                         const hasInvalidDims = win.width <= 0 || win.height <= 0;
 
                         return (
                         <div key={win.id} className={cn("flex-shrink-0 flex flex-col items-center w-full max-w-[600px] min-h-0", activeWindowIndex === idx ? "opacity-100" : "opacity-50")}>
-                          {/* Per-Window Header */}
-                          <div className="flex items-center gap-2 mb-1 px-1 flex-shrink-0 w-full">
+                          {/* Per-Window Header - Centered */}
+                          <div className="flex items-center justify-center gap-2 mb-2 px-1 flex-shrink-0 w-full max-w-fit">
                             <button
                               onClick={() => openConfigForWindow(idx)}
                               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border-2 border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all shadow-sm hover:shadow-md"
@@ -1358,26 +1358,26 @@ export default function DealerApp({ userRole = "dealer", clientCode, dealerId }:
                             )}
                           </div>
 
-                          {/* Quantity Controls */}
-                          <div className="flex items-center gap-1 mt-1 flex-shrink-0">
+                          {/* Quantity Controls - Centered */}
+                          <div className="flex items-center justify-center gap-2 mt-2 mb-1 flex-shrink-0">
                             <button 
                               onClick={() => {
                                 setWindows(prev => prev.map((w, i) => 
                                   i === idx ? { ...w, quantity: Math.max(1, w.quantity - 1) } : w
                                 ));
                               }}
-                              className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                              className="w-7 h-7 rounded-lg bg-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-300 flex items-center justify-center transition-colors"
                             >
                               -
                             </button>
-                            <span className="text-[10px] font-medium text-slate-600 w-8 text-center">{win.quantity}</span>
+                            <span className="text-xs font-semibold text-slate-700 w-8 text-center bg-slate-50 rounded px-2 py-1 border border-slate-200">{win.quantity} {t("configurator.pricing.pieces")}</span>
                             <button 
                               onClick={() => {
                                 setWindows(prev => prev.map((w, i) => 
                                   i === idx ? { ...w, quantity: w.quantity + 1 } : w
                                 ));
                               }}
-                              className="w-5 h-5 rounded bg-slate-200 text-slate-600 text-xs hover:bg-slate-300 flex items-center justify-center"
+                              className="w-7 h-7 rounded-lg bg-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-300 flex items-center justify-center transition-colors"
                             >
                               +
                             </button>
