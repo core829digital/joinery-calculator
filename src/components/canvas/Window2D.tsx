@@ -213,7 +213,7 @@ export default function Window2D({
     }
   }, [productType, w, h, SCALE, tocThickness, openingSide, t]);
 
-  const margin = Math.max(28, 30 * SCALE);
+  const margin = Math.max(12, 18 * SCALE);
   const svgWidth = w + margin * 2;
   const svgHeight = h + margin * 2;
 
@@ -447,8 +447,7 @@ export default function Window2D({
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           preserveAspectRatio="xMidYMid meet"
-          className="w-full h-full max-w-full max-h-full"
-          style={{ display: 'block' }}
+          style={{ width: `${svgWidth}px`, height: `${svgHeight}px`, maxWidth: '100%', maxHeight: '100%', display: 'block' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -756,20 +755,20 @@ export default function Window2D({
             {showDimensions && (
               <>
                 {/* Latime - deasupra */}
-                <line x1={0} y1={-10 * SCALE} x2={w} y2={-10 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <line x1={0} y1={-14 * SCALE} x2={0} y2={-6 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <line x1={w} y1={-14 * SCALE} x2={w} y2={-6 * SCALE} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <polygon points={`${-4 * SCALE},${-10 * SCALE} ${4 * SCALE},${-10 * SCALE} ${0},${-15 * SCALE}`} fill="#1e293b" />
-                <polygon points={`${w - 4 * SCALE},${-10 * SCALE} ${w + 4 * SCALE},${-10 * SCALE} ${w},${-15 * SCALE}`} fill="#1e293b" />
-                <text x={w / 2} y={-19 * SCALE} textAnchor="middle" fontSize={12 * SCALE} fill="#1e293b" fontWeight="700">{width} mm</text>
+                <line x1={0} y1={-6 * SCALE} x2={w} y2={-6 * SCALE} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <line x1={0} y1={-9 * SCALE} x2={0} y2={-3 * SCALE} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <line x1={w} y1={-9 * SCALE} x2={w} y2={-3 * SCALE} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <polygon points={`${-3 * SCALE},${-6 * SCALE} ${3 * SCALE},${-6 * SCALE} ${0},${-10 * SCALE}`} fill="#1e293b" />
+                <polygon points={`${w - 3 * SCALE},${-6 * SCALE} ${w + 3 * SCALE},${-6 * SCALE} ${w},${-10 * SCALE}`} fill="#1e293b" />
+                <text x={w / 2} y={-12 * SCALE} textAnchor="middle" fontSize={10 * SCALE} fill="#1e293b" fontWeight="700">{width} mm</text>
 
                 {/* Inaltime - in stanga */}
-                <line x1={-10 * SCALE} y1={0} x2={-10 * SCALE} y2={h} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <line x1={-14 * SCALE} y1={0} x2={-6 * SCALE} y2={0} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <line x1={-14 * SCALE} y1={h} x2={-6 * SCALE} y2={h} stroke="#1e293b" strokeWidth={2 * SCALE} strokeLinecap="round" />
-                <polygon points={`${-10 * SCALE},${-4 * SCALE} ${-10 * SCALE},${4 * SCALE} ${-15 * SCALE},${0}`} fill="#1e293b" />
-                <polygon points={`${-10 * SCALE},${h - 4 * SCALE} ${-10 * SCALE},${h + 4 * SCALE} ${-15 * SCALE},${h}`} fill="#1e293b" />
-                <text x={-19 * SCALE} y={h / 2} textAnchor="middle" fontSize={12 * SCALE} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-19 * SCALE}, ${h / 2})`}>{height} mm</text>
+                <line x1={-6 * SCALE} y1={0} x2={-6 * SCALE} y2={h} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <line x1={-9 * SCALE} y1={0} x2={-3 * SCALE} y2={0} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <line x1={-9 * SCALE} y1={h} x2={-3 * SCALE} y2={h} stroke="#1e293b" strokeWidth={1.5 * SCALE} strokeLinecap="round" />
+                <polygon points={`${-6 * SCALE},${-3 * SCALE} ${-6 * SCALE},${3 * SCALE} ${-10 * SCALE},${0}`} fill="#1e293b" />
+                <polygon points={`${-6 * SCALE},${h - 3 * SCALE} ${-6 * SCALE},${h + 3 * SCALE} ${-10 * SCALE},${h}`} fill="#1e293b" />
+                <text x={-12 * SCALE} y={h / 2} textAnchor="middle" fontSize={10 * SCALE} fill="#1e293b" fontWeight="700" transform={`rotate(-90, ${-12 * SCALE}, ${h / 2})`}>{height} mm</text>
               </>
             )}
           </g>
