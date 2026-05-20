@@ -447,7 +447,8 @@ export default function Window2D({
         <svg
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           preserveAspectRatio="xMidYMid meet"
-          style={{ width: `${svgWidth}px`, height: `${svgHeight}px`, maxWidth: '100%', maxHeight: '100%', display: 'block' }}
+          className="w-full h-full max-w-full max-h-full"
+          style={{ display: 'block' }}
         >
           <defs>
             <pattern id="glassPattern" width="8" height="8" patternUnits="userSpaceOnUse">
